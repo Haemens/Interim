@@ -2,8 +2,7 @@ import { Mail, MapPin, Phone } from "lucide-react";
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-300 font-sans">
-      <main className="pt-32 pb-20 lg:pt-40 lg:pb-28">
+    <main className="pt-32 pb-20 lg:pt-40 lg:pb-28">
         <div className="max-w-6xl mx-auto px-4 lg:px-8">
           <div className="grid md:grid-cols-2 gap-16">
             <div>
@@ -98,6 +97,5 @@ export default function ContactPage() {
           </div>
         </div>
       </main>
-    </div>
   );
 }

@@ -3,8 +3,7 @@ import { CheckCircle2, LayoutDashboard, Users, BarChart3, Zap, Share2, ShieldChe
 
 export default function ProductPage() {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-300 font-sans">
-      <main className="pt-32 pb-20 lg:pt-40 lg:pb-28">
+    <main className="pt-32 pb-20 lg:pt-40 lg:pb-28">
         <div className="max-w-6xl mx-auto px-4 lg:px-8 text-center mb-20">
           <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tight mb-6">
             Tout ce dont vous avez besoin pour <span className="text-indigo-400">piloter votre agence</span>
@@ -94,7 +93,6 @@ export default function ProductPage() {
           </Link>
         </div>
       </main>
-    </div>
   );
 }
 

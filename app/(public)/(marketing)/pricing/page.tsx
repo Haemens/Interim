@@ -3,8 +3,7 @@ import { Check } from "lucide-react";
 
 export default function PricingPage() {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-300 font-sans">
-      <main className="pt-32 pb-20 lg:pt-40 lg:pb-28">
+    <main className="pt-32 pb-20 lg:pt-40 lg:pb-28">
         <div className="max-w-6xl mx-auto px-4 lg:px-8 text-center mb-20">
           <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tight mb-6">
             Des tarifs simples et <span className="text-indigo-400">transparents</span>
@@ -89,7 +88,6 @@ export default function PricingPage() {
           </div>
         </div>
       </main>
-    </div>
   );
 }
 

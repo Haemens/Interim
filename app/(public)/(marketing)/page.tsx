@@ -23,33 +23,9 @@ export default function HomePage() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-300 font-sans selection:bg-indigo-500/30">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
-        <div className="max-w-6xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/20">
-              <span className="text-white font-bold">I</span>
-            </div>
-            <span className="text-lg font-semibold text-white tracking-tight">Interim</span>
-          </div>
-          <div className="flex items-center gap-4 md:gap-6">
-            <Link href="/login" className="text-sm font-medium hover:text-white transition-colors">
-              Connexion
-            </Link>
-            <Link
-              href="/signup"
-              className="hidden md:inline-flex bg-white text-slate-950 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-slate-200 transition-colors"
-            >
-              Essai gratuit
-            </Link>
-          </div>
-        </div>
-      </nav>
-
-      <main>
-        {/* Hero Section */}
-        <section className="pt-32 pb-20 lg:pt-40 lg:pb-28 px-4 relative overflow-hidden">
+    <>
+      {/* Hero Section */}
+      <section className="pt-32 pb-20 lg:pt-40 lg:pb-28 px-4 relative overflow-hidden">
           {/* Background Gradients */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-indigo-500/10 rounded-full blur-[100px] -z-10" />
           
@@ -391,29 +367,7 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-      </main>
-
-      {/* Footer */}
-      <footer className="border-t border-slate-900 py-12 bg-slate-950">
-        <div className="max-w-6xl mx-auto px-4 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-indigo-600 rounded flex items-center justify-center text-xs font-bold text-white">I</div>
-              <span className="text-slate-300 font-semibold">Interim</span>
-            </div>
-            <div className="flex gap-8 text-sm text-slate-500">
-              <Link href="/product" className="hover:text-white transition-colors">Produit</Link>
-              <Link href="/pricing" className="hover:text-white transition-colors">Tarifs</Link>
-              <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
-              <Link href="/legal" className="hover:text-white transition-colors">Mentions légales</Link>
-            </div>
-            <div className="text-sm text-slate-600">
-              © {currentYear} Interim by QuestHire.
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
+    </>
   );
 }
 
