@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { DemoButton } from "@/components/marketing/demo-button";
 import { 
   CheckCircle2, 
   ArrowRight, 
@@ -71,13 +72,7 @@ export default function HomePage() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-              <Link
-                href="/demo"
-                className="w-full sm:w-auto px-8 py-4 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2"
-              >
-                <Zap className="w-5 h-5" />
-                Lancer la démo interactive
-              </Link>
+              <DemoButton className="w-full sm:w-auto px-8 py-4" />
               <Link
                 href="/contact"
                 className="w-full sm:w-auto px-8 py-4 bg-slate-900 text-white border border-slate-800 rounded-xl font-semibold hover:bg-slate-800 transition-all flex items-center justify-center gap-2"
@@ -102,14 +97,14 @@ export default function HomePage() {
           <div className="max-w-5xl mx-auto mt-20 relative">
             <div className="absolute -inset-1 bg-gradient-to-b from-indigo-500 to-transparent opacity-20 blur-2xl rounded-2xl" />
             <div className="relative bg-slate-900 border border-slate-800 rounded-xl shadow-2xl overflow-hidden aspect-[16/9] group">
-              <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-[1px] group-hover:backdrop-blur-0 transition-all z-10 flex items-center justify-center">
+              <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-[1px] group-hover:backdrop-blur-0 transition-all z-10 flex items-center justify-center pointer-events-none">
                 <span className="bg-slate-950/80 border border-slate-800 px-4 py-2 rounded-lg text-sm font-medium text-white backdrop-blur-md group-hover:opacity-0 transition-opacity duration-500">
                   Aperçu du Dashboard
                 </span>
               </div>
               
               {/* Fake UI */}
-              <div className="p-6 h-full flex flex-col gap-6 opacity-50 group-hover:opacity-100 transition-opacity duration-500">
+              <div className="p-6 h-full flex flex-col gap-6 opacity-75 group-hover:opacity-100 transition-opacity duration-500">
                 <div className="flex items-center justify-between border-b border-slate-800 pb-4">
                   <div className="flex gap-4">
                     <div className="w-32 h-8 bg-slate-800 rounded-md animate-pulse" />
@@ -120,7 +115,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="flex gap-6 h-full">
-                  <div className="w-64 flex-shrink-0 bg-slate-800/30 rounded-lg border border-slate-800/50 p-4 space-y-3">
+                  <div className="w-64 flex-shrink-0 bg-slate-800/50 rounded-lg border border-slate-700/50 p-4 space-y-3">
                     <div className="flex justify-between items-center mb-4">
                       <div className="w-20 h-4 bg-slate-700 rounded" />
                       <div className="w-6 h-4 bg-slate-700 rounded-full" />
@@ -132,7 +127,7 @@ export default function HomePage() {
                       </div>
                     ))}
                   </div>
-                  <div className="w-64 flex-shrink-0 bg-slate-800/30 rounded-lg border border-slate-800/50 p-4 space-y-3">
+                  <div className="w-64 flex-shrink-0 bg-slate-800/50 rounded-lg border border-slate-700/50 p-4 space-y-3">
                     <div className="flex justify-between items-center mb-4">
                       <div className="w-20 h-4 bg-slate-700 rounded" />
                       <div className="w-6 h-4 bg-slate-700 rounded-full" />
@@ -147,9 +142,9 @@ export default function HomePage() {
                       </div>
                     ))}
                   </div>
-                  <div className="flex-1 bg-slate-800/30 rounded-lg border border-slate-800/50 p-4">
-                    <div className="w-full h-full flex items-center justify-center text-slate-700">
-                      <BarChart3 className="w-12 h-12 opacity-20" />
+                  <div className="flex-1 bg-slate-800/50 rounded-lg border border-slate-700/50 p-4">
+                    <div className="w-full h-full flex items-center justify-center text-slate-600">
+                      <BarChart3 className="w-12 h-12" />
                     </div>
                   </div>
                 </div>
@@ -258,12 +253,12 @@ export default function HomePage() {
               <div className="bg-gradient-to-tr from-slate-800 to-slate-900 p-1 rounded-2xl shadow-2xl">
                 <div className="bg-slate-950 rounded-xl overflow-hidden h-80 flex items-center justify-center relative">
                   {/* Placeholder UI */}
-                  <div className="absolute inset-0 flex gap-4 p-6 overflow-hidden opacity-80">
+                  <div className="absolute inset-0 flex gap-4 p-6 overflow-hidden opacity-100">
                     {[1, 2, 3].map(col => (
                       <div key={col} className="w-1/3 bg-slate-900 rounded-lg border border-slate-800 flex flex-col gap-3 p-3">
                         <div className="h-4 w-20 bg-slate-800 rounded mb-2" />
-                        <div className="h-24 bg-slate-800 rounded border border-slate-700/50" />
-                        <div className="h-24 bg-slate-800 rounded border border-slate-700/50" />
+                        <div className="h-24 bg-slate-800 rounded border border-slate-700" />
+                        <div className="h-24 bg-slate-800 rounded border border-slate-700" />
                       </div>
                     ))}
                   </div>
@@ -391,12 +386,7 @@ export default function HomePage() {
                 >
                   Commencer maintenant
                 </Link>
-                <Link
-                  href="/demo"
-                  className="w-full sm:w-auto px-8 py-4 bg-transparent text-white border border-slate-700 rounded-xl font-semibold hover:bg-slate-800 transition-colors"
-                >
-                  Lancer la démo
-                </Link>
+                <DemoButton variant="outline" className="w-full sm:w-auto px-8 py-4" />
               </div>
             </div>
           </div>
@@ -412,10 +402,10 @@ export default function HomePage() {
               <span className="text-slate-300 font-semibold">Interim</span>
             </div>
             <div className="flex gap-8 text-sm text-slate-500">
-              <Link href="#" className="hover:text-white transition-colors">Produit</Link>
-              <Link href="#" className="hover:text-white transition-colors">Tarifs</Link>
-              <Link href="#" className="hover:text-white transition-colors">Contact</Link>
-              <Link href="#" className="hover:text-white transition-colors">Mentions légales</Link>
+              <Link href="/product" className="hover:text-white transition-colors">Produit</Link>
+              <Link href="/pricing" className="hover:text-white transition-colors">Tarifs</Link>
+              <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
+              <Link href="/legal" className="hover:text-white transition-colors">Mentions légales</Link>
             </div>
             <div className="text-sm text-slate-600">
               © {currentYear} Interim by QuestHire.
