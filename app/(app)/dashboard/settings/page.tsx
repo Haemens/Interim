@@ -14,14 +14,14 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Paramètres</h1>
-        <p className="text-slate-600 mt-1">
+        <h1 className="text-2xl font-bold text-foreground">Paramètres</h1>
+        <p className="text-muted-foreground mt-1">
           Gérez les paramètres et préférences de votre agence.
         </p>
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-slate-200">
+      <div className="border-b border-border">
         <nav className="flex gap-6">
           {tabs.map((tab) => (
             <button
@@ -29,8 +29,8 @@ export default function SettingsPage() {
               onClick={() => setActiveTab(tab.key as typeof activeTab)}
               className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === tab.key
-                  ? "border-indigo-600 text-indigo-600"
-                  : "border-transparent text-slate-500 hover:text-slate-700"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
               {tab.label}
@@ -40,56 +40,56 @@ export default function SettingsPage() {
       </div>
 
       {/* Content */}
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
+      <div className="bg-card rounded-xl border border-border p-6">
         {activeTab === "general" && (
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-medium text-slate-900 mb-4">
+              <h3 className="text-lg font-medium text-foreground mb-4">
                 Informations de l&apos;agence
               </h3>
               <div className="grid gap-4 max-w-lg">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                  <label className="block text-sm font-medium text-foreground mb-1">
                     Nom de l&apos;agence
                   </label>
                   <input
                     type="text"
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-foreground"
                     placeholder="Votre agence"
                     disabled
                   />
-                  <p className="text-xs text-slate-500 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Contactez le support pour modifier le nom de votre agence.
                   </p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                  <label className="block text-sm font-medium text-foreground mb-1">
                     Identifiant (Slug)
                   </label>
                   <input
                     type="text"
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg bg-slate-50"
+                    className="w-full px-3 py-2 bg-muted border border-input rounded-lg text-muted-foreground"
                     disabled
                     placeholder="votre-agence"
                   />
-                  <p className="text-xs text-slate-500 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Utilisé dans l&apos;URL de votre agence.
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="border-t border-slate-200 pt-6">
-              <h3 className="text-lg font-medium text-slate-900 mb-4">
+            <div className="border-t border-border pt-6">
+              <h3 className="text-lg font-medium text-foreground mb-4">
                 Zone de danger
               </h3>
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <h4 className="font-medium text-red-800">Supprimer l&apos;agence</h4>
-                <p className="text-sm text-red-600 mt-1">
+              <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
+                <h4 className="font-medium text-destructive">Supprimer l&apos;agence</h4>
+                <p className="text-sm text-destructive/90 mt-1">
                   La suppression est irréversible. Veuillez être certain de votre choix.
                 </p>
                 <button
-                  className="mt-3 px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
+                  className="mt-3 px-4 py-2 bg-destructive text-destructive-foreground text-sm font-medium rounded-lg hover:bg-destructive/90 transition-colors opacity-50 cursor-not-allowed"
                   disabled
                 >
                   Supprimer l&apos;agence
@@ -102,23 +102,23 @@ export default function SettingsPage() {
         {activeTab === "branding" && (
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-medium text-slate-900 mb-4">
+              <h3 className="text-lg font-medium text-foreground mb-4">
                 Couleurs de la marque
               </h3>
               <div className="grid gap-4 max-w-lg">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                  <label className="block text-sm font-medium text-foreground mb-1">
                     Couleur principale
                   </label>
                   <div className="flex items-center gap-3">
                     <input
                       type="color"
-                      className="w-10 h-10 rounded border border-slate-300 cursor-pointer"
+                      className="w-10 h-10 rounded border border-input cursor-pointer bg-transparent"
                       defaultValue="#4F46E5"
                     />
                     <input
                       type="text"
-                      className="flex-1 px-3 py-2 border border-slate-300 rounded-lg"
+                      className="flex-1 px-3 py-2 bg-background border border-input rounded-lg text-foreground"
                       placeholder="#4F46E5"
                       defaultValue="#4F46E5"
                     />
@@ -127,10 +127,10 @@ export default function SettingsPage() {
               </div>
             </div>
 
-            <div className="border-t border-slate-200 pt-6">
-              <h3 className="text-lg font-medium text-slate-900 mb-4">Logo</h3>
-              <div className="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center">
-                <div className="text-slate-400 mb-2">
+            <div className="border-t border-border pt-6">
+              <h3 className="text-lg font-medium text-foreground mb-4">Logo</h3>
+              <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:bg-muted/50 transition-colors cursor-pointer">
+                <div className="text-muted-foreground mb-2">
                   <svg
                     className="w-10 h-10 mx-auto"
                     fill="none"
@@ -145,17 +145,17 @@ export default function SettingsPage() {
                     />
                   </svg>
                 </div>
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-muted-foreground">
                   Glissez-déposez votre logo ici, ou cliquez pour parcourir
                 </p>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   PNG, JPG jusqu&apos;à 2MB
                 </p>
               </div>
             </div>
 
             <div className="flex justify-end">
-              <button className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors">
+              <button className="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors">
                 Enregistrer
               </button>
             </div>
@@ -165,36 +165,36 @@ export default function SettingsPage() {
         {activeTab === "notifications" && (
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-medium text-slate-900 mb-4">
+              <h3 className="text-lg font-medium text-foreground mb-4">
                 Notifications Email
               </h3>
               <div className="space-y-4">
                 <label className="flex items-center gap-3">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500"
+                    className="w-4 h-4 text-primary border-input rounded focus:ring-primary bg-background"
                     defaultChecked
                   />
-                  <span className="text-sm text-slate-700">
+                  <span className="text-sm text-foreground">
                     Nouvelle candidature reçue
                   </span>
                 </label>
                 <label className="flex items-center gap-3">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500"
+                    className="w-4 h-4 text-primary border-input rounded focus:ring-primary bg-background"
                     defaultChecked
                   />
-                  <span className="text-sm text-slate-700">
+                  <span className="text-sm text-foreground">
                     Feedback client reçu
                   </span>
                 </label>
                 <label className="flex items-center gap-3">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500"
+                    className="w-4 h-4 text-primary border-input rounded focus:ring-primary bg-background"
                   />
-                  <span className="text-sm text-slate-700">
+                  <span className="text-sm text-foreground">
                     Rapport hebdomadaire
                   </span>
                 </label>
@@ -202,7 +202,7 @@ export default function SettingsPage() {
             </div>
 
             <div className="flex justify-end">
-              <button className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors">
+              <button className="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors">
                 Enregistrer les préférences
               </button>
             </div>

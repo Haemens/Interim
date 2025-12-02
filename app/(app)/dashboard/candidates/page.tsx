@@ -98,6 +98,7 @@ export default function CandidatesPage() {
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [sectorFilter, setSectorFilter] = useState("");
   const [skillFilter, setSkillFilter] = useState("");
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // Selection for bulk actions
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -151,9 +152,7 @@ export default function CandidatesPage() {
       // Refresh list
       setSelectedIds(new Set());
       setSelectAll(false);
-      // Trigger refetch
-      setSearch(s => s + " ");
-      setTimeout(() => setSearch(s => s.trim()), 10);
+      setRefreshTrigger(prev => prev + 1);
     } catch (err) {
       toast({
         title: "Erreur",
@@ -192,7 +191,7 @@ export default function CandidatesPage() {
 
     const debounce = setTimeout(fetchCandidates, 300);
     return () => clearTimeout(debounce);
-  }, [search, statusFilter, sectorFilter]);
+  }, [search, statusFilter, sectorFilter, refreshTrigger]);
 
   return (
     <div className="space-y-6">
@@ -330,7 +329,7 @@ export default function CandidatesPage() {
                 </TableHead>
                 <TableHead className="w-[280px]">Nom</TableHead>
                 <TableHead>Contact</TableHead>
-                <TableHead>Statut</TableHead>
+                <TableHead>Disponibilité</TableHead>
                 <TableHead>Secteurs</TableHead>
                 <TableHead>Compétences</TableHead>
                 <TableHead className="text-right">Candidatures</TableHead>
@@ -412,7 +411,7 @@ export default function CandidatesPage() {
                           <Badge
                             key={sector}
                             variant="outline"
-                            className="text-[10px] font-normal bg-blue-50/50 text-blue-700 border-blue-100 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800"
+                            className="text-[10px] font-normal bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800"
                           >
                             {sector}
                           </Badge>

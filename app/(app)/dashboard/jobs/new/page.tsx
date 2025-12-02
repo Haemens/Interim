@@ -78,20 +78,20 @@ export default function NewJobPage() {
       <div className="flex items-center gap-4">
         <Link
           href="/dashboard/jobs"
-          className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+          className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Nouvelle Offre</h1>
-          <p className="text-sm text-slate-500">Créez une nouvelle offre d&apos;emploi</p>
+          <h1 className="text-2xl font-bold text-foreground">Nouvelle Offre</h1>
+          <p className="text-sm text-muted-foreground">Créez une nouvelle offre d&apos;emploi</p>
         </div>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 flex items-start gap-3">
+        <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 text-destructive flex items-start gap-3">
           <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
@@ -99,17 +99,17 @@ export default function NewJobPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+      <form onSubmit={handleSubmit} className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         {/* Section: Informations de base */}
-        <div className="p-6 space-y-5 border-b border-slate-100">
-          <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-            <span className="w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-sm font-bold">1</span>
+        <div className="p-6 space-y-5 border-b border-border">
+          <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+            <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-sm font-bold">1</span>
             Informations de base
           </h2>
           
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
-              Titre du poste <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium text-foreground mb-1.5">
+              Titre du poste <span className="text-destructive">*</span>
             </label>
             <input
               type="text"
@@ -117,14 +117,14 @@ export default function NewJobPage() {
               value={formData.title}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white text-slate-900 placeholder:text-slate-400 transition-colors"
+              className="w-full px-4 py-2.5 bg-background border border-input rounded-lg focus:ring-2 focus:ring-ring focus:border-primary text-foreground placeholder:text-muted-foreground transition-colors"
               placeholder="ex: Opérateur Logistique, Chef d'Équipe..."
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">
+              <label className="block text-sm font-medium text-foreground mb-1.5">
                 Localisation
               </label>
               <input
@@ -132,19 +132,19 @@ export default function NewJobPage() {
                 name="location"
                 value={formData.location}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white text-slate-900 placeholder:text-slate-400 transition-colors"
+                className="w-full px-4 py-2.5 bg-background border border-input rounded-lg focus:ring-2 focus:ring-ring focus:border-primary text-foreground placeholder:text-muted-foreground transition-colors"
                 placeholder="ex: Paris, Lyon, Télétravail..."
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">
+              <label className="block text-sm font-medium text-foreground mb-1.5">
                 Type de contrat
               </label>
               <select
                 name="contractType"
                 value={formData.contractType}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white text-slate-900 transition-colors"
+                className="w-full px-4 py-2.5 bg-background border border-input rounded-lg focus:ring-2 focus:ring-ring focus:border-primary text-foreground transition-colors"
               >
                 <option value="CDI">CDI</option>
                 <option value="CDD">CDD</option>
@@ -157,7 +157,7 @@ export default function NewJobPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label className="block text-sm font-medium text-foreground mb-1.5">
               Secteur d&apos;activité
             </label>
             <input
@@ -165,22 +165,22 @@ export default function NewJobPage() {
               name="sector"
               value={formData.sector}
               onChange={handleChange}
-              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white text-slate-900 placeholder:text-slate-400 transition-colors"
+              className="w-full px-4 py-2.5 bg-background border border-input rounded-lg focus:ring-2 focus:ring-ring focus:border-primary text-foreground placeholder:text-muted-foreground transition-colors"
               placeholder="ex: Logistique, Industrie, BTP, Santé..."
             />
           </div>
         </div>
 
         {/* Section: Rémunération */}
-        <div className="p-6 space-y-5 border-b border-slate-100">
-          <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-            <span className="w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-sm font-bold">2</span>
+        <div className="p-6 space-y-5 border-b border-border">
+          <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+            <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-sm font-bold">2</span>
             Rémunération
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">
+              <label className="block text-sm font-medium text-foreground mb-1.5">
                 Salaire minimum (€/mois)
               </label>
               <input
@@ -188,12 +188,12 @@ export default function NewJobPage() {
                 name="salaryMin"
                 value={formData.salaryMin}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white text-slate-900 placeholder:text-slate-400 transition-colors"
+                className="w-full px-4 py-2.5 bg-background border border-input rounded-lg focus:ring-2 focus:ring-ring focus:border-primary text-foreground placeholder:text-muted-foreground transition-colors"
                 placeholder="ex: 1800"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">
+              <label className="block text-sm font-medium text-foreground mb-1.5">
                 Salaire maximum (€/mois)
               </label>
               <input
@@ -201,7 +201,7 @@ export default function NewJobPage() {
                 name="salaryMax"
                 value={formData.salaryMax}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white text-slate-900 placeholder:text-slate-400 transition-colors"
+                className="w-full px-4 py-2.5 bg-background border border-input rounded-lg focus:ring-2 focus:ring-ring focus:border-primary text-foreground placeholder:text-muted-foreground transition-colors"
                 placeholder="ex: 2500"
               />
             </div>
@@ -209,15 +209,15 @@ export default function NewJobPage() {
         </div>
 
         {/* Section: Description */}
-        <div className="p-6 space-y-5 border-b border-slate-100">
-          <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-            <span className="w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-sm font-bold">3</span>
+        <div className="p-6 space-y-5 border-b border-border">
+          <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+            <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-sm font-bold">3</span>
             Description du poste
           </h2>
           
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
-              Description <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium text-foreground mb-1.5">
+              Description <span className="text-destructive">*</span>
             </label>
             <textarea
               name="description"
@@ -225,10 +225,10 @@ export default function NewJobPage() {
               onChange={handleChange}
               required
               rows={6}
-              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white resize-none text-slate-900 placeholder:text-slate-400 transition-colors"
+              className="w-full px-4 py-2.5 bg-background border border-input rounded-lg focus:ring-2 focus:ring-ring focus:border-primary resize-none text-foreground placeholder:text-muted-foreground transition-colors"
               placeholder="Décrivez les missions, responsabilités et avantages du poste..."
             />
-            <p className="mt-1.5 text-xs text-slate-500">
+            <p className="mt-1.5 text-xs text-muted-foreground">
               Astuce : Soyez précis sur les missions et les avantages pour attirer les meilleurs candidats.
             </p>
           </div>
@@ -236,42 +236,42 @@ export default function NewJobPage() {
 
         {/* Section: Publication */}
         <div className="p-6 space-y-5">
-          <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-            <span className="w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-sm font-bold">4</span>
+          <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+            <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-sm font-bold">4</span>
             Publication
           </h2>
           
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label className="block text-sm font-medium text-foreground mb-1.5">
               Statut de l&apos;offre
             </label>
             <select
               name="status"
               value={formData.status}
               onChange={handleChange}
-              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white text-slate-900 transition-colors"
+              className="w-full px-4 py-2.5 bg-background border border-input rounded-lg focus:ring-2 focus:ring-ring focus:border-primary text-foreground transition-colors"
             >
               <option value="DRAFT">Brouillon (non visible)</option>
               <option value="ACTIVE">Active (visible par les candidats)</option>
             </select>
-            <p className="mt-1.5 text-xs text-slate-500">
+            <p className="mt-1.5 text-xs text-muted-foreground">
               Vous pourrez modifier le statut à tout moment depuis la page de l&apos;offre.
             </p>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 flex justify-end gap-3">
+        <div className="px-6 py-4 bg-secondary/30 border-t border-border flex justify-end gap-3">
           <Link
             href="/dashboard/jobs"
-            className="px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-200 rounded-lg transition-colors"
+            className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:bg-secondary rounded-lg transition-colors"
           >
             Annuler
           </Link>
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-6 py-2.5 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {loading ? (
               <>

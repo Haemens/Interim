@@ -146,33 +146,33 @@ function BillingContent() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Facturation et Forfaits</h1>
-        <p className="text-slate-600 mt-1">
+        <h1 className="text-2xl font-bold text-foreground">Facturation et Forfaits</h1>
+        <p className="text-muted-foreground mt-1">
           Gérez votre abonnement et vos informations de paiement.
         </p>
       </div>
 
       {/* Success/Error Messages */}
       {successMessage && (
-        <div className="p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg">
+        <div className="p-4 bg-green-50 border border-green-200 text-green-700 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800 rounded-lg">
           {successMessage}
         </div>
       )}
 
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
+        <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-lg">
           {error}
         </div>
       )}
 
       {/* Current Plan */}
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
+      <div className="bg-card rounded-xl border border-border p-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-slate-900">Forfait actuel</h2>
-            <p className="text-slate-600">
+            <h2 className="text-lg font-semibold text-foreground">Forfait actuel</h2>
+            <p className="text-muted-foreground">
               Vous êtes actuellement sur le forfait{" "}
-              <span className="font-medium text-indigo-600">
+              <span className="font-medium text-primary">
                 {PLANS.find((p) => p.id === currentPlan)?.name || "Starter"}
               </span>.
             </p>
@@ -180,7 +180,7 @@ function BillingContent() {
           {currentPlan !== "STARTER" && (
             <button
               onClick={handleManageBilling}
-              className="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200"
+              className="px-4 py-2 text-sm font-medium text-muted-foreground bg-secondary hover:bg-secondary/80 rounded-lg transition-colors"
             >
               Gérer l&apos;abonnement
             </button>
@@ -193,22 +193,22 @@ function BillingContent() {
         {PLANS.map((plan) => (
           <div
             key={plan.id}
-            className={`bg-white rounded-xl border-2 p-6 ${
+            className={`bg-card rounded-xl border-2 p-6 ${
               plan.highlighted
-                ? "border-indigo-500 ring-2 ring-indigo-100"
-                : "border-slate-200"
+                ? "border-primary ring-2 ring-primary/10"
+                : "border-border"
             }`}
           >
             {plan.highlighted && (
-              <div className="text-xs font-medium text-indigo-600 uppercase tracking-wide mb-2">
+              <div className="text-xs font-medium text-primary uppercase tracking-wide mb-2">
                 Le plus populaire
               </div>
             )}
-            <h3 className="text-xl font-bold text-slate-900">{plan.name}</h3>
+            <h3 className="text-xl font-bold text-foreground">{plan.name}</h3>
             <div className="mt-2">
-              <span className="text-3xl font-bold text-slate-900">{plan.price}</span>
+              <span className="text-3xl font-bold text-foreground">{plan.price}</span>
             </div>
-            <p className="mt-2 text-sm text-slate-600">{plan.description}</p>
+            <p className="mt-2 text-sm text-muted-foreground">{plan.description}</p>
 
             <ul className="mt-6 space-y-3">
               {plan.features.map((feature) => (
@@ -226,7 +226,7 @@ function BillingContent() {
                       d="M5 13l4 4L19 7"
                     />
                   </svg>
-                  <span className="text-slate-600">{feature}</span>
+                  <span className="text-muted-foreground">{feature}</span>
                 </li>
               ))}
             </ul>
@@ -235,14 +235,14 @@ function BillingContent() {
               {plan.id === currentPlan ? (
                 <button
                   disabled
-                  className="w-full py-2 px-4 text-sm font-medium text-slate-500 bg-slate-100 rounded-lg cursor-not-allowed"
+                  className="w-full py-2 px-4 text-sm font-medium text-muted-foreground bg-secondary rounded-lg cursor-not-allowed"
                 >
                   Forfait actuel
                 </button>
               ) : plan.id === "STARTER" ? (
                 <button
                   disabled
-                  className="w-full py-2 px-4 text-sm font-medium text-slate-500 bg-slate-100 rounded-lg cursor-not-allowed"
+                  className="w-full py-2 px-4 text-sm font-medium text-muted-foreground bg-secondary rounded-lg cursor-not-allowed"
                 >
                   Forfait gratuit
                 </button>
@@ -252,9 +252,9 @@ function BillingContent() {
                   disabled={upgrading !== null}
                   className={`w-full py-2 px-4 text-sm font-medium rounded-lg ${
                     plan.highlighted
-                      ? "text-white bg-indigo-600 hover:bg-indigo-700"
-                      : "text-indigo-600 bg-indigo-50 hover:bg-indigo-100"
-                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                      ? "text-primary-foreground bg-primary hover:bg-primary/90"
+                      : "text-primary bg-primary/10 hover:bg-primary/20"
+                  } disabled:opacity-50 disabled:cursor-not-allowed transition-colors`}
                 >
                   {upgrading === plan.id ? "Redirection..." : `Passer à ${plan.name}`}
                 </button>
@@ -265,28 +265,28 @@ function BillingContent() {
       </div>
 
       {/* FAQ */}
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
-        <h2 className="text-lg font-semibold text-slate-900 mb-4">
+      <div className="bg-card rounded-xl border border-border p-6">
+        <h2 className="text-lg font-semibold text-foreground mb-4">
           Questions Fréquentes
         </h2>
         <div className="space-y-4">
           <div>
-            <h3 className="font-medium text-slate-900">Puis-je annuler à tout moment ?</h3>
-            <p className="text-sm text-slate-600 mt-1">
+            <h3 className="font-medium text-foreground">Puis-je annuler à tout moment ?</h3>
+            <p className="text-sm text-muted-foreground mt-1">
               Oui, vous pouvez annuler votre abonnement à tout moment. Vous continuerez à
               avoir accès jusqu&apos;à la fin de votre période de facturation.
             </p>
           </div>
           <div>
-            <h3 className="font-medium text-slate-900">Que se passe-t-il si je change de forfait ?</h3>
-            <p className="text-sm text-slate-600 mt-1">
+            <h3 className="font-medium text-foreground">Que se passe-t-il si je change de forfait ?</h3>
+            <p className="text-sm text-muted-foreground mt-1">
               Vous aurez immédiatement accès à toutes les fonctionnalités de votre nouveau forfait.
               Le coût sera calculé au prorata de votre cycle de facturation actuel.
             </p>
           </div>
           <div>
-            <h3 className="font-medium text-slate-900">Proposez-vous des remboursements ?</h3>
-            <p className="text-sm text-slate-600 mt-1">
+            <h3 className="font-medium text-foreground">Proposez-vous des remboursements ?</h3>
+            <p className="text-sm text-muted-foreground mt-1">
               Nous offrons une garantie satisfait ou remboursé de 14 jours sur tous les plans payants. 
               Contactez le support si vous n&apos;êtes pas satisfait.
             </p>
@@ -302,7 +302,7 @@ export default function BillingPage() {
     <Suspense
       fallback={
         <div className="flex items-center justify-center h-64">
-          <div className="text-slate-500">Chargement des informations...</div>
+          <div className="text-muted-foreground">Chargement des informations...</div>
         </div>
       }
     >

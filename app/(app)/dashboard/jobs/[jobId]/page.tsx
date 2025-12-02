@@ -104,8 +104,37 @@ export default async function JobDetailPage({
     redirect("/login");
   }
 
-  // Get job data
-  const job = await getJobData(jobId, membership.agencyId);
+  const isDemo = isDemoAgencySlug(tenantSlug);
+  let job;
+
+  // Handle Demo Job ID
+  if (isDemo && jobId.startsWith("demo-job-")) {
+    job = {
+      id: jobId,
+      title: "Développeur Fullstack (Demo)",
+      location: "Paris (Remote)",
+      contractType: "CDI",
+      salaryMin: 45000,
+      salaryMax: 65000,
+      currency: "EUR",
+      sector: "Tech",
+      description: "Ceci est une offre de démonstration générée automatiquement.\n\nDescription du poste :\n- Développement de fonctionnalités\n- Maintenance de l'application\n- Revue de code",
+      profile: "Nous recherchons un développeur passionné avec 3 ans d'expérience.",
+      benefits: "- Télétravail possible\n- Tickets restaurant\n- Mutuelle",
+      tags: ["React", "Node.js", "TypeScript"],
+      status: "ACTIVE",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      publishedAt: new Date(),
+      agencyId: membership.agencyId,
+      _count: { applications: 0 },
+      client: null,
+    };
+  } else {
+    // Get real job data
+    job = await getJobData(jobId, membership.agencyId);
+  }
+
   if (!job) {
     notFound();
   }
@@ -114,7 +143,6 @@ export default async function JobDetailPage({
   const stats = await getApplicationStats(jobId);
 
   const canEdit = ["RECRUITER", "ADMIN", "OWNER"].includes(membership.role);
-  const isDemo = isDemoAgencySlug(tenantSlug);
 
   // Prepare job data for the edit form
   const jobForEdit = {

@@ -19,15 +19,15 @@ const ROLES = ["OWNER", "ADMIN", "RECRUITER", "VIEWER"] as const;
 function getRoleColor(role: string): string {
   switch (role) {
     case "OWNER":
-      return "bg-purple-100 text-purple-700";
+      return "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400";
     case "ADMIN":
-      return "bg-blue-100 text-blue-700";
+      return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400";
     case "RECRUITER":
-      return "bg-green-100 text-green-700";
+      return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400";
     case "VIEWER":
-      return "bg-slate-100 text-slate-700";
+      return "bg-secondary text-muted-foreground";
     default:
-      return "bg-slate-100 text-slate-700";
+      return "bg-secondary text-muted-foreground";
   }
 }
 
@@ -137,7 +137,7 @@ export default function TeamPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-slate-500">Chargement de l'équipe...</div>
+        <div className="text-muted-foreground">Chargement de l'équipe...</div>
       </div>
     );
   }
@@ -146,27 +146,27 @@ export default function TeamPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Gestion de l&apos;équipe</h1>
-        <p className="text-slate-600 mt-1">
+        <h1 className="text-2xl font-bold text-foreground">Gestion de l&apos;équipe</h1>
+        <p className="text-muted-foreground mt-1">
           Gérez les membres de votre équipe et leurs rôles.
         </p>
       </div>
 
       {/* Error/Success Messages */}
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+        <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-lg">
           {error}
         </div>
       )}
       {inviteSuccess && (
-        <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+        <div className="bg-green-50 border border-green-200 text-green-700 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800 px-4 py-3 rounded-lg">
           {inviteSuccess}
         </div>
       )}
 
       {/* Invite Form */}
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
-        <h2 className="text-lg font-semibold text-slate-900 mb-4">
+      <div className="bg-card rounded-xl border border-border p-6">
+        <h2 className="text-lg font-semibold text-foreground mb-4">
           Inviter un membre
         </h2>
         <form onSubmit={handleInvite} className="flex flex-wrap gap-4">
@@ -175,13 +175,13 @@ export default function TeamPage() {
             placeholder="Adresse email"
             value={inviteEmail}
             onChange={(e) => setInviteEmail(e.target.value)}
-            className="flex-1 min-w-[200px] px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="flex-1 min-w-[200px] px-4 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
             required
           />
           <select
             value={inviteRole}
             onChange={(e) => setInviteRole(e.target.value as "ADMIN" | "RECRUITER" | "VIEWER")}
-            className="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="px-4 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
           >
             <option value="ADMIN">Admin</option>
             <option value="RECRUITER">Recruteur</option>
@@ -190,7 +190,7 @@ export default function TeamPage() {
           <button
             type="submit"
             disabled={inviting}
-            className="px-6 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {inviting ? "Envoi..." : "Envoyer l'invitation"}
           </button>
@@ -198,36 +198,36 @@ export default function TeamPage() {
       </div>
 
       {/* Team List */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-200">
-          <h2 className="text-lg font-semibold text-slate-900">
+      <div className="bg-card rounded-xl border border-border overflow-hidden">
+        <div className="px-6 py-4 border-b border-border">
+          <h2 className="text-lg font-semibold text-foreground">
             Membres de l&apos;équipe ({team.length})
           </h2>
         </div>
 
         {team.length === 0 ? (
-          <div className="p-6 text-center text-slate-500">
+          <div className="p-6 text-center text-muted-foreground">
             Aucun membre. Invitez quelqu'un pour commencer !
           </div>
         ) : (
-          <ul className="divide-y divide-slate-100">
+          <ul className="divide-y divide-border">
             {team.map((member) => (
               <li key={member.membershipId} className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     {/* Avatar */}
-                    <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
-                      <span className="text-indigo-600 font-medium">
+                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                      <span className="text-primary font-medium">
                         {(member.name || member.email)[0].toUpperCase()}
                       </span>
                     </div>
 
                     {/* Info */}
                     <div>
-                      <p className="font-medium text-slate-900">
+                      <p className="font-medium text-foreground">
                         {member.name || "Invitation en attente"}
                       </p>
-                      <p className="text-sm text-slate-500">{member.email}</p>
+                      <p className="text-sm text-muted-foreground">{member.email}</p>
                     </div>
                   </div>
 
@@ -245,7 +245,7 @@ export default function TeamPage() {
                         onChange={(e) =>
                           handleRoleChange(member.membershipId, e.target.value)
                         }
-                        className="text-sm px-3 py-1 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+                        className="text-sm px-3 py-1 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                       >
                         {ROLES.filter((r) => r !== "OWNER").map((role) => (
                           <option key={role} value={role}>
@@ -261,7 +261,7 @@ export default function TeamPage() {
                         onClick={() =>
                           handleRemove(member.membershipId, member.email)
                         }
-                        className="text-sm text-red-600 hover:text-red-700 font-medium"
+                        className="text-sm text-red-600 hover:text-red-700 font-medium dark:text-red-400 dark:hover:text-red-300"
                       >
                         Retirer
                       </button>
@@ -270,7 +270,7 @@ export default function TeamPage() {
                 </div>
 
                 {/* Meta info */}
-                <div className="mt-2 ml-14 text-xs text-slate-400">
+                <div className="mt-2 ml-14 text-xs text-muted-foreground">
                   Rejoint le{" "}
                   {new Date(member.joinedAt).toLocaleDateString("fr-FR", {
                     year: "numeric",
@@ -296,14 +296,14 @@ export default function TeamPage() {
       </div>
 
       {/* Role Descriptions */}
-      <div className="bg-slate-50 rounded-xl border border-slate-200 p-6">
-        <h3 className="font-semibold text-slate-900 mb-4">Permissions des rôles</h3>
+      <div className="bg-secondary/30 rounded-xl border border-border p-6">
+        <h3 className="font-semibold text-foreground mb-4">Permissions des rôles</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div>
             <span className={`inline-block px-2 py-0.5 rounded ${getRoleColor("OWNER")}`}>
               PROPRIÉTAIRE
             </span>
-            <p className="text-slate-600 mt-1">
+            <p className="text-muted-foreground mt-1">
               Accès complet. Peut gérer la facturation, supprimer l&apos;agence et gérer tous les membres.
             </p>
           </div>
@@ -311,7 +311,7 @@ export default function TeamPage() {
             <span className={`inline-block px-2 py-0.5 rounded ${getRoleColor("ADMIN")}`}>
               ADMIN
             </span>
-            <p className="text-slate-600 mt-1">
+            <p className="text-muted-foreground mt-1">
               Peut créer/modifier des offres, gérer les candidatures et inviter des membres.
             </p>
           </div>
@@ -319,7 +319,7 @@ export default function TeamPage() {
             <span className={`inline-block px-2 py-0.5 rounded ${getRoleColor("RECRUITER")}`}>
               RECRUTEUR
             </span>
-            <p className="text-slate-600 mt-1">
+            <p className="text-muted-foreground mt-1">
               Peut voir/modifier les offres et candidatures, créer des shortlists.
             </p>
           </div>
@@ -327,7 +327,7 @@ export default function TeamPage() {
             <span className={`inline-block px-2 py-0.5 rounded ${getRoleColor("VIEWER")}`}>
               OBSERVATEUR
             </span>
-            <p className="text-slate-600 mt-1">
+            <p className="text-muted-foreground mt-1">
               Accès en lecture seule aux offres et candidatures.
             </p>
           </div>
