@@ -39,18 +39,18 @@ function StatCard({
   color?: string;
 }) {
   const colorClasses: Record<string, string> = {
-    indigo: "bg-indigo-50 text-indigo-600",
-    green: "bg-green-50 text-green-600",
-    amber: "bg-amber-50 text-amber-600",
-    slate: "bg-slate-50 text-slate-600",
-    blue: "bg-blue-50 text-blue-600",
-    red: "bg-red-50 text-red-600",
+    indigo: "bg-primary/10 text-primary",
+    green: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+    amber: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+    slate: "bg-secondary text-secondary-foreground",
+    blue: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+    red: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
   };
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-6">
-      <p className="text-sm text-slate-600 mb-1">{label}</p>
-      <p className={`text-3xl font-bold ${colorClasses[color]?.split(" ")[1] || "text-slate-900"}`}>
+    <div className="bg-card rounded-xl border border-border p-6">
+      <p className="text-sm text-muted-foreground mb-1">{label}</p>
+      <p className={`text-3xl font-bold ${colorClasses[color]?.split(" ")[1] || "text-foreground"}`}>
         {value}
       </p>
     </div>
@@ -60,17 +60,17 @@ function StatCard({
 function getStatusColor(status: string): string {
   switch (status) {
     case "NEW":
-      return "bg-blue-100 text-blue-700";
+      return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400";
     case "CONTACTED":
-      return "bg-amber-100 text-amber-700";
+      return "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400";
     case "QUALIFIED":
-      return "bg-green-100 text-green-700";
+      return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400";
     case "PLACED":
-      return "bg-emerald-100 text-emerald-700";
+      return "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400";
     case "REJECTED":
-      return "bg-red-100 text-red-700";
+      return "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400";
     default:
-      return "bg-slate-100 text-slate-700";
+      return "bg-secondary text-secondary-foreground";
   }
 }
 
