@@ -94,3 +94,33 @@ export async function getAgencyFromRequestOrThrow(
   const agency = await getCurrentAgencyOrThrow(tenantSlug);
   return { agency, tenantSlug };
 }
+
+/**
+ * Get tenant slug from request, with fallback to user's first agency
+ * This is useful for Vercel deployments without subdomain support
+ */
+export async function getTenantSlugWithFallback(
+  request: NextRequest,
+  userId: string | null
+): Promise<string | null> {
+  // First try the standard method
+  const tenantSlug = getTenantSlugFromRequest(request);
+  if (tenantSlug) return tenantSlug;
+
+  // If no tenant slug and we have a user, get their first membership
+  if (userId) {
+    const firstMembership = await db.membership.findFirst({
+      where: { userId },
+      include: {
+        agency: { select: { slug: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    if (firstMembership) {
+      return firstMembership.agency.slug;
+    }
+  }
+
+  return null;
+}

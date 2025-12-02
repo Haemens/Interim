@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
-import { getTenantSlugFromRequest } from "@/lib/tenant";
+import { getTenantSlugWithFallback } from "@/lib/tenant";
 import {
   getCurrentMembershipOrThrow,
+  getCurrentUser,
   assertMinimumRole,
   UnauthorizedError,
   ForbiddenError,
@@ -206,7 +207,9 @@ function handleError(error: unknown): NextResponse {
 
 export async function GET(request: NextRequest) {
   try {
-    const tenantSlug = getTenantSlugFromRequest(request);
+    const user = await getCurrentUser();
+    const tenantSlug = await getTenantSlugWithFallback(request, user?.id ?? null);
+    
     if (!tenantSlug) {
       return NextResponse.json(
         { error: "Tenant slug required" },
@@ -294,7 +297,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const tenantSlug = getTenantSlugFromRequest(request);
+    const currentUser = await getCurrentUser();
+    const tenantSlug = await getTenantSlugWithFallback(request, currentUser?.id ?? null);
+    
     if (!tenantSlug) {
       return NextResponse.json(
         { error: "Tenant slug required" },

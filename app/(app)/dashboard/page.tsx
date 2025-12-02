@@ -1,16 +1,13 @@
-import { headers } from "next/headers";
 import { db } from "@/lib/db";
-import { TENANT_HEADER } from "@/lib/tenant";
+import { getEffectiveTenant } from "@/lib/get-effective-tenant";
 
 // =============================================================================
 // DATA FETCHING
 // =============================================================================
 
-async function getAgencyData(tenantSlug: string | null) {
-  if (!tenantSlug) return null;
-
+async function getAgencyData(agencyId: string) {
   const agency = await db.agency.findUnique({
-    where: { slug: tenantSlug },
+    where: { id: agencyId },
     include: {
       subscriptions: {
         where: { status: "ACTIVE" },
@@ -90,13 +87,10 @@ function formatTimeAgo(date: Date): string {
 // =============================================================================
 
 export default async function DashboardPage() {
-  const headersList = await headers();
-  const tenantSlug = headersList.get(TENANT_HEADER);
-
-  const agency = await getAgencyData(tenantSlug);
+  const { agency: tenantAgency } = await getEffectiveTenant();
 
   // If no agency found, show placeholder
-  if (!agency) {
+  if (!tenantAgency) {
     return (
       <div className="space-y-8">
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
@@ -104,11 +98,24 @@ export default async function DashboardPage() {
             No Agency Found
           </h2>
           <p className="text-amber-700 mt-1">
-            Access this dashboard via a tenant subdomain (e.g.,{" "}
-            <code className="bg-amber-100 px-1 rounded">
-              alpha-staff.localhost:3000
-            </code>
-            )
+            Please log in to access the dashboard.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const agency = await getAgencyData(tenantAgency.id);
+
+  if (!agency) {
+    return (
+      <div className="space-y-8">
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
+          <h2 className="text-lg font-semibold text-amber-800">
+            Agency Not Found
+          </h2>
+          <p className="text-amber-700 mt-1">
+            The agency could not be loaded.
           </p>
         </div>
       </div>
