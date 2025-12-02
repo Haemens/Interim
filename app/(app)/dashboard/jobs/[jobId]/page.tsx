@@ -122,7 +122,7 @@ export default async function JobDetailPage({
       profile: "Nous recherchons un développeur passionné avec 3 ans d'expérience.",
       benefits: "- Télétravail possible\n- Tickets restaurant\n- Mutuelle",
       tags: ["React", "Node.js", "TypeScript"],
-      status: "ACTIVE",
+      status: "ACTIVE" as const,
       createdAt: new Date(),
       updatedAt: new Date(),
       publishedAt: new Date(),
