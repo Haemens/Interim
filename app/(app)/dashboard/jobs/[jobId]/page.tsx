@@ -1,4 +1,3 @@
-import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect, notFound } from "next/navigation";
 import {
@@ -7,17 +6,13 @@ import {
   Building,
   Clock,
   Users,
-  CheckCircle,
-  XCircle,
-  AlertCircle,
   ExternalLink,
   BarChart2,
   List,
   Share2
 } from "lucide-react";
 import { db } from "@/lib/db";
-import { TENANT_HEADER } from "@/lib/tenant";
-import { getCurrentUser } from "@/modules/auth";
+import { getEffectiveTenant } from "@/lib/get-effective-tenant";
 import { isDemoAgencySlug } from "@/modules/auth/demo-mode";
 import { EditJobButton } from "./edit-job-form";
 import { SocialContentSection } from "./social-content";
@@ -95,16 +90,11 @@ export default async function JobDetailPage({
   params: Promise<{ jobId: string }>;
 }) {
   const { jobId } = await params;
-  const headersList = await headers();
-  const tenantSlug = headersList.get(TENANT_HEADER);
+  
+  // Get tenant with fallback for Vercel deployments without subdomains
+  const { tenantSlug, agency, user } = await getEffectiveTenant();
 
-  if (!tenantSlug) {
-    redirect("/login");
-  }
-
-  // Get current user
-  const user = await getCurrentUser();
-  if (!user) {
+  if (!tenantSlug || !agency || !user) {
     redirect("/login");
   }
 

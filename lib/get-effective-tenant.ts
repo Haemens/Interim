@@ -16,6 +16,11 @@ export interface EffectiveTenantResult {
     slug: string;
   } | null;
   userId: string | null;
+  user: {
+    id: string;
+    email: string | null;
+    name: string | null;
+  } | null;
 }
 
 /**
@@ -29,7 +34,7 @@ export async function getEffectiveTenant(): Promise<EffectiveTenantResult> {
   const user = await getCurrentUser();
   
   if (!user) {
-    return { tenantSlug: null, agency: null, userId: null };
+    return { tenantSlug: null, agency: null, userId: null, user: null };
   }
 
   // If no tenant slug from subdomain, get user's first membership
@@ -50,10 +55,11 @@ export async function getEffectiveTenant(): Promise<EffectiveTenantResult> {
         tenantSlug,
         agency: firstMembership.agency,
         userId: user.id,
+        user: { id: user.id, email: user.email, name: user.name },
       };
     }
 
-    return { tenantSlug: null, agency: null, userId: user.id };
+    return { tenantSlug: null, agency: null, userId: user.id, user: { id: user.id, email: user.email, name: user.name } };
   }
 
   // Get agency from tenant slug
@@ -66,5 +72,6 @@ export async function getEffectiveTenant(): Promise<EffectiveTenantResult> {
     tenantSlug,
     agency,
     userId: user.id,
+    user: { id: user.id, email: user.email, name: user.name },
   };
 }

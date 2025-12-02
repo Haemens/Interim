@@ -103,7 +103,7 @@ export default function NewJobPage() {
             value={formData.title}
             onChange={handleChange}
             required
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-slate-900 placeholder:text-slate-400"
             placeholder="e.g., Senior Software Engineer"
           />
         </div>
@@ -118,7 +118,7 @@ export default function NewJobPage() {
               name="location"
               value={formData.location}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-slate-900 placeholder:text-slate-400"
               placeholder="e.g., Paris, France"
             />
           </div>
@@ -130,7 +130,7 @@ export default function NewJobPage() {
               name="contractType"
               value={formData.contractType}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-slate-900 placeholder:text-slate-400"
             >
               <option value="FULL_TIME">Full Time</option>
               <option value="PART_TIME">Part Time</option>
@@ -150,7 +150,7 @@ export default function NewJobPage() {
             name="sector"
             value={formData.sector}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-slate-900 placeholder:text-slate-400"
             placeholder="e.g., Technology, Healthcare"
           />
         </div>
@@ -165,7 +165,7 @@ export default function NewJobPage() {
               name="salaryMin"
               value={formData.salaryMin}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-slate-900 placeholder:text-slate-400"
               placeholder="e.g., 40000"
             />
           </div>
@@ -178,7 +178,7 @@ export default function NewJobPage() {
               name="salaryMax"
               value={formData.salaryMax}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-slate-900 placeholder:text-slate-400"
               placeholder="e.g., 60000"
             />
           </div>
@@ -194,7 +194,7 @@ export default function NewJobPage() {
             onChange={handleChange}
             required
             rows={6}
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none text-slate-900 placeholder:text-slate-400"
             placeholder="Describe the job responsibilities, requirements, and benefits..."
           />
         </div>
@@ -207,7 +207,7 @@ export default function NewJobPage() {
             name="status"
             value={formData.status}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-slate-900 placeholder:text-slate-400"
           >
             <option value="DRAFT">Draft (not visible)</option>
             <option value="ACTIVE">Active (visible to candidates)</option>
