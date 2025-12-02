@@ -97,11 +97,11 @@ type AiTone = "default" | "friendly" | "formal" | "punchy";
 // =============================================================================
 
 const VARIANT_CONFIG: Record<ContentVariant, { label: string; icon: string; color: string }> = {
-  TIKTOK_SCRIPT: { label: "TikTok Script", icon: "🎵", color: "bg-black text-white" },
-  INSTAGRAM_CAPTION: { label: "Instagram Caption", icon: "📸", color: "bg-gradient-to-r from-purple-500 to-pink-500 text-white" },
-  LINKEDIN_POST: { label: "LinkedIn Post", icon: "💼", color: "bg-blue-700 text-white" },
-  WHATSAPP_MESSAGE: { label: "WhatsApp Message", icon: "💬", color: "bg-green-500 text-white" },
-  GENERIC_SNIPPET: { label: "Generic Snippet", icon: "📝", color: "bg-slate-500 text-white" },
+  TIKTOK_SCRIPT: { label: "Script TikTok", icon: "🎵", color: "bg-black text-white" },
+  INSTAGRAM_CAPTION: { label: "Caption Instagram", icon: "📸", color: "bg-gradient-to-r from-purple-500 to-pink-500 text-white" },
+  LINKEDIN_POST: { label: "Post LinkedIn", icon: "💼", color: "bg-blue-700 text-white" },
+  WHATSAPP_MESSAGE: { label: "Message WhatsApp", icon: "💬", color: "bg-green-500 text-white" },
+  GENERIC_SNIPPET: { label: "Texte générique", icon: "📝", color: "bg-slate-500 text-white" },
 };
 
 const CHANNEL_TYPE_ICON: Record<ChannelType, string> = {
@@ -113,17 +113,17 @@ const CHANNEL_TYPE_ICON: Record<ChannelType, string> = {
 };
 
 const STATUS_CONFIG: Record<ContentStatus, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
-  DRAFT: { label: "Draft", variant: "secondary" },
-  APPROVED: { label: "Approved", variant: "default" }, // Primary color for approved
-  ARCHIVED: { label: "Archived", variant: "outline" },
+  DRAFT: { label: "Brouillon", variant: "secondary" },
+  APPROVED: { label: "Approuvé", variant: "default" },
+  ARCHIVED: { label: "Archivé", variant: "outline" },
 };
 
 const PUB_STATUS_CONFIG: Record<PublicationStatus, { label: string; variant: "default" | "secondary" | "destructive" | "outline"; dotColor: string }> = {
-  DRAFT: { label: "Draft", variant: "secondary", dotColor: "bg-slate-400" },
-  SCHEDULED: { label: "Scheduled", variant: "default", dotColor: "bg-blue-500" },
-  PUBLISHING: { label: "Publishing...", variant: "secondary", dotColor: "bg-amber-500" },
-  PUBLISHED: { label: "Published", variant: "default", dotColor: "bg-green-500" },
-  FAILED: { label: "Failed", variant: "destructive", dotColor: "bg-red-500" },
+  DRAFT: { label: "Brouillon", variant: "secondary", dotColor: "bg-slate-400" },
+  SCHEDULED: { label: "Planifié", variant: "default", dotColor: "bg-blue-500" },
+  PUBLISHING: { label: "Publication...", variant: "secondary", dotColor: "bg-amber-500" },
+  PUBLISHED: { label: "Publié", variant: "default", dotColor: "bg-green-500" },
+  FAILED: { label: "Échec", variant: "destructive", dotColor: "bg-red-500" },
 };
 
 // =============================================================================

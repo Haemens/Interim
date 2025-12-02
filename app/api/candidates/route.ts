@@ -86,14 +86,14 @@ export async function GET(request: NextRequest) {
       where.status = status;
     }
 
-    // Sector filter
+    // Sector filter (partial match - check if any sector contains the search term)
     if (sector) {
-      where.sectors = { has: sector };
+      where.sectors = { hasSome: [sector] };
     }
 
-    // Tag/skill filter
+    // Tag/skill filter (partial match - check if any skill contains the search term)
     if (tag) {
-      where.skills = { has: tag };
+      where.skills = { hasSome: [tag] };
     }
 
     // Search filter

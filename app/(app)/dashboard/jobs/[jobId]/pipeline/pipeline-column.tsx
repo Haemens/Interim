@@ -33,7 +33,7 @@ export function PipelineColumn({
       )}
     >
       {/* Column header */}
-      <div className="p-4 border-b border-border bg-background/50 rounded-t-xl backdrop-blur-sm sticky top-0 z-10">
+      <div className="p-4 border-b border-border bg-background rounded-t-xl sticky top-0 z-10">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <div className={cn("w-2 h-2 rounded-full", color.split(" ")[0].replace("/10", ""))} />

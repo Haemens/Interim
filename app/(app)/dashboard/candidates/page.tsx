@@ -172,6 +172,7 @@ export default function CandidatesPage() {
         if (search) params.set("q", search);
         if (statusFilter !== "ALL") params.set("status", statusFilter);
         if (sectorFilter) params.set("sector", sectorFilter);
+        if (skillFilter) params.set("tag", skillFilter);
 
         const res = await fetch(`/api/candidates?${params.toString()}`);
         if (!res.ok) {
@@ -191,7 +192,7 @@ export default function CandidatesPage() {
 
     const debounce = setTimeout(fetchCandidates, 300);
     return () => clearTimeout(debounce);
-  }, [search, statusFilter, sectorFilter, refreshTrigger]);
+  }, [search, statusFilter, sectorFilter, skillFilter, refreshTrigger]);
 
   return (
     <div className="space-y-6">

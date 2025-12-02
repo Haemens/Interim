@@ -9,7 +9,7 @@ import {
   ForbiddenError,
   MembershipNotFoundError,
 } from "@/modules/auth";
-import { assertNotDemoAgency, DemoReadOnlyError } from "@/modules/auth/demo-mode";
+import { assertNotDemoAgency, DemoReadOnlyError, isDemoAgency } from "@/modules/auth/demo-mode";
 import { TenantNotFoundError, TenantRequiredError } from "@/lib/tenant";
 import { logInfo, logError } from "@/lib/log";
 
@@ -97,6 +97,123 @@ export async function GET(
 
     // RBAC: RECRUITER and above can view content
     assertMinimumRole(membership, "RECRUITER");
+
+    // Handle demo mode with demo content templates
+    const isDemo = isDemoAgency(agency);
+    if (isDemo && jobId.startsWith("demo-job-")) {
+      // Return demo content templates
+      const demoContents = [
+        {
+          id: "demo-content-1",
+          variant: "LINKEDIN_POST",
+          title: "Post LinkedIn - Offre Développeur",
+          body: `🚀 Nous recrutons un Développeur Fullstack !
+
+Rejoignez notre équipe dynamique et participez à des projets innovants.
+
+✅ Stack moderne (React, Node.js, TypeScript)
+✅ Télétravail flexible
+✅ Équipe bienveillante
+✅ Projets stimulants
+
+📍 Paris (Remote possible)
+💰 45-65K€
+
+Intéressé(e) ? Postulez maintenant ! 👇`,
+          suggestedHashtags: "#recrutement #developpeur #fullstack #react #nodejs #hiring #job #tech",
+          status: "APPROVED",
+          language: "fr",
+          generatedAt: new Date().toISOString(),
+          approvedAt: new Date().toISOString(),
+          lastEditedAt: null,
+          createdAt: new Date().toISOString(),
+          createdBy: { id: "demo-user", name: "Demo User", email: "demo@example.com" },
+          lastEditedBy: null,
+          _count: { publications: 0 },
+        },
+        {
+          id: "demo-content-2",
+          variant: "INSTAGRAM_CAPTION",
+          title: "Caption Instagram - Recrutement",
+          body: `On recrute ! 🎯
+
+Tu es développeur(se) passionné(e) ? 
+Tu veux rejoindre une équipe au top ?
+
+C'est le moment de postuler ! 💪
+
+Lien en bio 👆`,
+          suggestedHashtags: "#hiring #job #developer #tech #recrutement #emploi #carriere",
+          status: "DRAFT",
+          language: "fr",
+          generatedAt: new Date().toISOString(),
+          approvedAt: null,
+          lastEditedAt: null,
+          createdAt: new Date().toISOString(),
+          createdBy: { id: "demo-user", name: "Demo User", email: "demo@example.com" },
+          lastEditedBy: null,
+          _count: { publications: 0 },
+        },
+        {
+          id: "demo-content-3",
+          variant: "TIKTOK_SCRIPT",
+          title: "Script TikTok - Présentation offre",
+          body: `[INTRO - 0-3s]
+"Tu cherches un job de dev ?"
+
+[HOOK - 3-8s]
+"On recrute un développeur fullstack et voilà pourquoi tu devrais postuler..."
+
+[CONTENU - 8-45s]
+"Premièrement, stack moderne : React, Node, TypeScript.
+Deuxièmement, télétravail flexible.
+Troisièmement, une équipe vraiment cool.
+Et quatrièmement, des projets qui ont du sens."
+
+[CTA - 45-60s]
+"Lien en bio pour postuler. On t'attend !"`,
+          suggestedHashtags: "#job #tech #developer #hiring #carriere #recrutement",
+          status: "DRAFT",
+          language: "fr",
+          generatedAt: new Date().toISOString(),
+          approvedAt: null,
+          lastEditedAt: null,
+          createdAt: new Date().toISOString(),
+          createdBy: { id: "demo-user", name: "Demo User", email: "demo@example.com" },
+          lastEditedBy: null,
+          _count: { publications: 0 },
+        },
+        {
+          id: "demo-content-4",
+          variant: "WHATSAPP_MESSAGE",
+          title: "Message WhatsApp - Partage offre",
+          body: `Salut ! 👋
+
+Je partage cette offre qui pourrait t'intéresser :
+
+🔹 *Développeur Fullstack*
+🔹 Paris (Remote possible)
+🔹 45-65K€
+
+Stack : React, Node.js, TypeScript
+
+Si ça t'intéresse, postule ici : [lien]
+
+N'hésite pas à partager ! 🙏`,
+          suggestedHashtags: null,
+          status: "APPROVED",
+          language: "fr",
+          generatedAt: new Date().toISOString(),
+          approvedAt: new Date().toISOString(),
+          lastEditedAt: null,
+          createdAt: new Date().toISOString(),
+          createdBy: { id: "demo-user", name: "Demo User", email: "demo@example.com" },
+          lastEditedBy: null,
+          _count: { publications: 0 },
+        },
+      ];
+      return NextResponse.json({ contents: demoContents, isDemo: true });
+    }
 
     // Verify job exists and belongs to agency
     const job = await db.job.findFirst({

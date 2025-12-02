@@ -11,6 +11,7 @@ import {
 } from "@/modules/auth";
 import { TenantNotFoundError, TenantRequiredError } from "@/lib/tenant";
 import { logInfo, logError } from "@/lib/log";
+import { isDemoAgency } from "@/modules/auth/demo-mode";
 
 // =============================================================================
 // ERROR HANDLER
@@ -69,6 +70,56 @@ export async function GET(
 
     // RBAC: RECRUITER and above can view job analytics
     assertMinimumRole(membership, "RECRUITER");
+
+    // Handle demo mode with demo job IDs
+    const isDemo = isDemoAgency(agency);
+    if (isDemo && jobId.startsWith("demo-job-")) {
+      // Return simulated analytics for demo jobs
+      const demoAnalytics = {
+        job: {
+          id: jobId,
+          title: "Développeur Fullstack (Demo)",
+          status: "ACTIVE",
+          location: "Paris (Remote)",
+        },
+        pipeline: {
+          total: 12,
+          recentCount: 5,
+          byStatus: {
+            NEW: 4,
+            CONTACTED: 3,
+            QUALIFIED: 3,
+            PLACED: 1,
+            REJECTED: 1,
+          },
+        },
+        sources: {
+          bySource: [
+            { source: "website", count: 6 },
+            { source: "linkedin", count: 4 },
+            { source: "referral", count: 2 },
+          ],
+          byChannel: [
+            { channelId: "demo-ch-1", name: "LinkedIn Recrutement", type: "LINKEDIN", count: 4 },
+            { channelId: "demo-ch-2", name: "Site Carrières", type: "OTHER", count: 6 },
+          ],
+        },
+        shortlists: {
+          total: 1,
+          items: [
+            {
+              id: "demo-shortlist-1",
+              name: "Candidats qualifiés - Semaine 1",
+              shareToken: "demo-token-abc",
+              createdAt: new Date().toISOString(),
+              candidatesCount: 3,
+              feedback: { approved: 1, rejected: 0, pending: 2 },
+            },
+          ],
+        },
+      };
+      return NextResponse.json(demoAnalytics);
+    }
 
     // Verify job exists and belongs to agency
     const job = await db.job.findFirst({
