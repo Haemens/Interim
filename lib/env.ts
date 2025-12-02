@@ -120,8 +120,8 @@ export const ENV = {
   NEXTAUTH_URL: getRequiredEnv("NEXTAUTH_URL", { defaultValue: "http://localhost:3000" }),
   NEXTAUTH_SECRET: getRequiredEnv("NEXTAUTH_SECRET", { prodOnly: true }),
 
-  // Stripe
-  STRIPE_SECRET_KEY: getRequiredEnv("STRIPE_SECRET_KEY", { prodOnly: true }),
+  // Stripe (optional - billing features disabled if not set)
+  STRIPE_SECRET_KEY: getOptionalEnv("STRIPE_SECRET_KEY"),
   STRIPE_WEBHOOK_SECRET: getOptionalEnv("STRIPE_WEBHOOK_SECRET"),
   STRIPE_PUBLISHABLE_KEY: getOptionalEnv("STRIPE_PUBLISHABLE_KEY"),
   STRIPE_PRICE_PRO: getOptionalEnv("STRIPE_PRICE_PRO"),
@@ -204,12 +204,7 @@ export function validateEnv(): { valid: boolean; errors: string[] } {
     if (!ENV.NEXTAUTH_SECRET) {
       errors.push("NEXTAUTH_SECRET is required in production");
     }
-    if (!ENV.STRIPE_SECRET_KEY) {
-      errors.push("STRIPE_SECRET_KEY is required in production");
-    }
-    if (!ENV.STRIPE_WEBHOOK_SECRET) {
-      errors.push("STRIPE_WEBHOOK_SECRET is required in production");
-    }
+    // Note: Stripe is optional - billing features will be disabled if not configured
   }
 
   return {
