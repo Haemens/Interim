@@ -1,0 +1,627 @@
+// Prisma Schema for QuestHire - Multi-tenant SaaS for Staffing Agencies
+// https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// =============================================================================
+// AUTH MODELS (NextAuth compatible)
+// =============================================================================
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  emailVerified  DateTime?
+  name           String?
+  hashedPassword String?   // bcrypt hashed password for credentials auth
+  image          String?
+  invitedAt      DateTime? // When user was invited to platform
+  lastLoginAt    DateTime? // Last login timestamp
+  hasSeenOnboardingTour Boolean @default(false) // Onboarding tour completion
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  // NextAuth relations
+  accounts Account[]
+  sessions Session[]
+
+  // Multi-tenant: user can belong to multiple agencies via memberships
+  memberships         Membership[]
+  eventLogs           EventLog[]
+  createdContents     JobPostContent[] @relation("CreatedContent")
+  lastEditedContents  JobPostContent[] @relation("LastEditedContent")
+  createdPublications Publication[]    @relation("CreatedPublication")
+
+  @@index([email])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// =============================================================================
+// MULTI-TENANT CORE
+// =============================================================================
+
+model Agency {
+  id           String   @id @default(cuid())
+  name         String
+  slug         String   @unique // Subdomain identifier
+  email        String?  // Main contact email for notifications
+  logoUrl      String?
+  primaryColor String?  @default("#4F46E5") // Indigo
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  memberships        Membership[]
+  jobs               Job[]
+  applications       Application[]
+  subscriptions      Subscription[]
+  eventLogs          EventLog[]
+  shortlists         Shortlist[]
+  candidateProfiles  CandidateProfile[]
+  channels           Channel[]
+  jobPostContents    JobPostContent[]
+  publications       Publication[]
+  clients            Client[]
+  jobRequests        JobRequest[]
+  clientFeedback     ClientFeedback[]
+
+  @@index([slug])
+}
+
+model Membership {
+  id        String         @id @default(cuid())
+  userId    String
+  agencyId  String
+  role      MembershipRole @default(VIEWER)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  agency Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, agencyId])
+  @@index([userId])
+  @@index([agencyId])
+}
+
+// =============================================================================
+// JOB & APPLICATION MODELS
+// =============================================================================
+
+model Job {
+  id           String    @id @default(cuid())
+  agencyId     String
+  title        String
+  location     String?
+  contractType String?   // CDI, CDD, Interim, etc.
+  salaryMin    Int?
+  salaryMax    Int?
+  currency     String?   @default("EUR")
+  sector       String?
+  description  String    @db.Text
+  profile      String?   @db.Text // Candidate profile requirements
+  benefits     String?   @db.Text
+  tags         String[]  // ["night shift", "CACES", "weekend"]
+  status       JobStatus @default(DRAFT)
+  publishedAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Client association
+  clientId     String?
+  client       Client?   @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
+  // Link back to job request if converted from one
+  sourceJobRequestId String?  @unique
+  sourceJobRequest   JobRequest? @relation("ConvertedJob", fields: [sourceJobRequestId], references: [id], onDelete: SetNull)
+
+  agency       Agency        @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  applications Application[]
+  assets       JobAsset[]
+  shortlists   Shortlist[]
+  postContents JobPostContent[]
+  publications Publication[]
+  jobRequests  JobRequest[]
+
+  @@index([agencyId])
+  @@index([status])
+  @@index([agencyId, status])
+  @@index([agencyId, clientId])
+}
+
+model JobAsset {
+  id        String       @id @default(cuid())
+  jobId     String
+  type      JobAssetType
+  url       String
+  mimeType  String
+  meta      Json?
+  createdAt DateTime     @default(now())
+
+  job Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([jobId])
+}
+
+model Application {
+  id          String            @id @default(cuid())
+  jobId       String
+  agencyId    String            // Denormalized for efficient tenant queries
+  candidateId String?           // Link to CandidateProfile
+  fullName    String
+  email       String?
+  phone       String?
+  cvUrl       String?
+  source      String?           // "channel", "direct", "email", "qr_code", etc.
+  sourceDetail    String?       @db.Text // e.g. "tiktok_toulouse", "linkedin_company_page", "qr_code_flyer"
+  sourceChannelId String?       // Link to Channel if application came from a channel
+  status      ApplicationStatus @default(NEW)
+  note        String?           @db.Text
+  tags        String[]          // ["good for nights", "available immediately"]
+  
+  // GDPR consent
+  consentToContact Boolean   @default(true)
+  consentGivenAt   DateTime?
+  
+  // GDPR anonymization
+  anonymizedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  job            Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  agency         Agency            @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  candidate      CandidateProfile? @relation(fields: [candidateId], references: [id], onDelete: SetNull)
+  sourceChannel  Channel?          @relation(fields: [sourceChannelId], references: [id], onDelete: SetNull)
+  shortlistItems ShortlistItem[]
+  clientFeedback ClientFeedback[]
+
+  @@index([jobId])
+  @@index([agencyId])
+  @@index([agencyId, status])
+  @@index([status])
+  @@index([candidateId])
+  @@index([source])
+  @@index([sourceChannelId])
+}
+
+// =============================================================================
+// BILLING
+// =============================================================================
+
+model Subscription {
+  id               String             @id @default(cuid())
+  agencyId         String
+  plan             BillingPlan        @default(STARTER)
+  status           SubscriptionStatus @default(ACTIVE)
+  stripeCustomerId String?
+  stripeSubId      String?
+  startedAt        DateTime           @default(now())
+  trialEndsAt      DateTime?
+  endedAt          DateTime?
+
+  agency Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  @@index([agencyId])
+  @@index([stripeCustomerId])
+}
+
+// =============================================================================
+// AUDIT / EVENT LOG
+// =============================================================================
+
+model EventLog {
+  id        String   @id @default(cuid())
+  agencyId  String?
+  userId    String?
+  jobId     String?
+  type      String   // "JOB_CREATED", "APPLICATION_CREATED", "STATUS_CHANGED", etc.
+  payload   Json?
+  createdAt DateTime @default(now())
+
+  agency Agency? @relation(fields: [agencyId], references: [id], onDelete: SetNull)
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([agencyId])
+  @@index([type])
+  @@index([createdAt])
+}
+
+// =============================================================================
+// ENUMS
+// =============================================================================
+
+enum MembershipRole {
+  OWNER
+  ADMIN
+  RECRUITER
+  VIEWER
+}
+
+enum BillingPlan {
+  STARTER
+  PRO
+  AGENCY_PLUS
+}
+
+enum JobStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  ARCHIVED
+}
+
+enum JobAssetType {
+  PDF
+  IMAGE_FEED
+  IMAGE_STORY
+  CAROUSEL
+  VIDEO
+}
+
+enum ApplicationStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  PLACED
+  REJECTED
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+}
+
+enum CandidateStatus {
+  ACTIVE
+  DO_NOT_CONTACT
+  BLACKLISTED
+}
+
+enum ChannelType {
+  TIKTOK
+  INSTAGRAM
+  LINKEDIN
+  FACEBOOK
+  OTHER
+}
+
+enum ContentVariant {
+  TIKTOK_SCRIPT
+  INSTAGRAM_CAPTION
+  LINKEDIN_POST
+  WHATSAPP_MESSAGE
+  GENERIC_SNIPPET
+}
+
+enum ContentStatus {
+  DRAFT
+  APPROVED
+  ARCHIVED
+}
+
+enum PublicationStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHING
+  PUBLISHED
+  FAILED
+}
+
+// =============================================================================
+// SHORTLISTS (for sharing candidates with clients)
+// =============================================================================
+
+model Shortlist {
+  id         String   @id @default(cuid())
+  agencyId   String
+  jobId      String
+  name       String
+  shareToken String   @unique // URL-safe token for public access
+  note       String?  @db.Text
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Client association (defaults to job's client if not specified)
+  clientId   String?
+  client     Client?  @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
+  agency   Agency          @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  job      Job             @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  items    ShortlistItem[]
+  feedback ClientFeedback[]
+
+  @@index([agencyId])
+  @@index([jobId])
+  @@index([shareToken])
+  @@index([agencyId, clientId])
+}
+
+model ShortlistItem {
+  id            String @id @default(cuid())
+  shortlistId   String
+  applicationId String
+  order         Int    @default(0)
+
+  shortlist   Shortlist   @relation(fields: [shortlistId], references: [id], onDelete: Cascade)
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@unique([shortlistId, applicationId])
+  @@index([shortlistId])
+}
+
+// =============================================================================
+// CANDIDATE PROFILES (Talent Pool)
+// =============================================================================
+
+model CandidateProfile {
+  id               String          @id @default(cuid())
+  agencyId         String
+  email            String
+  fullName         String
+  phone            String?
+  cvUrl            String?
+  skills           String[]        // free-form tags ("CACES", "night work", "kitchen", etc.)
+  sectors          String[]        // sectors of interest (logistics, hospitality, etc.)
+  lastJobTitle     String?         // last job or preferred title
+  location         String?         // city / region
+  notes            String?         @db.Text // internal notes
+  status           CandidateStatus @default(ACTIVE)
+  consentToContact Boolean         @default(true)
+  consentGivenAt   DateTime?
+  firstAppliedAt   DateTime        @default(now())
+  lastAppliedAt    DateTime        @default(now())
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  agency       Agency        @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  applications Application[]
+
+  @@unique([agencyId, email])
+  @@index([agencyId, status])
+  @@index([agencyId])
+}
+
+// =============================================================================
+// SOCIAL CONTENT & CHANNELS
+// =============================================================================
+
+model Channel {
+  id        String      @id @default(cuid())
+  agencyId  String
+  agency    Agency      @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  type      ChannelType
+  name      String      // e.g. "TikTok Toulouse"
+  handle    String?     // e.g. "@questhire_toulouse"
+  region    String?     // e.g. "Toulouse", "Lyon", etc.
+  isActive  Boolean     @default(true)
+  notes     String?     @db.Text
+
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  publications Publication[]
+  applications Application[] // Applications that came from this channel
+
+  @@index([agencyId])
+}
+
+model JobPostContent {
+  id                String         @id @default(cuid())
+  jobId             String
+  job               Job            @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  agencyId          String
+  agency            Agency         @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  variant           ContentVariant
+  title             String?
+  body              String         @db.Text
+  suggestedHashtags String?        @db.Text
+  language          String?        // e.g. "fr", "en"
+
+  status            ContentStatus  @default(DRAFT)
+  createdById       String?
+  createdBy         User?          @relation("CreatedContent", fields: [createdById], references: [id])
+  generatedAt       DateTime?      // if auto-generated
+  approvedAt        DateTime?
+
+  // Editing audit trail
+  lastEditedById    String?
+  lastEditedBy      User?          @relation("LastEditedContent", fields: [lastEditedById], references: [id])
+  lastEditedAt      DateTime?
+
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  publications      Publication[]
+
+  @@index([agencyId])
+  @@index([jobId])
+}
+
+model Publication {
+  id           String            @id @default(cuid())
+  agencyId     String
+  agency       Agency            @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  jobId        String
+  job          Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  channelId    String
+  channel      Channel           @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
+  contentId    String
+  content      JobPostContent    @relation(fields: [contentId], references: [id], onDelete: Cascade)
+
+  status       PublicationStatus @default(DRAFT)
+  scheduledAt  DateTime?
+  publishedAt  DateTime?
+  externalUrl  String?           // link to TikTok/Insta post
+  externalId   String?           // external post ID from provider
+  errorMessage String?           @db.Text
+
+  // Retry tracking for cron processing
+  lastAttemptAt DateTime?
+  attemptCount  Int              @default(0)
+
+  createdById  String?
+  createdBy    User?             @relation("CreatedPublication", fields: [createdById], references: [id])
+
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@index([agencyId])
+  @@index([jobId])
+  @@index([channelId])
+  @@index([status, scheduledAt]) // For cron queries
+}
+
+// =============================================================================
+// CLIENT PORTAL (Job Requests & Feedback)
+// =============================================================================
+
+model Client {
+  id          String   @id @default(cuid())
+  agencyId    String
+  agency      Agency   @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  name        String   // Company/client name
+  contactName String?  // Primary contact person
+  contactEmail String  // Primary contact email
+  contactPhone String? // Primary contact phone
+  sector      String?  // Industry sector
+  notes       String?  @db.Text
+  isActive    Boolean  @default(true)
+
+  // For link-based access (request form, feedback pages)
+  requestToken String  @unique
+
+  // Relations
+  jobRequests JobRequest[]
+  feedback    ClientFeedback[]
+  jobs        Job[]
+  shortlists  Shortlist[]
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([agencyId])
+  @@index([requestToken])
+  @@index([agencyId, isActive])
+}
+
+model JobRequest {
+  id          String    @id @default(cuid())
+  agencyId    String
+  agency      Agency    @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  clientId    String?
+  client      Client?   @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
+  title       String
+  location    String?
+  contractType String?
+  salaryRange  String?
+  description  String?  @db.Text
+  requirements String?  @db.Text
+  startDate    DateTime?
+  notes        String?  @db.Text
+
+  status      JobRequestStatus @default(NEW)
+
+  // Legacy link (for backward compat, use convertedJob instead)
+  linkedJobId String?
+  linkedJob   Job?             @relation(fields: [linkedJobId], references: [id], onDelete: SetNull)
+
+  // Job created from this request (one-to-one)
+  convertedJob Job? @relation("ConvertedJob")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([agencyId])
+  @@index([clientId])
+  @@index([status])
+}
+
+model ClientFeedback {
+  id             String           @id @default(cuid())
+  agencyId       String
+  agency         Agency           @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  clientId       String?
+  client         Client?          @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
+  shortlistId    String
+  shortlist      Shortlist        @relation(fields: [shortlistId], references: [id], onDelete: Cascade)
+
+  applicationId  String
+  application    Application      @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  decision       ClientDecision   @default(PENDING)
+  comment        String?          @db.Text
+
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@unique([shortlistId, applicationId])
+  @@index([agencyId])
+  @@index([shortlistId])
+  @@index([applicationId])
+}
+
+enum JobRequestStatus {
+  NEW
+  IN_REVIEW
+  CONVERTED_TO_JOB
+  REJECTED
+}
+
+enum ClientDecision {
+  PENDING
+  APPROVED
+  REJECTED
+}
