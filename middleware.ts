@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getTenantFromHost, TENANT_HEADER } from "@/lib/tenant";
+import { getTenantFromHost, TENANT_HEADER } from "@/lib/tenant-utils";
 
 /**
  * Middleware for multi-tenant subdomain resolution
