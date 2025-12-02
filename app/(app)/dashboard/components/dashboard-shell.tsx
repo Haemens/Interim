@@ -48,13 +48,13 @@ interface DashboardShellProps {
 }
 
 const navigation = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, tourId: "dashboard" },
-  { name: "Jobs", href: "/dashboard/jobs", icon: Briefcase, tourId: "jobs" },
-  { name: "Candidates", href: "/dashboard/candidates", icon: Users, tourId: "candidates" },
-  { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3, tourId: "analytics" },
-  { name: "Team", href: "/dashboard/team", icon: Users2, tourId: "team" },
-  { name: "Billing", href: "/dashboard/billing", icon: CreditCard, tourId: "billing" },
-  { name: "Settings", href: "/dashboard/settings", icon: Settings, tourId: "settings" },
+  { name: "Tableau de bord", href: "/dashboard", icon: LayoutDashboard, tourId: "dashboard" },
+  { name: "Offres", href: "/dashboard/jobs", icon: Briefcase, tourId: "jobs" },
+  { name: "Candidats", href: "/dashboard/candidates", icon: Users, tourId: "candidates" },
+  { name: "Statistiques", href: "/dashboard/analytics", icon: BarChart3, tourId: "analytics" },
+  { name: "Équipe", href: "/dashboard/team", icon: Users2, tourId: "team" },
+  { name: "Facturation", href: "/dashboard/billing", icon: CreditCard, tourId: "billing" },
+  { name: "Paramètres", href: "/dashboard/settings", icon: Settings, tourId: "settings" },
 ];
 
 export function DashboardShell({
@@ -155,9 +155,9 @@ export function DashboardShell({
           {jobLimitWarning && (
             <div className="bg-amber-50 border border-amber-200 rounded-md p-3">
               <p className="text-xs text-amber-800">
-                You&apos;re close to your job limit.{" "}
+                Vous approchez de la limite d&apos;offres.{" "}
                 <Link href="/dashboard/billing" className="font-medium underline hover:text-amber-900">
-                  Upgrade to Pro
+                  Passer en Pro
                 </Link>
               </p>
             </div>
@@ -167,17 +167,17 @@ export function DashboardShell({
           <div className="bg-secondary/50 rounded-md p-3 border border-border">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-medium text-foreground">
-                {agency.plan} Plan
+                Forfait {agency.plan}
               </span>
               <span className="text-[10px] bg-primary text-primary-foreground px-1.5 py-0.5 rounded-full font-medium">
-                Active
+                Actif
               </span>
             </div>
             <Link
               href="/dashboard/billing"
               className="text-xs text-primary hover:underline"
             >
-              Manage subscription
+              Gérer l&apos;abonnement
             </Link>
           </div>
 
@@ -209,7 +209,7 @@ export function DashboardShell({
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <input
                 type="search"
-                placeholder="Search..."
+                placeholder="Rechercher..."
                 className="w-full pl-9 pr-4 py-2 bg-secondary/50 border border-input rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent placeholder:text-muted-foreground"
               />
             </div>
@@ -223,7 +223,7 @@ export function DashboardShell({
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm"
             >
               <Plus className="w-4 h-4" />
-              <span>New Job</span>
+              <span>Nouvelle offre</span>
             </Link>
           </div>
         </header>
