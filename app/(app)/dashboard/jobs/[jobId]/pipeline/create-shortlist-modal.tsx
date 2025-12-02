@@ -50,9 +50,9 @@ export function CreateShortlistModal({
   // Set default name when modal opens
   useEffect(() => {
     if (isOpen) {
-      const date = new Date().toLocaleDateString("en-US", {
-        month: "short",
+      const date = new Date().toLocaleDateString("fr-FR", {
         day: "numeric",
+        month: "long",
       });
       setName(`${jobTitle} - ${date}`);
       fetchClients();
@@ -79,8 +79,8 @@ export function CreateShortlistModal({
 
     if (!name.trim()) {
       toast({
-        title: "Name Required",
-        description: "Please enter a name for the shortlist",
+        title: "Nom requis",
+        description: "Veuillez entrer un nom pour la shortlist",
         variant: "warning",
       });
       return;
@@ -88,8 +88,8 @@ export function CreateShortlistModal({
 
     if (selectedApplicationIds.length === 0) {
       toast({
-        title: "No Candidates",
-        description: "Please select at least one candidate",
+        title: "Aucun candidat",
+        description: "Veuillez sélectionner au moins un candidat",
         variant: "warning",
       });
       return;
@@ -98,9 +98,9 @@ export function CreateShortlistModal({
     // Demo mode: simulate success
     if (isDemo) {
       toast({
-        title: "Demo Mode",
-        description: "Shortlist creation simulated. In production, this would create a real shortlist.",
-        variant: "warning",
+        title: "Mode Démo",
+        description: "Création de shortlist simulée. Inscrivez-vous pour utiliser cette fonctionnalité !",
+        variant: "success",
       });
       onSuccess("https://demo.questhire.com/shortlist/demo-token");
       onClose();
@@ -123,7 +123,7 @@ export function CreateShortlistModal({
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || "Failed to create shortlist");
+        throw new Error(data.error || "Impossible de créer la shortlist");
       }
 
       const data = await res.json();
@@ -134,21 +134,21 @@ export function CreateShortlistModal({
         try {
           await navigator.clipboard.writeText(shareUrl);
           toast({
-            title: "Shortlist Created",
-            description: "Share link copied to clipboard!",
+            title: "Shortlist créée",
+            description: "Lien de partage copié !",
             variant: "success",
           });
         } catch {
           toast({
-            title: "Shortlist Created",
-            description: "Shortlist created successfully",
+            title: "Shortlist créée",
+            description: "Shortlist créée avec succès",
             variant: "success",
           });
         }
       } else {
         toast({
-          title: "Shortlist Created",
-          description: "Shortlist created successfully",
+          title: "Shortlist créée",
+          description: "Shortlist créée avec succès",
           variant: "success",
         });
       }
@@ -162,8 +162,8 @@ export function CreateShortlistModal({
       setNote("");
     } catch (err) {
       toast({
-        title: "Error",
-        description: err instanceof Error ? err.message : "Failed to create shortlist",
+        title: "Erreur",
+        description: err instanceof Error ? err.message : "Échec de la création",
         variant: "error",
       });
     } finally {
@@ -185,18 +185,24 @@ export function CreateShortlistModal({
       <div className="relative bg-white rounded-xl shadow-xl w-full max-w-lg mx-4">
         {/* Header */}
         <div className="px-6 py-4 border-b border-slate-200">
-          <h2 className="text-lg font-semibold text-slate-900">Create Shortlist</h2>
+          <h2 className="text-lg font-semibold text-slate-900">Créer une Shortlist</h2>
           <p className="text-sm text-slate-500 mt-1">
-            {selectedApplicationIds.length} candidate{selectedApplicationIds.length !== 1 ? "s" : ""} selected
+            {selectedApplicationIds.length} candidat{selectedApplicationIds.length !== 1 ? "s" : ""} sélectionné{selectedApplicationIds.length !== 1 ? "s" : ""}
           </p>
         </div>
 
         {/* Demo Warning */}
         {isDemo && (
-          <div className="mx-6 mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-            <p className="text-sm text-amber-700">
-              <strong>Demo Mode:</strong> Shortlist will be simulated but not saved.
-            </p>
+          <div className="mx-6 mt-4 p-3 bg-indigo-50 border border-indigo-200 rounded-lg flex items-start gap-3">
+            <span className="text-xl">🚀</span>
+            <div>
+              <p className="text-sm font-medium text-indigo-900">
+                Fonctionnalité Premium
+              </p>
+              <p className="text-xs text-indigo-700 mt-0.5">
+                En mode démo, la shortlist est simulée. Passez en Pro pour partager de vrais profils avec vos clients.
+              </p>
+            </div>
           </div>
         )}
 
@@ -205,13 +211,13 @@ export function CreateShortlistModal({
           {/* Name */}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
-              Shortlist Name *
+              Nom de la Shortlist *
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g., Senior Developers - Week 1"
+              placeholder="ex: Développeurs Senior - Semaine 1"
               className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
             />
@@ -220,7 +226,7 @@ export function CreateShortlistModal({
           {/* Client */}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
-              Client (optional)
+              Client (optionnel)
             </label>
             <select
               value={clientId}
@@ -228,7 +234,7 @@ export function CreateShortlistModal({
               className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
               disabled={loading}
             >
-              <option value="">No client</option>
+              <option value="">Aucun client</option>
               {clients.map((client) => (
                 <option key={client.id} value={client.id}>
                   {client.name}
@@ -241,12 +247,12 @@ export function CreateShortlistModal({
           {/* Note */}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
-              Internal Note (optional)
+              Note interne (optionnel)
             </label>
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="Add notes for your team..."
+              placeholder="Ajoutez des notes pour votre équipe..."
               rows={3}
               className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
             />
@@ -261,7 +267,7 @@ export function CreateShortlistModal({
               className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500"
             />
             <span className="text-sm text-slate-700">
-              Copy share link to clipboard after creation
+              Copier le lien de partage après création
             </span>
           </label>
         </form>
@@ -274,14 +280,14 @@ export function CreateShortlistModal({
             disabled={submitting}
             className="px-4 py-2 text-slate-700 font-medium hover:bg-slate-100 rounded-lg transition-colors"
           >
-            Cancel
+            Annuler
           </button>
           <button
             onClick={handleSubmit}
             disabled={submitting || selectedApplicationIds.length === 0}
             className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {submitting ? "Creating..." : "Create Shortlist"}
+            {submitting ? "Création..." : "Créer la Shortlist"}
           </button>
         </div>
       </div>

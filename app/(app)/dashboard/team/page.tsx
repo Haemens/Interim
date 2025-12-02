@@ -53,12 +53,12 @@ export default function TeamPage() {
       const res = await fetch("/api/team");
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || "Failed to fetch team");
+        throw new Error(data.error || "Impossible de récupérer l'équipe");
       }
       const data = await res.json();
       setTeam(data.team);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch team");
+      setError(err instanceof Error ? err.message : "Impossible de récupérer l'équipe");
     } finally {
       setLoading(false);
     }
@@ -81,14 +81,14 @@ export default function TeamPage() {
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || "Failed to invite member");
+        throw new Error(data.error || "Impossible d'inviter le membre");
       }
 
-      setInviteSuccess(`Invitation sent to ${inviteEmail}`);
+      setInviteSuccess(`Invitation envoyée à ${inviteEmail}`);
       setInviteEmail("");
       fetchTeam();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to invite member");
+      setError(err instanceof Error ? err.message : "Impossible d'inviter le membre");
     } finally {
       setInviting(false);
     }
@@ -105,17 +105,17 @@ export default function TeamPage() {
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || "Failed to update role");
+        throw new Error(data.error || "Impossible de mettre à jour le rôle");
       }
 
       fetchTeam();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update role");
+      setError(err instanceof Error ? err.message : "Impossible de mettre à jour le rôle");
     }
   }
 
   async function handleRemove(membershipId: string, email: string) {
-    if (!confirm(`Remove ${email} from the team?`)) return;
+    if (!confirm(`Retirer ${email} de l'équipe ?`)) return;
 
     try {
       setError(null);
@@ -125,19 +125,19 @@ export default function TeamPage() {
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || "Failed to remove member");
+        throw new Error(data.error || "Impossible de retirer le membre");
       }
 
       fetchTeam();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to remove member");
+      setError(err instanceof Error ? err.message : "Impossible de retirer le membre");
     }
   }
 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-slate-500">Loading team...</div>
+        <div className="text-slate-500">Chargement de l'équipe...</div>
       </div>
     );
   }
@@ -146,9 +146,9 @@ export default function TeamPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Team Management</h1>
+        <h1 className="text-2xl font-bold text-slate-900">Gestion de l&apos;équipe</h1>
         <p className="text-slate-600 mt-1">
-          Manage your team members and their roles.
+          Gérez les membres de votre équipe et leurs rôles.
         </p>
       </div>
 
@@ -167,12 +167,12 @@ export default function TeamPage() {
       {/* Invite Form */}
       <div className="bg-white rounded-xl border border-slate-200 p-6">
         <h2 className="text-lg font-semibold text-slate-900 mb-4">
-          Invite Team Member
+          Inviter un membre
         </h2>
         <form onSubmit={handleInvite} className="flex flex-wrap gap-4">
           <input
             type="email"
-            placeholder="Email address"
+            placeholder="Adresse email"
             value={inviteEmail}
             onChange={(e) => setInviteEmail(e.target.value)}
             className="flex-1 min-w-[200px] px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -184,15 +184,15 @@ export default function TeamPage() {
             className="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="ADMIN">Admin</option>
-            <option value="RECRUITER">Recruiter</option>
-            <option value="VIEWER">Viewer</option>
+            <option value="RECRUITER">Recruteur</option>
+            <option value="VIEWER">Observateur</option>
           </select>
           <button
             type="submit"
             disabled={inviting}
             className="px-6 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {inviting ? "Sending..." : "Send Invite"}
+            {inviting ? "Envoi..." : "Envoyer l'invitation"}
           </button>
         </form>
       </div>
@@ -201,13 +201,13 @@ export default function TeamPage() {
       <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
         <div className="px-6 py-4 border-b border-slate-200">
           <h2 className="text-lg font-semibold text-slate-900">
-            Team Members ({team.length})
+            Membres de l&apos;équipe ({team.length})
           </h2>
         </div>
 
         {team.length === 0 ? (
           <div className="p-6 text-center text-slate-500">
-            No team members yet. Invite someone to get started!
+            Aucun membre. Invitez quelqu'un pour commencer !
           </div>
         ) : (
           <ul className="divide-y divide-slate-100">
@@ -225,7 +225,7 @@ export default function TeamPage() {
                     {/* Info */}
                     <div>
                       <p className="font-medium text-slate-900">
-                        {member.name || "Pending invitation"}
+                        {member.name || "Invitation en attente"}
                       </p>
                       <p className="text-sm text-slate-500">{member.email}</p>
                     </div>
@@ -237,7 +237,7 @@ export default function TeamPage() {
                       <span
                         className={`text-xs px-3 py-1 rounded-full ${getRoleColor(member.role)}`}
                       >
-                        {member.role}
+                        PROPRIÉTAIRE
                       </span>
                     ) : (
                       <select
@@ -245,11 +245,11 @@ export default function TeamPage() {
                         onChange={(e) =>
                           handleRoleChange(member.membershipId, e.target.value)
                         }
-                        className="text-sm px-3 py-1 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="text-sm px-3 py-1 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
                       >
                         {ROLES.filter((r) => r !== "OWNER").map((role) => (
                           <option key={role} value={role}>
-                            {role}
+                            {role === "ADMIN" ? "ADMIN" : role === "RECRUITER" ? "RECRUTEUR" : "OBSERVATEUR"}
                           </option>
                         ))}
                       </select>
@@ -261,9 +261,9 @@ export default function TeamPage() {
                         onClick={() =>
                           handleRemove(member.membershipId, member.email)
                         }
-                        className="text-sm text-red-600 hover:text-red-700"
+                        className="text-sm text-red-600 hover:text-red-700 font-medium"
                       >
-                        Remove
+                        Retirer
                       </button>
                     )}
                   </div>
@@ -271,8 +271,8 @@ export default function TeamPage() {
 
                 {/* Meta info */}
                 <div className="mt-2 ml-14 text-xs text-slate-400">
-                  Joined{" "}
-                  {new Date(member.joinedAt).toLocaleDateString("en-US", {
+                  Rejoint le{" "}
+                  {new Date(member.joinedAt).toLocaleDateString("fr-FR", {
                     year: "numeric",
                     month: "short",
                     day: "numeric",
@@ -280,8 +280,8 @@ export default function TeamPage() {
                   {member.lastLoginAt && (
                     <>
                       {" "}
-                      · Last login{" "}
-                      {new Date(member.lastLoginAt).toLocaleDateString("en-US", {
+                      · Dernière connexion{" "}
+                      {new Date(member.lastLoginAt).toLocaleDateString("fr-FR", {
                         year: "numeric",
                         month: "short",
                         day: "numeric",
@@ -297,14 +297,14 @@ export default function TeamPage() {
 
       {/* Role Descriptions */}
       <div className="bg-slate-50 rounded-xl border border-slate-200 p-6">
-        <h3 className="font-semibold text-slate-900 mb-4">Role Permissions</h3>
+        <h3 className="font-semibold text-slate-900 mb-4">Permissions des rôles</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div>
             <span className={`inline-block px-2 py-0.5 rounded ${getRoleColor("OWNER")}`}>
-              OWNER
+              PROPRIÉTAIRE
             </span>
             <p className="text-slate-600 mt-1">
-              Full access. Can manage billing, delete agency, and manage all team members.
+              Accès complet. Peut gérer la facturation, supprimer l&apos;agence et gérer tous les membres.
             </p>
           </div>
           <div>
@@ -312,23 +312,23 @@ export default function TeamPage() {
               ADMIN
             </span>
             <p className="text-slate-600 mt-1">
-              Can create/edit jobs, manage applications, and invite team members.
+              Peut créer/modifier des offres, gérer les candidatures et inviter des membres.
             </p>
           </div>
           <div>
             <span className={`inline-block px-2 py-0.5 rounded ${getRoleColor("RECRUITER")}`}>
-              RECRUITER
+              RECRUTEUR
             </span>
             <p className="text-slate-600 mt-1">
-              Can view/edit jobs and applications, create shortlists.
+              Peut voir/modifier les offres et candidatures, créer des shortlists.
             </p>
           </div>
           <div>
             <span className={`inline-block px-2 py-0.5 rounded ${getRoleColor("VIEWER")}`}>
-              VIEWER
+              OBSERVATEUR
             </span>
             <p className="text-slate-600 mt-1">
-              Read-only access to jobs and applications.
+              Accès en lecture seule aux offres et candidatures.
             </p>
           </div>
         </div>

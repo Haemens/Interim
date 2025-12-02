@@ -75,12 +75,12 @@ function getStatusColor(status: string): string {
 }
 
 const SOURCE_LABELS: Record<string, string> = {
-  channel: "Social Channel",
+  channel: "Réseaux Sociaux",
   direct: "Direct",
-  job_page: "Job Page",
+  job_page: "Page Offre",
   email: "Email",
   qr_code: "QR Code",
-  unknown: "Unknown",
+  unknown: "Inconnu",
 };
 
 const CHANNEL_TYPE_ICONS: Record<string, string> = {
@@ -102,12 +102,12 @@ export default function AnalyticsPage() {
         const res = await fetch("/api/analytics/summary");
         if (!res.ok) {
           const errorData = await res.json();
-          throw new Error(errorData.error || "Failed to fetch analytics");
+          throw new Error(errorData.error || "Impossible de charger les statistiques");
         }
         const summary = await res.json();
         setData(summary);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load analytics");
+        setError(err instanceof Error ? err.message : "Impossible de charger les statistiques");
       } finally {
         setLoading(false);
       }
@@ -121,9 +121,9 @@ export default function AnalyticsPage() {
       <div className="space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Analytics</h1>
+          <h1 className="text-2xl font-bold text-slate-900">Statistiques</h1>
           <p className="text-slate-600 mt-1">
-            Overview of your recruitment activity.
+            Vue d&apos;ensemble de votre activité de recrutement.
           </p>
         </div>
 
@@ -154,9 +154,9 @@ export default function AnalyticsPage() {
       <div className="space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Analytics</h1>
+          <h1 className="text-2xl font-bold text-slate-900">Statistiques</h1>
           <p className="text-slate-600 mt-1">
-            Overview of your recruitment activity.
+            Vue d&apos;ensemble de votre activité de recrutement.
           </p>
         </div>
 
@@ -169,13 +169,13 @@ export default function AnalyticsPage() {
               </svg>
             </div>
             <div>
-              <h3 className="text-lg font-medium text-red-800">Failed to load analytics</h3>
+              <h3 className="text-lg font-medium text-red-800">Erreur de chargement</h3>
               <p className="text-red-700 mt-1">{error}</p>
               <button
                 onClick={() => window.location.reload()}
                 className="mt-3 px-4 py-2 text-sm font-medium text-red-700 bg-red-100 rounded-lg hover:bg-red-200 transition-colors"
               >
-                Try again
+                Réessayer
               </button>
             </div>
           </div>
@@ -192,39 +192,39 @@ export default function AnalyticsPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Analytics</h1>
+        <h1 className="text-2xl font-bold text-slate-900">Statistiques</h1>
         <p className="text-slate-600 mt-1">
-          Overview of your recruitment activity.
+          Vue d&apos;ensemble de votre activité de recrutement.
         </p>
       </div>
 
       {/* Job Stats */}
       <section>
-        <h2 className="text-lg font-semibold text-slate-900 mb-4">Jobs</h2>
+        <h2 className="text-lg font-semibold text-slate-900 mb-4">Offres</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <StatCard label="Total Jobs" value={data.jobCounts.total} color="slate" />
-          <StatCard label="Active" value={data.jobCounts.active} color="green" />
-          <StatCard label="Draft" value={data.jobCounts.draft} color="amber" />
-          <StatCard label="Archived" value={data.jobCounts.archived} color="slate" />
+          <StatCard label="Total Offres" value={data.jobCounts.total} color="slate" />
+          <StatCard label="Actives" value={data.jobCounts.active} color="green" />
+          <StatCard label="Brouillons" value={data.jobCounts.draft} color="amber" />
+          <StatCard label="Archivées" value={data.jobCounts.archived} color="slate" />
         </div>
       </section>
 
       {/* Application Stats */}
       <section>
-        <h2 className="text-lg font-semibold text-slate-900 mb-4">Applications</h2>
+        <h2 className="text-lg font-semibold text-slate-900 mb-4">Candidatures</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
           <StatCard
-            label="Total Applications"
+            label="Total Candidatures"
             value={data.applicationCounts.total}
             color="indigo"
           />
           <StatCard
-            label="Last 7 Days"
+            label="7 derniers jours"
             value={data.recentActivity.last7DaysApplications}
             color="blue"
           />
           <StatCard
-            label="Last 30 Days"
+            label="30 derniers jours"
             value={data.recentActivity.last30DaysApplications}
             color="blue"
           />
@@ -232,7 +232,7 @@ export default function AnalyticsPage() {
 
         {/* By Status */}
         <div className="bg-white rounded-xl border border-slate-200 p-6">
-          <h3 className="font-medium text-slate-900 mb-4">By Status</h3>
+          <h3 className="font-medium text-slate-900 mb-4">Par Statut</h3>
           <div className="flex flex-wrap gap-4">
             {Object.entries(data.applicationCounts.byStatus).map(([status, count]) => (
               <div key={status} className="flex items-center gap-2">
@@ -249,22 +249,22 @@ export default function AnalyticsPage() {
       {/* Top Jobs */}
       <section>
         <h2 className="text-lg font-semibold text-slate-900 mb-4">
-          Top Jobs by Applications
+          Meilleures offres
         </h2>
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
           {data.topJobsByApplications.length === 0 ? (
             <div className="p-6 text-center text-slate-500">
-              No jobs with applications yet.
+              Aucune offre avec candidatures pour le moment.
             </div>
           ) : (
             <table className="w-full">
               <thead className="bg-slate-50 border-b border-slate-200">
                 <tr>
                   <th className="text-left px-6 py-3 text-sm font-medium text-slate-600">
-                    Job Title
+                    Titre
                   </th>
                   <th className="text-right px-6 py-3 text-sm font-medium text-slate-600">
-                    Applications
+                    Candidatures
                   </th>
                 </tr>
               </thead>
@@ -298,14 +298,14 @@ export default function AnalyticsPage() {
       {data.applicationSources && (
         <section>
           <h2 className="text-lg font-semibold text-slate-900 mb-4">
-            Channel Performance
+            Performance des Canaux
           </h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Applications by Source */}
             <div className="bg-white rounded-xl border border-slate-200 p-6">
-              <h3 className="font-medium text-slate-900 mb-4">Applications by Source</h3>
+              <h3 className="font-medium text-slate-900 mb-4">Candidatures par Source</h3>
               {data.applicationSources.bySource.length === 0 ? (
-                <p className="text-slate-500 text-sm">No source data yet.</p>
+                <p className="text-slate-500 text-sm">Pas de données de source.</p>
               ) : (
                 <div className="space-y-3">
                   {data.applicationSources.bySource.map((item) => {
@@ -334,10 +334,10 @@ export default function AnalyticsPage() {
 
             {/* Applications by Channel */}
             <div className="bg-white rounded-xl border border-slate-200 p-6">
-              <h3 className="font-medium text-slate-900 mb-4">Applications by Channel</h3>
+              <h3 className="font-medium text-slate-900 mb-4">Candidatures par Canal</h3>
               {data.applicationSources.byChannel.length === 0 ? (
                 <p className="text-slate-500 text-sm">
-                  No channel data yet. Use channel-specific apply links to track where applications come from.
+                  Pas de données de canal. Utilisez des liens de suivi pour voir d&apos;où viennent vos candidats.
                 </p>
               ) : (
                 <div className="space-y-3">

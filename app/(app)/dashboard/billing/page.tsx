@@ -16,44 +16,44 @@ const PLANS: PlanInfo[] = [
   {
     id: "STARTER",
     name: "Starter",
-    price: "Free",
-    description: "For small agencies getting started",
+    price: "Gratuit",
+    description: "Pour les petites agences qui débutent",
     features: [
-      "Up to 10 active jobs",
-      "Unlimited applications",
-      "Basic analytics",
-      "Team management",
-      "Email notifications",
+      "Jusqu'à 10 offres actives",
+      "Candidatures illimitées",
+      "Statistiques basiques",
+      "Gestion d'équipe",
+      "Notifications email",
     ],
   },
   {
     id: "PRO",
     name: "Pro",
-    price: "$79/mo",
-    description: "For growing agencies",
+    price: "79€/mois",
+    description: "Pour les agences en croissance",
     features: [
-      "Unlimited active jobs",
-      "Unlimited applications",
-      "Advanced analytics",
-      "Team management",
-      "Shortlists & client sharing",
-      "Candidate talent pool",
-      "Priority support",
+      "Offres actives illimitées",
+      "Candidatures illimitées",
+      "Statistiques avancées",
+      "Gestion d'équipe",
+      "Shortlists & partage client",
+      "Vivier de talents",
+      "Support prioritaire",
     ],
     highlighted: true,
   },
   {
     id: "AGENCY_PLUS",
     name: "Agency Plus",
-    price: "$199/mo",
-    description: "For large agencies with advanced needs",
+    price: "199€/mois",
+    description: "Pour les grandes agences",
     features: [
-      "Everything in Pro",
-      "Unlimited team members",
-      "Custom branding",
-      "API access",
-      "Dedicated support",
-      "SLA guarantee",
+      "Tout ce qu'il y a dans Pro",
+      "Membres d'équipe illimités",
+      "Marque blanche",
+      "Accès API",
+      "Support dédié",
+      "Garantie SLA",
     ],
   },
 ];
@@ -70,9 +70,9 @@ function BillingContent() {
     // Check for success/cancel from Stripe
     if (searchParams.get("success") === "true") {
       const plan = searchParams.get("plan");
-      setSuccessMessage(`Successfully upgraded to ${plan || "new plan"}!`);
+      setSuccessMessage(`Passage au forfait ${plan || "supérieur"} réussi !`);
     } else if (searchParams.get("canceled") === "true") {
-      setError("Checkout was canceled. No changes were made.");
+      setError("Paiement annulé. Aucun changement n'a été effectué.");
     }
 
     // Fetch current plan
@@ -100,6 +100,7 @@ function BillingContent() {
     setError(null);
 
     try {
+      // Try to get tenant slug from hostname or cookies logic in the backend
       const res = await fetch("/api/billing/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -109,13 +110,13 @@ function BillingContent() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to create checkout session");
+        throw new Error(data.error || "Impossible de créer la session de paiement");
       }
 
       // Redirect to Stripe Checkout
       window.location.href = data.url;
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : "Une erreur est survenue");
       setUpgrading(null);
     }
   }
@@ -131,13 +132,13 @@ function BillingContent() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to open billing portal");
+        throw new Error(data.error || "Impossible d'ouvrir le portail de facturation");
       }
 
       // Redirect to Stripe Customer Portal
       window.location.href = data.url;
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : "Une erreur est survenue");
     }
   }
 
@@ -145,9 +146,9 @@ function BillingContent() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Billing & Plans</h1>
+        <h1 className="text-2xl font-bold text-slate-900">Facturation et Forfaits</h1>
         <p className="text-slate-600 mt-1">
-          Manage your subscription and billing settings.
+          Gérez votre abonnement et vos informations de paiement.
         </p>
       </div>
 
@@ -168,13 +169,12 @@ function BillingContent() {
       <div className="bg-white rounded-xl border border-slate-200 p-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-slate-900">Current Plan</h2>
+            <h2 className="text-lg font-semibold text-slate-900">Forfait actuel</h2>
             <p className="text-slate-600">
-              You are currently on the{" "}
+              Vous êtes actuellement sur le forfait{" "}
               <span className="font-medium text-indigo-600">
                 {PLANS.find((p) => p.id === currentPlan)?.name || "Starter"}
-              </span>{" "}
-              plan.
+              </span>.
             </p>
           </div>
           {currentPlan !== "STARTER" && (
@@ -182,7 +182,7 @@ function BillingContent() {
               onClick={handleManageBilling}
               className="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200"
             >
-              Manage Billing
+              Gérer l&apos;abonnement
             </button>
           )}
         </div>
@@ -201,7 +201,7 @@ function BillingContent() {
           >
             {plan.highlighted && (
               <div className="text-xs font-medium text-indigo-600 uppercase tracking-wide mb-2">
-                Most Popular
+                Le plus populaire
               </div>
             )}
             <h3 className="text-xl font-bold text-slate-900">{plan.name}</h3>
@@ -237,14 +237,14 @@ function BillingContent() {
                   disabled
                   className="w-full py-2 px-4 text-sm font-medium text-slate-500 bg-slate-100 rounded-lg cursor-not-allowed"
                 >
-                  Current Plan
+                  Forfait actuel
                 </button>
               ) : plan.id === "STARTER" ? (
                 <button
                   disabled
                   className="w-full py-2 px-4 text-sm font-medium text-slate-500 bg-slate-100 rounded-lg cursor-not-allowed"
                 >
-                  Free Plan
+                  Forfait gratuit
                 </button>
               ) : (
                 <button
@@ -256,7 +256,7 @@ function BillingContent() {
                       : "text-indigo-600 bg-indigo-50 hover:bg-indigo-100"
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
-                  {upgrading === plan.id ? "Redirecting..." : `Upgrade to ${plan.name}`}
+                  {upgrading === plan.id ? "Redirection..." : `Passer à ${plan.name}`}
                 </button>
               )}
             </div>
@@ -267,28 +267,28 @@ function BillingContent() {
       {/* FAQ */}
       <div className="bg-white rounded-xl border border-slate-200 p-6">
         <h2 className="text-lg font-semibold text-slate-900 mb-4">
-          Frequently Asked Questions
+          Questions Fréquentes
         </h2>
         <div className="space-y-4">
           <div>
-            <h3 className="font-medium text-slate-900">Can I cancel anytime?</h3>
+            <h3 className="font-medium text-slate-900">Puis-je annuler à tout moment ?</h3>
             <p className="text-sm text-slate-600 mt-1">
-              Yes, you can cancel your subscription at any time. You&apos;ll continue to
-              have access until the end of your billing period.
+              Oui, vous pouvez annuler votre abonnement à tout moment. Vous continuerez à
+              avoir accès jusqu&apos;à la fin de votre période de facturation.
             </p>
           </div>
           <div>
-            <h3 className="font-medium text-slate-900">What happens when I upgrade?</h3>
+            <h3 className="font-medium text-slate-900">Que se passe-t-il si je change de forfait ?</h3>
             <p className="text-sm text-slate-600 mt-1">
-              You&apos;ll immediately get access to all features of your new plan.
-              We&apos;ll prorate the cost based on your current billing cycle.
+              Vous aurez immédiatement accès à toutes les fonctionnalités de votre nouveau forfait.
+              Le coût sera calculé au prorata de votre cycle de facturation actuel.
             </p>
           </div>
           <div>
-            <h3 className="font-medium text-slate-900">Do you offer refunds?</h3>
+            <h3 className="font-medium text-slate-900">Proposez-vous des remboursements ?</h3>
             <p className="text-sm text-slate-600 mt-1">
-              We offer a 14-day money-back guarantee on all paid plans. Contact
-              support if you&apos;re not satisfied.
+              Nous offrons une garantie satisfait ou remboursé de 14 jours sur tous les plans payants. 
+              Contactez le support si vous n&apos;êtes pas satisfait.
             </p>
           </div>
         </div>
@@ -302,7 +302,7 @@ export default function BillingPage() {
     <Suspense
       fallback={
         <div className="flex items-center justify-center h-64">
-          <div className="text-slate-500">Loading billing information...</div>
+          <div className="text-slate-500">Chargement des informations...</div>
         </div>
       }
     >

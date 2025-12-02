@@ -6,17 +6,17 @@ export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<"general" | "branding" | "notifications">("general");
 
   const tabs = [
-    { key: "general", label: "General" },
-    { key: "branding", label: "Branding" },
+    { key: "general", label: "Général" },
+    { key: "branding", label: "Marque" },
     { key: "notifications", label: "Notifications" },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Settings</h1>
+        <h1 className="text-2xl font-bold text-slate-900">Paramètres</h1>
         <p className="text-slate-600 mt-1">
-          Manage your agency settings and preferences.
+          Gérez les paramètres et préférences de votre agence.
         </p>
       </div>
 
@@ -45,35 +45,35 @@ export default function SettingsPage() {
           <div className="space-y-6">
             <div>
               <h3 className="text-lg font-medium text-slate-900 mb-4">
-                Agency Information
+                Informations de l&apos;agence
               </h3>
               <div className="grid gap-4 max-w-lg">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Agency Name
+                    Nom de l&apos;agence
                   </label>
                   <input
                     type="text"
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                    placeholder="Your Agency Name"
+                    placeholder="Votre agence"
                     disabled
                   />
                   <p className="text-xs text-slate-500 mt-1">
-                    Contact support to change your agency name.
+                    Contactez le support pour modifier le nom de votre agence.
                   </p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Agency Slug
+                    Identifiant (Slug)
                   </label>
                   <input
                     type="text"
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg bg-slate-50"
                     disabled
-                    placeholder="your-agency"
+                    placeholder="votre-agence"
                   />
                   <p className="text-xs text-slate-500 mt-1">
-                    This is used in your agency URL.
+                    Utilisé dans l&apos;URL de votre agence.
                   </p>
                 </div>
               </div>
@@ -81,19 +81,18 @@ export default function SettingsPage() {
 
             <div className="border-t border-slate-200 pt-6">
               <h3 className="text-lg font-medium text-slate-900 mb-4">
-                Danger Zone
+                Zone de danger
               </h3>
               <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <h4 className="font-medium text-red-800">Delete Agency</h4>
+                <h4 className="font-medium text-red-800">Supprimer l&apos;agence</h4>
                 <p className="text-sm text-red-600 mt-1">
-                  Once you delete your agency, there is no going back. Please be
-                  certain.
+                  La suppression est irréversible. Veuillez être certain de votre choix.
                 </p>
                 <button
                   className="mt-3 px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
                   disabled
                 >
-                  Delete Agency
+                  Supprimer l&apos;agence
                 </button>
               </div>
             </div>
@@ -104,12 +103,12 @@ export default function SettingsPage() {
           <div className="space-y-6">
             <div>
               <h3 className="text-lg font-medium text-slate-900 mb-4">
-                Brand Colors
+                Couleurs de la marque
               </h3>
               <div className="grid gap-4 max-w-lg">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Primary Color
+                    Couleur principale
                   </label>
                   <div className="flex items-center gap-3">
                     <input
@@ -147,17 +146,17 @@ export default function SettingsPage() {
                   </svg>
                 </div>
                 <p className="text-sm text-slate-500">
-                  Drag and drop your logo here, or click to browse
+                  Glissez-déposez votre logo ici, ou cliquez pour parcourir
                 </p>
                 <p className="text-xs text-slate-400 mt-1">
-                  PNG, JPG up to 2MB
+                  PNG, JPG jusqu&apos;à 2MB
                 </p>
               </div>
             </div>
 
             <div className="flex justify-end">
               <button className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors">
-                Save Changes
+                Enregistrer
               </button>
             </div>
           </div>
@@ -167,7 +166,7 @@ export default function SettingsPage() {
           <div className="space-y-6">
             <div>
               <h3 className="text-lg font-medium text-slate-900 mb-4">
-                Email Notifications
+                Notifications Email
               </h3>
               <div className="space-y-4">
                 <label className="flex items-center gap-3">
@@ -177,7 +176,7 @@ export default function SettingsPage() {
                     defaultChecked
                   />
                   <span className="text-sm text-slate-700">
-                    New application received
+                    Nouvelle candidature reçue
                   </span>
                 </label>
                 <label className="flex items-center gap-3">
@@ -187,7 +186,7 @@ export default function SettingsPage() {
                     defaultChecked
                   />
                   <span className="text-sm text-slate-700">
-                    Client feedback submitted
+                    Feedback client reçu
                   </span>
                 </label>
                 <label className="flex items-center gap-3">
@@ -196,7 +195,7 @@ export default function SettingsPage() {
                     className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500"
                   />
                   <span className="text-sm text-slate-700">
-                    Weekly summary report
+                    Rapport hebdomadaire
                   </span>
                 </label>
               </div>
@@ -204,7 +203,7 @@ export default function SettingsPage() {
 
             <div className="flex justify-end">
               <button className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors">
-                Save Preferences
+                Enregistrer les préférences
               </button>
             </div>
           </div>
