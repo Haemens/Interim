@@ -1,6 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaNeon } from "@prisma/adapter-neon";
 import bcrypt from "bcryptjs";
+import dotenv from "dotenv";
+
+// Load environment variables
+dotenv.config({ path: ".env.local" });
+dotenv.config({ path: ".env" });
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
