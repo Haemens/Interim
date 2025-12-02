@@ -10,7 +10,7 @@ import {
   ForbiddenError,
   MembershipNotFoundError,
 } from "@/modules/auth";
-import { assertNotDemoAgency } from "@/modules/auth/demo-mode";
+import { assertNotDemoAgency, isDemoAgency } from "@/modules/auth/demo-mode";
 import { TenantNotFoundError, TenantRequiredError } from "@/lib/tenant";
 import {
   assertCanCreateActiveJob,
@@ -314,12 +314,38 @@ export async function POST(request: NextRequest) {
     // RBAC: ADMIN and OWNER can create jobs
     assertMinimumRole(membership, "ADMIN");
 
-    // Demo mode: block mutations
-    assertNotDemoAgency(agency, "create jobs");
-
     // Parse and validate body
     const body = await request.json();
     const data = createJobSchema.parse(body);
+
+    // Demo mode: return simulated response
+    if (isDemoAgency(agency)) {
+      const demoJob = {
+        id: `demo-job-${Date.now()}`,
+        agencyId: agency.id,
+        title: data.title,
+        location: data.location || null,
+        contractType: data.contractType || null,
+        salaryMin: data.salaryMin || null,
+        salaryMax: data.salaryMax || null,
+        currency: data.currency,
+        sector: data.sector || null,
+        description: data.description,
+        profile: data.profile || null,
+        benefits: data.benefits || null,
+        tags: data.tags,
+        status: data.status,
+        publishedAt: data.status === "ACTIVE" ? new Date().toISOString() : null,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      return NextResponse.json({
+        job: demoJob,
+        isDemo: true,
+        message: "Offre créée en mode démo (simulation)",
+      }, { status: 201 });
+    }
 
     // Plan check: if creating an ACTIVE job, check limit
     if (data.status === "ACTIVE") {

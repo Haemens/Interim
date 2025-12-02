@@ -22,7 +22,24 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Search, Filter, MapPin, Mail } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { 
+  Search, 
+  Filter, 
+  MapPin, 
+  Mail, 
+  Phone,
+  CheckSquare,
+  Square,
+  Tag,
+  UserCheck,
+  UserX,
+  MessageSquare,
+  MoreHorizontal,
+  Star,
+  StarOff,
+  Download
+} from "lucide-react";
 
 interface Candidate {
   id: string;
@@ -70,6 +87,7 @@ function translateStatus(status: string): string {
 }
 
 export default function CandidatesPage() {
+  const { toast } = useToast();
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -79,6 +97,71 @@ export default function CandidatesPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [sectorFilter, setSectorFilter] = useState("");
+  const [skillFilter, setSkillFilter] = useState("");
+
+  // Selection for bulk actions
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [selectAll, setSelectAll] = useState(false);
+
+  // Toggle selection
+  const toggleSelection = (id: string) => {
+    const newSelected = new Set(selectedIds);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedIds(newSelected);
+  };
+
+  // Toggle all
+  const toggleSelectAll = () => {
+    if (selectAll) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(candidates.map(c => c.id)));
+    }
+    setSelectAll(!selectAll);
+  };
+
+  // Bulk status update
+  const handleBulkStatusUpdate = async (newStatus: string) => {
+    if (selectedIds.size === 0) return;
+    
+    try {
+      const res = await fetch("/api/candidates/bulk-update", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          candidateIds: Array.from(selectedIds),
+          status: newStatus,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Échec de la mise à jour");
+      }
+
+      toast({
+        title: "Mise à jour réussie",
+        description: `${selectedIds.size} candidat(s) mis à jour`,
+        variant: "success",
+      });
+
+      // Refresh list
+      setSelectedIds(new Set());
+      setSelectAll(false);
+      // Trigger refetch
+      setSearch(s => s + " ");
+      setTimeout(() => setSearch(s => s.trim()), 10);
+    } catch (err) {
+      toast({
+        title: "Erreur",
+        description: err instanceof Error ? err.message : "Échec de la mise à jour",
+        variant: "error",
+      });
+    }
+  };
 
   useEffect(() => {
     async function fetchCandidates() {
@@ -150,13 +233,25 @@ export default function CandidatesPage() {
             </div>
 
             {/* Sector Filter */}
-            <div className="w-full md:w-64 relative">
+            <div className="w-full md:w-48 relative">
               <Filter className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="text"
-                placeholder="Filtrer par secteur..."
+                placeholder="Secteur..."
                 value={sectorFilter}
                 onChange={(e) => setSectorFilter(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+
+            {/* Skill Filter */}
+            <div className="w-full md:w-48 relative">
+              <Tag className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Compétence..."
+                value={skillFilter}
+                onChange={(e) => setSkillFilter(e.target.value)}
                 className="pl-9"
               />
             </div>
@@ -171,9 +266,48 @@ export default function CandidatesPage() {
         </div>
       )}
 
-      {/* Results Count */}
-      <div className="text-sm text-muted-foreground font-medium">
-        {loading ? "Chargement..." : `${total} candidat${total !== 1 ? "s" : ""} trouvé${total !== 1 ? "s" : ""}`}
+      {/* Results Count & Bulk Actions */}
+      <div className="flex items-center justify-between">
+        <div className="text-sm text-muted-foreground font-medium">
+          {loading ? "Chargement..." : `${total} candidat${total !== 1 ? "s" : ""} trouvé${total !== 1 ? "s" : ""}`}
+        </div>
+        
+        {/* Bulk Actions */}
+        {selectedIds.size > 0 && (
+          <div className="flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-lg border border-primary/20">
+            <span className="text-sm font-medium text-primary">
+              {selectedIds.size} sélectionné{selectedIds.size > 1 ? "s" : ""}
+            </span>
+            <div className="h-4 w-px bg-primary/20" />
+            <Button
+              size="sm"
+              variant="ghost"
+              className="text-green-600 hover:text-green-700 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-900/30"
+              onClick={() => handleBulkStatusUpdate("ACTIVE")}
+            >
+              <UserCheck className="w-4 h-4 mr-1" />
+              Activer
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="text-amber-600 hover:text-amber-700 hover:bg-amber-50 dark:text-amber-400 dark:hover:bg-amber-900/30"
+              onClick={() => handleBulkStatusUpdate("DO_NOT_CONTACT")}
+            >
+              <UserX className="w-4 h-4 mr-1" />
+              Ne pas contacter
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30"
+              onClick={() => handleBulkStatusUpdate("BLACKLISTED")}
+            >
+              <UserX className="w-4 h-4 mr-1" />
+              Liste noire
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Candidates Table */}
@@ -182,7 +316,19 @@ export default function CandidatesPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[300px]">Nom</TableHead>
+                <TableHead className="w-[40px]">
+                  <button
+                    onClick={toggleSelectAll}
+                    className="p-1 hover:bg-muted rounded"
+                  >
+                    {selectAll ? (
+                      <CheckSquare className="w-4 h-4 text-primary" />
+                    ) : (
+                      <Square className="w-4 h-4 text-muted-foreground" />
+                    )}
+                  </button>
+                </TableHead>
+                <TableHead className="w-[280px]">Nom</TableHead>
                 <TableHead>Contact</TableHead>
                 <TableHead>Statut</TableHead>
                 <TableHead>Secteurs</TableHead>
@@ -193,13 +339,13 @@ export default function CandidatesPage() {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="h-24 text-center">
+                  <TableCell colSpan={7} className="h-24 text-center">
                     Chargement des candidats...
                   </TableCell>
                 </TableRow>
               ) : candidates.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
+                  <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
                     Aucun candidat trouvé. Les candidats sont créés automatiquement lorsqu&apos;ils postulent à une offre.
                   </TableCell>
                 </TableRow>
@@ -207,10 +353,24 @@ export default function CandidatesPage() {
                 candidates.map((candidate) => (
                   <TableRow
                     key={candidate.id}
-                    className="group cursor-pointer hover:bg-muted/50"
-                    onClick={() => (window.location.href = `/dashboard/candidates/${candidate.id}`)}
+                    className={`group cursor-pointer hover:bg-muted/50 ${selectedIds.has(candidate.id) ? 'bg-primary/5' : ''}`}
                   >
-                    <TableCell className="font-medium">
+                    <TableCell onClick={(e) => e.stopPropagation()}>
+                      <button
+                        onClick={() => toggleSelection(candidate.id)}
+                        className="p-1 hover:bg-muted rounded"
+                      >
+                        {selectedIds.has(candidate.id) ? (
+                          <CheckSquare className="w-4 h-4 text-primary" />
+                        ) : (
+                          <Square className="w-4 h-4 text-muted-foreground" />
+                        )}
+                      </button>
+                    </TableCell>
+                    <TableCell 
+                      className="font-medium"
+                      onClick={() => (window.location.href = `/dashboard/candidates/${candidate.id}`)}
+                    >
                       <div className="flex flex-col">
                         <Link
                           href={`/dashboard/candidates/${candidate.id}`}
@@ -227,10 +387,18 @@ export default function CandidatesPage() {
                         )}
                       </div>
                     </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                        <Mail className="w-3.5 h-3.5" />
-                        {candidate.email}
+                    <TableCell onClick={() => (window.location.href = `/dashboard/candidates/${candidate.id}`)}>
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                          <Mail className="w-3.5 h-3.5" />
+                          {candidate.email}
+                        </div>
+                        {candidate.phone && (
+                          <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                            <Phone className="w-3.5 h-3.5" />
+                            {candidate.phone}
+                          </div>
+                        )}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -244,7 +412,7 @@ export default function CandidatesPage() {
                           <Badge
                             key={sector}
                             variant="outline"
-                            className="text-[10px] font-normal bg-blue-50/50 text-blue-700 border-blue-100"
+                            className="text-[10px] font-normal bg-blue-50/50 text-blue-700 border-blue-100 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800"
                           >
                             {sector}
                           </Badge>

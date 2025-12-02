@@ -177,12 +177,12 @@ export default async function DashboardPage() {
     <div className="space-y-8">
       {/* Welcome Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">
+        <h1 className="text-2xl font-bold text-foreground">
           Bienvenue chez {agency.name}
         </h1>
-        <p className="text-slate-500 mt-1">
+        <p className="text-muted-foreground mt-1">
           Voici ce qui se passe chez{" "}
-          <span className="font-semibold text-indigo-600">{agency.slug}</span> aujourd&apos;hui.
+          <span className="font-semibold text-primary">{agency.slug}</span> aujourd&apos;hui.
         </p>
       </div>
 
@@ -191,11 +191,11 @@ export default async function DashboardPage() {
         {translatedStats.map((stat) => (
           <div
             key={stat.label}
-            className="bg-white p-6 rounded-xl border border-slate-200"
+            className="bg-card p-6 rounded-xl border border-border"
           >
-            <p className="text-sm text-slate-600">{stat.label}</p>
-            <p className="text-3xl font-bold text-slate-900 mt-1">{stat.value}</p>
-            <p className="text-xs text-slate-500 mt-2">{stat.change}</p>
+            <p className="text-sm text-muted-foreground">{stat.label}</p>
+            <p className="text-3xl font-bold text-foreground mt-1">{stat.value}</p>
+            <p className="text-xs text-muted-foreground mt-2">{stat.change}</p>
           </div>
         ))}
       </div>
@@ -203,15 +203,15 @@ export default async function DashboardPage() {
       {/* Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Jobs */}
-        <div className="bg-white rounded-xl border border-slate-200 p-6">
+        <div className="bg-card rounded-xl border border-border p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold text-slate-900">Offres récentes</h2>
-            <Link href="/dashboard/jobs" className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+            <h2 className="text-lg font-semibold text-foreground">Offres récentes</h2>
+            <Link href="/dashboard/jobs" className="text-sm text-primary hover:text-primary/90 font-medium">
               Tout voir →
             </Link>
           </div>
           {jobs.length === 0 ? (
-            <p className="text-slate-500 text-sm py-4">
+            <p className="text-muted-foreground text-sm py-4">
               Pas encore d&apos;offre. Créez votre première annonce !
             </p>
           ) : (
@@ -219,11 +219,11 @@ export default async function DashboardPage() {
               {jobs.map((job) => (
                 <div
                   key={job.id}
-                  className="flex items-center justify-between py-3 border-b border-slate-100 last:border-0"
+                  className="flex items-center justify-between py-3 border-b border-border last:border-0"
                 >
                   <div>
-                    <p className="font-medium text-slate-900">{job.title}</p>
-                    <p className="text-sm text-slate-500">
+                    <p className="font-medium text-foreground">{job.title}</p>
+                    <p className="text-sm text-muted-foreground">
                       {job._count.applications} candidature
                       {job._count.applications !== 1 ? "s" : ""}
                     </p>
@@ -231,12 +231,12 @@ export default async function DashboardPage() {
                   <span
                     className={`text-xs px-2 py-1 rounded-full ${
                       job.status === "ACTIVE"
-                        ? "bg-green-100 text-green-700"
+                        ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
                         : job.status === "DRAFT"
-                          ? "bg-slate-100 text-slate-600"
+                          ? "bg-secondary text-secondary-foreground"
                           : job.status === "PAUSED"
-                            ? "bg-amber-100 text-amber-700"
-                            : "bg-slate-100 text-slate-600"
+                            ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+                            : "bg-secondary text-secondary-foreground"
                     }`}
                   >
                     {translateJobStatus(job.status)}
@@ -248,17 +248,17 @@ export default async function DashboardPage() {
         </div>
 
         {/* Recent Applications */}
-        <div className="bg-white rounded-xl border border-slate-200 p-6">
+        <div className="bg-card rounded-xl border border-border p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold text-slate-900">
+            <h2 className="text-lg font-semibold text-foreground">
               Candidatures récentes
             </h2>
-            <Link href="/dashboard/candidates" className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+            <Link href="/dashboard/candidates" className="text-sm text-primary hover:text-primary/90 font-medium">
               Tout voir →
             </Link>
           </div>
           {applications.length === 0 ? (
-            <p className="text-slate-500 text-sm py-4">
+            <p className="text-muted-foreground text-sm py-4">
               Pas encore de candidature. Publiez une offre pour recevoir des candidats !
             </p>
           ) : (
@@ -266,36 +266,36 @@ export default async function DashboardPage() {
               {applications.map((app) => (
                 <div
                   key={app.id}
-                  className="flex items-center justify-between py-3 border-b border-slate-100 last:border-0"
+                  className="flex items-center justify-between py-3 border-b border-border last:border-0"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                      <span className="text-indigo-600 font-medium text-sm">
+                    <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                      <span className="text-primary font-medium text-sm">
                         {app.fullName[0]}
                       </span>
                     </div>
                     <div>
-                      <p className="font-medium text-slate-900">{app.fullName}</p>
-                      <p className="text-sm text-slate-500">{app.job.title}</p>
+                      <p className="font-medium text-foreground">{app.fullName}</p>
+                      <p className="text-sm text-muted-foreground">{app.job.title}</p>
                     </div>
                   </div>
                   <div className="text-right">
                     <span
                       className={`text-xs px-2 py-1 rounded-full ${
                         app.status === "NEW"
-                          ? "bg-blue-100 text-blue-700"
+                          ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
                           : app.status === "CONTACTED"
-                            ? "bg-amber-100 text-amber-700"
+                            ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
                             : app.status === "QUALIFIED"
-                              ? "bg-green-100 text-green-700"
+                              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
                               : app.status === "PLACED"
-                                ? "bg-emerald-100 text-emerald-700"
-                                : "bg-slate-100 text-slate-600"
+                                ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
+                                : "bg-secondary text-secondary-foreground"
                       }`}
                     >
                       {translateAppStatus(app.status)}
                     </span>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       {formatTimeAgo(app.createdAt)}
                     </p>
                   </div>
@@ -307,13 +307,13 @@ export default async function DashboardPage() {
       </div>
 
       {/* Plan Info */}
-      <div className="bg-slate-50 rounded-xl border border-slate-200 p-4">
+      <div className="bg-secondary/50 rounded-xl border border-border p-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-slate-600">Forfait actuel</p>
-            <p className="font-semibold text-slate-900">{activePlan}</p>
+            <p className="text-sm text-muted-foreground">Forfait actuel</p>
+            <p className="font-semibold text-foreground">{activePlan}</p>
           </div>
-          <Link href="/dashboard/billing" className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+          <Link href="/dashboard/billing" className="text-sm text-primary hover:text-primary/90 font-medium">
             Mettre à niveau →
           </Link>
         </div>

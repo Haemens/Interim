@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   Briefcase,
   Users,
+  Building2,
   BarChart3,
   Users2,
   CreditCard,
@@ -25,6 +26,7 @@ import { AgencySwitcher } from "../agency-switcher";
 import { SignOutButton } from "../sign-out-button";
 import { DemoBanner } from "./demo-banner";
 import { OnboardingTour } from "./onboarding-tour";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface DashboardShellProps {
   children: React.ReactNode;
@@ -51,6 +53,7 @@ const navigation = [
   { name: "Tableau de bord", href: "/dashboard", icon: LayoutDashboard, tourId: "dashboard" },
   { name: "Offres", href: "/dashboard/jobs", icon: Briefcase, tourId: "jobs" },
   { name: "Candidats", href: "/dashboard/candidates", icon: Users, tourId: "candidates" },
+  { name: "Clients", href: "/dashboard/clients", icon: Building2, tourId: "clients" },
   { name: "Statistiques", href: "/dashboard/analytics", icon: BarChart3, tourId: "analytics" },
   { name: "Équipe", href: "/dashboard/team", icon: Users2, tourId: "team" },
   { name: "Facturation", href: "/dashboard/billing", icon: CreditCard, tourId: "billing" },
@@ -153,10 +156,10 @@ export function DashboardShell({
         <div className="p-4 border-t border-border space-y-4 bg-background">
           {/* Job Limit Warning */}
           {jobLimitWarning && (
-            <div className="bg-amber-50 border border-amber-200 rounded-md p-3">
-              <p className="text-xs text-amber-800">
+            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-md p-3">
+              <p className="text-xs text-amber-800 dark:text-amber-200">
                 Vous approchez de la limite d&apos;offres.{" "}
-                <Link href="/dashboard/billing" className="font-medium underline hover:text-amber-900">
+                <Link href="/dashboard/billing" className="font-medium underline hover:text-amber-900 dark:hover:text-amber-100">
                   Passer en Pro
                 </Link>
               </p>
@@ -214,7 +217,8 @@ export function DashboardShell({
               />
             </div>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
             <button className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-full transition-colors">
               <Bell className="w-5 h-5" />
             </button>

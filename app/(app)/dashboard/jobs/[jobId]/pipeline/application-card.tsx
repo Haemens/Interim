@@ -6,7 +6,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, FileText, User, CheckCircle2, GripVertical, Loader2 } from "lucide-react";
+import { MapPin, FileText, User, CheckCircle2, GripVertical, Loader2, Phone, Mail, MessageSquare } from "lucide-react";
 
 // =============================================================================
 // TYPES
@@ -34,6 +34,7 @@ interface ApplicationCardProps {
   isSelected?: boolean;
   onSelectToggle?: (id: string) => void;
   selectionMode?: boolean;
+  onQuickStatusChange?: (id: string, status: string) => void;
 }
 
 // =============================================================================
@@ -48,12 +49,12 @@ function formatTimeAgo(dateString: string): string {
   const diffHours = Math.floor(diffMins / 60);
   const diffDays = Math.floor(diffHours / 24);
 
-  if (diffMins < 1) return "just now";
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays < 7) return `${diffDays}d ago`;
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
-  return date.toLocaleDateString();
+  if (diffMins < 1) return "à l'instant";
+  if (diffMins < 60) return `il y a ${diffMins}min`;
+  if (diffHours < 24) return `il y a ${diffHours}h`;
+  if (diffDays < 7) return `il y a ${diffDays}j`;
+  if (diffDays < 30) return `il y a ${Math.floor(diffDays / 7)}sem`;
+  return date.toLocaleDateString("fr-FR");
 }
 
 // =============================================================================
@@ -68,6 +69,7 @@ export function ApplicationCard({
   isSelected = false,
   onSelectToggle,
   selectionMode = false,
+  onQuickStatusChange,
 }: ApplicationCardProps) {
   const {
     attributes,
@@ -195,14 +197,49 @@ export function ApplicationCard({
             <span className="text-[10px] text-muted-foreground">
               {formatTimeAgo(data.createdAt)}
             </span>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-0.5">
+              {/* Quick contact actions */}
+              {data.candidatePhone && (
+                <a
+                  href={`tel:${data.candidatePhone}`}
+                  className="p-1.5 rounded-md text-muted-foreground hover:text-green-600 hover:bg-green-50 transition-colors"
+                  title={`Appeler ${data.candidatePhone}`}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Phone className="w-3.5 h-3.5" />
+                </a>
+              )}
+              {data.candidateEmail && (
+                <a
+                  href={`mailto:${data.candidateEmail}`}
+                  className="p-1.5 rounded-md text-muted-foreground hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                  title={`Email ${data.candidateEmail}`}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Mail className="w-3.5 h-3.5" />
+                </a>
+              )}
+              {/* Mark as contacted button - only show if status is NEW */}
+              {data.status === "NEW" && onQuickStatusChange && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onQuickStatusChange(data.id, "CONTACTED");
+                  }}
+                  className="p-1.5 rounded-md text-muted-foreground hover:text-amber-600 hover:bg-amber-50 transition-colors"
+                  title="Marquer comme contacté"
+                >
+                  <MessageSquare className="w-3.5 h-3.5" />
+                </button>
+              )}
+              <div className="w-px h-3 bg-border mx-0.5" />
               {data.cvUrl && (
                 <a
                   href={data.cvUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-1.5 rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
-                  title="View CV"
+                  title="Voir le CV"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <FileText className="w-3.5 h-3.5" />
@@ -211,7 +248,7 @@ export function ApplicationCard({
               <Link
                 href={`/dashboard/candidates?email=${encodeURIComponent(data.candidateEmail || "")}`}
                 className="p-1.5 rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
-                title="View profile"
+                title="Voir le profil"
                 onClick={(e) => e.stopPropagation()}
               >
                 <User className="w-3.5 h-3.5" />

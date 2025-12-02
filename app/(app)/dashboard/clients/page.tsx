@@ -61,8 +61,8 @@ export default function ClientsPage() {
       setPagination(data.pagination);
     } catch (err) {
       toast({
-        title: "Error",
-        description: err instanceof Error ? err.message : "Failed to load clients",
+        title: "Erreur",
+        description: err instanceof Error ? err.message : "Échec du chargement des clients",
         variant: "error",
       });
     } finally {
@@ -83,24 +83,24 @@ export default function ClientsPage() {
     setShowAddModal(false);
     fetchClients(searchQuery);
     toast({
-      title: "Client Created",
-      description: "The client has been added successfully.",
+      title: "Client créé",
+      description: "Le client a été ajouté avec succès.",
       variant: "success",
     });
   };
 
-  if (loading && clients.length === 0) {
+    if (loading && clients.length === 0) {
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Clients</h1>
-            <p className="text-slate-500 mt-1">Manage your client relationships</p>
+            <h1 className="text-2xl font-bold text-foreground">Clients</h1>
+            <p className="text-muted-foreground mt-1">Gérez vos relations clients</p>
           </div>
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 p-8">
+        <div className="bg-card rounded-xl border border-border p-8">
           <div className="flex items-center justify-center">
-            <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
           </div>
         </div>
       </div>
@@ -112,17 +112,17 @@ export default function ClientsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Clients</h1>
-          <p className="text-slate-500 mt-1">
-            Manage your client relationships
-            {pagination && ` • ${pagination.total} total`}
+          <h1 className="text-2xl font-bold text-foreground">Clients</h1>
+          <p className="text-muted-foreground mt-1">
+            Gérez vos relations clients
+            {pagination && ` • ${pagination.total} au total`}
           </p>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+          className="px-4 py-2 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors"
         >
-          Add Client
+          Ajouter un client
         </button>
       </div>
 
@@ -132,14 +132,14 @@ export default function ClientsPage() {
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search clients by name or email..."
-          className="flex-1 px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+          placeholder="Rechercher par nom ou email..."
+          className="flex-1 px-4 py-2 bg-background border border-input rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent placeholder:text-muted-foreground"
         />
         <button
           type="submit"
-          className="px-4 py-2 bg-slate-100 text-slate-700 font-medium rounded-lg hover:bg-slate-200 transition-colors"
+          className="px-4 py-2 bg-secondary text-secondary-foreground font-medium rounded-lg hover:bg-secondary/80 transition-colors"
         >
-          Search
+          Rechercher
         </button>
       </form>
 

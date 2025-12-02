@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { TenantProvider } from "@/modules/agency";
 import { getTenantFromHeaders, TENANT_HEADER } from "@/lib/tenant";
 import { APP_NAME, APP_DESCRIPTION } from "@/config/constants";
+import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
 const inter = Inter({
@@ -29,9 +30,11 @@ export default async function RootLayout({
   const tenantSlug = headersList.get(TENANT_HEADER);
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased`}>
-        <TenantProvider slug={tenantSlug}>{children}</TenantProvider>
+        <ThemeProvider defaultTheme="dark" storageKey="questhire-theme">
+          <TenantProvider slug={tenantSlug}>{children}</TenantProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

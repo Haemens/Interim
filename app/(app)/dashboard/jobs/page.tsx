@@ -42,15 +42,15 @@ export default function JobsPage() {
   function getStatusColor(status: string): string {
     switch (status) {
       case "ACTIVE":
-        return "bg-green-100 text-green-700";
+        return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400";
       case "DRAFT":
-        return "bg-slate-100 text-slate-600";
+        return "bg-secondary text-secondary-foreground";
       case "PAUSED":
-        return "bg-amber-100 text-amber-700";
+        return "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400";
       case "CLOSED":
-        return "bg-red-100 text-red-700";
+        return "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400";
       default:
-        return "bg-slate-100 text-slate-600";
+        return "bg-secondary text-secondary-foreground";
     }
   }
 
@@ -82,10 +82,10 @@ export default function JobsPage() {
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-slate-900">Offres</h1>
+          <h1 className="text-2xl font-bold text-foreground">Offres</h1>
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 p-8 text-center">
-          <div className="animate-pulse text-slate-500">Chargement des offres...</div>
+        <div className="bg-card rounded-xl border border-border p-8 text-center">
+          <div className="animate-pulse text-muted-foreground">Chargement des offres...</div>
         </div>
       </div>
     );
@@ -95,9 +95,9 @@ export default function JobsPage() {
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-slate-900">Offres</h1>
+          <h1 className="text-2xl font-bold text-foreground">Offres</h1>
         </div>
-        <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-red-700">
+        <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-6 text-destructive">
           {error}
         </div>
       </div>
@@ -107,18 +107,18 @@ export default function JobsPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-slate-900">Offres</h1>
+        <h1 className="text-2xl font-bold text-foreground">Offres</h1>
         <Link
           href="/dashboard/jobs/new"
-          className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+          className="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
         >
           + Nouvelle offre
         </Link>
       </div>
 
       {jobs.length === 0 ? (
-        <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
-          <div className="text-slate-400 mb-4">
+        <div className="bg-card rounded-xl border border-border p-12 text-center">
+          <div className="text-muted-foreground mb-4">
             <svg
               className="w-12 h-12 mx-auto"
               fill="none"
@@ -133,62 +133,62 @@ export default function JobsPage() {
               />
             </svg>
           </div>
-          <h3 className="text-lg font-medium text-slate-900 mb-2">
+          <h3 className="text-lg font-medium text-foreground mb-2">
             Aucune offre
           </h3>
-          <p className="text-slate-500 mb-6">
+          <p className="text-muted-foreground mb-6">
             Publiez votre première offre pour recevoir des candidatures.
           </p>
           <Link
             href="/dashboard/jobs/new"
-            className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+            className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
           >
             Créer une offre
           </Link>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="bg-card rounded-xl border border-border overflow-hidden">
           <table className="w-full">
-            <thead className="bg-slate-50 border-b border-slate-200">
+            <thead className="bg-muted/50 border-b border-border">
               <tr>
-                <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
+                <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Titre du poste
                 </th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
+                <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Lieu
                 </th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
+                <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Type
                 </th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
+                <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Candidatures
                 </th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
+                <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Statut
                 </th>
-                <th className="text-right px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
+                <th className="text-right px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-border">
               {jobs.map((job) => (
-                <tr key={job.id} className="hover:bg-slate-50">
+                <tr key={job.id} className="hover:bg-muted/50">
                   <td className="px-6 py-4">
                     <Link
                       href={`/dashboard/jobs/${job.id}`}
-                      className="font-medium text-slate-900 hover:text-indigo-600"
+                      className="font-medium text-foreground hover:text-primary"
                     >
                       {job.title}
                     </Link>
                   </td>
-                  <td className="px-6 py-4 text-sm text-slate-500">
+                  <td className="px-6 py-4 text-sm text-muted-foreground">
                     {job.location || "—"}
                   </td>
-                  <td className="px-6 py-4 text-sm text-slate-500">
+                  <td className="px-6 py-4 text-sm text-muted-foreground">
                     {translateContractType(job.contractType)}
                   </td>
-                  <td className="px-6 py-4 text-sm text-slate-500">
+                  <td className="px-6 py-4 text-sm text-muted-foreground">
                     {job._count.applications}
                   </td>
                   <td className="px-6 py-4">
@@ -201,7 +201,7 @@ export default function JobsPage() {
                   <td className="px-6 py-4 text-right">
                     <Link
                       href={`/dashboard/jobs/${job.id}`}
-                      className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                      className="text-sm text-primary hover:text-primary/90 font-medium"
                     >
                       Voir →
                     </Link>
