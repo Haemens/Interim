@@ -81,6 +81,16 @@ export default async function JobPipelinePage({
     redirect("/dashboard/jobs");
   }
 
+  const translateStatus = (status: string) => {
+    const map: Record<string, string> = {
+      ACTIVE: "Active",
+      DRAFT: "Brouillon",
+      PAUSED: "En pause",
+      ARCHIVED: "Archivée",
+    };
+    return map[status] || status;
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -88,7 +98,7 @@ export default async function JobPipelinePage({
         <div>
           <div className="flex items-center gap-2 text-sm text-slate-500 mb-1">
             <Link href="/dashboard/jobs" className="hover:text-slate-700">
-              Jobs
+              Offres
             </Link>
             <span>/</span>
             <Link href={`/dashboard/jobs/${jobId}`} className="hover:text-slate-700">
@@ -100,7 +110,7 @@ export default async function JobPipelinePage({
           <h1 className="text-2xl font-bold text-slate-900">{job.title}</h1>
           <p className="text-slate-500 mt-1">
             {job.location && <span>{job.location} • </span>}
-            {job._count.applications} application{job._count.applications !== 1 ? "s" : ""}
+            {job._count.applications} candidature{job._count.applications !== 1 ? "s" : ""}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -115,13 +125,13 @@ export default async function JobPipelinePage({
                 : "bg-red-100 text-red-700"
             }`}
           >
-            {job.status}
+            {translateStatus(job.status)}
           </span>
           <Link
             href={`/dashboard/jobs/${jobId}`}
             className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50"
           >
-            Job Details
+            Détails de l&apos;offre
           </Link>
         </div>
       </div>

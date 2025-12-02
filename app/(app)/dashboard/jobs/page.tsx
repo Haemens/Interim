@@ -25,12 +25,12 @@ export default function JobsPage() {
       try {
         const res = await fetch("/api/jobs");
         if (!res.ok) {
-          throw new Error("Failed to fetch jobs");
+          throw new Error("Impossible de récupérer les offres");
         }
         const data = await res.json();
         setJobs(data.jobs || []);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
+        setError(err instanceof Error ? err.message : "Une erreur est survenue");
       } finally {
         setLoading(false);
       }
@@ -54,14 +54,38 @@ export default function JobsPage() {
     }
   }
 
+  function translateStatus(status: string): string {
+    const map: Record<string, string> = {
+      ACTIVE: "Active",
+      DRAFT: "Brouillon",
+      PAUSED: "En pause",
+      CLOSED: "Fermée",
+      ARCHIVED: "Archivée",
+    };
+    return map[status] || status;
+  }
+
+  function translateContractType(type: string | null): string {
+    if (!type) return "—";
+    const map: Record<string, string> = {
+      FULL_TIME: "CDI",
+      PART_TIME: "Temps partiel",
+      CONTRACT: "CDD",
+      FREELANCE: "Freelance",
+      INTERNSHIP: "Stage",
+      INTERIM: "Intérim",
+    };
+    return map[type] || type;
+  }
+
   if (loading) {
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-slate-900">Jobs</h1>
+          <h1 className="text-2xl font-bold text-slate-900">Offres</h1>
         </div>
         <div className="bg-white rounded-xl border border-slate-200 p-8 text-center">
-          <div className="animate-pulse text-slate-500">Loading jobs...</div>
+          <div className="animate-pulse text-slate-500">Chargement des offres...</div>
         </div>
       </div>
     );
@@ -71,7 +95,7 @@ export default function JobsPage() {
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-slate-900">Jobs</h1>
+          <h1 className="text-2xl font-bold text-slate-900">Offres</h1>
         </div>
         <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-red-700">
           {error}
@@ -83,12 +107,12 @@ export default function JobsPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-slate-900">Jobs</h1>
+        <h1 className="text-2xl font-bold text-slate-900">Offres</h1>
         <Link
           href="/dashboard/jobs/new"
           className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
         >
-          + New Job
+          + Nouvelle offre
         </Link>
       </div>
 
@@ -110,16 +134,16 @@ export default function JobsPage() {
             </svg>
           </div>
           <h3 className="text-lg font-medium text-slate-900 mb-2">
-            No jobs yet
+            Aucune offre
           </h3>
           <p className="text-slate-500 mb-6">
-            Create your first job posting to start receiving applications.
+            Publiez votre première offre pour recevoir des candidatures.
           </p>
           <Link
             href="/dashboard/jobs/new"
             className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
           >
-            Create your first job
+            Créer une offre
           </Link>
         </div>
       ) : (
@@ -128,19 +152,19 @@ export default function JobsPage() {
             <thead className="bg-slate-50 border-b border-slate-200">
               <tr>
                 <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                  Job Title
+                  Titre du poste
                 </th>
                 <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                  Location
+                  Lieu
                 </th>
                 <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
                   Type
                 </th>
                 <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                  Applications
+                  Candidatures
                 </th>
                 <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                  Status
+                  Statut
                 </th>
                 <th className="text-right px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">
                   Actions
@@ -162,7 +186,7 @@ export default function JobsPage() {
                     {job.location || "—"}
                   </td>
                   <td className="px-6 py-4 text-sm text-slate-500">
-                    {job.contractType || "—"}
+                    {translateContractType(job.contractType)}
                   </td>
                   <td className="px-6 py-4 text-sm text-slate-500">
                     {job._count.applications}
@@ -171,7 +195,7 @@ export default function JobsPage() {
                     <span
                       className={`text-xs px-2 py-1 rounded-full ${getStatusColor(job.status)}`}
                     >
-                      {job.status}
+                      {translateStatus(job.status)}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">
@@ -179,7 +203,7 @@ export default function JobsPage() {
                       href={`/dashboard/jobs/${job.id}`}
                       className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
                     >
-                      View →
+                      Voir →
                     </Link>
                   </td>
                 </tr>

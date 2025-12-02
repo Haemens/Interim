@@ -70,6 +70,18 @@ const STATUS_COLORS: Record<ApplicationStatus, string> = {
 // COMPONENT
 // =============================================================================
 
+// Helper to translate column labels
+const translateColumnLabel = (status: ApplicationStatus, label: string): string => {
+  const map: Record<ApplicationStatus, string> = {
+    NEW: "Nouveau",
+    CONTACTED: "Contacté",
+    QUALIFIED: "Qualifié",
+    PLACED: "Recruté",
+    REJECTED: "Refusé",
+  };
+  return map[status] || label;
+};
+
 export function PipelineBoard({ jobId, canEdit, canUseShortlists = true, isDemo = false }: PipelineBoardProps) {
   const [columns, setColumns] = useState<Column[]>([]);
   const [loading, setLoading] = useState(true);
@@ -101,14 +113,14 @@ export function PipelineBoard({ jobId, canEdit, canUseShortlists = true, isDemo 
         const response = await fetch(`/api/jobs/${jobId}/applications`);
         
         if (!response.ok) {
-          throw new Error("Failed to load pipeline");
+          throw new Error("Impossible de charger le pipeline");
         }
 
         const data: PipelineData = await response.json();
         setColumns(data.columns);
         setJobTitle(data.job?.title || "");
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load");
+        setError(err instanceof Error ? err.message : "Échec du chargement");
       } finally {
         setLoading(false);
       }
@@ -213,12 +225,12 @@ export function PipelineBoard({ jobId, canEdit, canUseShortlists = true, isDemo 
       });
 
       if (!response.ok) {
-        throw new Error("Failed to update status");
+        throw new Error("Impossible de mettre à jour le statut");
       }
     } catch {
       // Rollback on error
       setColumns(previousColumns);
-      setError("Failed to update status. Please try again.");
+      setError("Impossible de mettre à jour le statut. Veuillez réessayer.");
       setTimeout(() => setError(null), 3000);
     } finally {
       setUpdating(null);
@@ -228,7 +240,7 @@ export function PipelineBoard({ jobId, canEdit, canUseShortlists = true, isDemo 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="text-muted-foreground">Loading pipeline...</div>
+        <div className="text-muted-foreground">Chargement du pipeline...</div>
       </div>
     );
   }
@@ -254,15 +266,15 @@ export function PipelineBoard({ jobId, canEdit, canUseShortlists = true, isDemo 
               {selectionMode ? (
                 <div className="flex items-center gap-2 text-sm">
                   <span className="font-medium text-primary">
-                    {selectedIds.size} selected
+                    {selectedIds.size} sélectionné(s)
                   </span>
                   <span className="text-muted-foreground">
-                    Select candidates to create a shortlist
+                    Sélectionnez des candidats pour créer une shortlist
                   </span>
                 </div>
               ) : (
                 <span className="text-sm text-muted-foreground">
-                  Drag candidates to change status or select them to create a shortlist
+                  Glissez les candidats pour changer leur statut ou sélectionnez-les pour créer une shortlist
                 </span>
               )}
             </div>
@@ -274,7 +286,7 @@ export function PipelineBoard({ jobId, canEdit, canUseShortlists = true, isDemo 
                     size="sm"
                     onClick={handleClearSelection}
                   >
-                    Cancel
+                    Annuler
                   </Button>
                   <Button
                     size="sm"
@@ -282,7 +294,7 @@ export function PipelineBoard({ jobId, canEdit, canUseShortlists = true, isDemo 
                     disabled={selectedIds.size === 0}
                   >
                     <CheckCircle2 className="w-4 h-4 mr-2" />
-                    Create Shortlist ({selectedIds.size})
+                    Créer une shortlist ({selectedIds.size})
                   </Button>
                 </>
               ) : canUseShortlists ? (
@@ -291,12 +303,12 @@ export function PipelineBoard({ jobId, canEdit, canUseShortlists = true, isDemo 
                   size="sm"
                   onClick={() => setSelectionMode(true)}
                 >
-                  Select for Shortlist
+                  Sélectionner pour shortlist
                 </Button>
               ) : (
                 <Button asChild variant="secondary" size="sm">
                   <Link href="/dashboard/billing">
-                    Upgrade for Shortlists
+                    Passer Pro pour les shortlists
                   </Link>
                 </Button>
               )}
@@ -325,7 +337,7 @@ export function PipelineBoard({ jobId, canEdit, canUseShortlists = true, isDemo 
             <PipelineColumn
               key={column.status}
               status={column.status}
-              label={column.label}
+              label={translateColumnLabel(column.status, column.label)}
               color={STATUS_COLORS[column.status]}
               count={column.applications.length}
             >
@@ -347,7 +359,7 @@ export function PipelineBoard({ jobId, canEdit, canUseShortlists = true, isDemo 
                   ))}
                   {column.applications.length === 0 && (
                     <div className="text-center py-12 border-2 border-dashed border-muted rounded-lg">
-                      <p className="text-sm text-muted-foreground">No applications</p>
+                      <p className="text-sm text-muted-foreground">Aucune candidature</p>
                     </div>
                   )}
                 </div>

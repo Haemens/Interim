@@ -96,10 +96,10 @@ export default async function DashboardPage() {
       <div className="space-y-8">
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
           <h2 className="text-lg font-semibold text-amber-800">
-            No Agency Found
+            Aucune agence trouvée
           </h2>
           <p className="text-amber-700 mt-1">
-            Please log in to access the dashboard.
+            Veuillez vous connecter pour accéder au tableau de bord.
           </p>
         </div>
       </div>
@@ -113,10 +113,10 @@ export default async function DashboardPage() {
       <div className="space-y-8">
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
           <h2 className="text-lg font-semibold text-amber-800">
-            Agency Not Found
+            Agence introuvable
           </h2>
           <p className="text-amber-700 mt-1">
-            The agency could not be loaded.
+            Impossible de charger les données de l&apos;agence.
           </p>
         </div>
       </div>
@@ -132,22 +132,62 @@ export default async function DashboardPage() {
 
   const activePlan = agency.subscriptions[0]?.plan || "STARTER";
 
+  // Translate stats labels
+  const translatedStats = stats.map(stat => {
+    let label = stat.label;
+    let change = stat.change;
+
+    if (label === "Active Jobs") label = "Offres actives";
+    if (label === "Total Applications") label = "Total candidatures";
+    if (label === "New Candidates") label = "Nouveaux candidats";
+    if (label === "Placements") label = "Recrutements";
+
+    if (change === "published") change = "publié";
+    if (change.includes("new")) change = change.replace("new", "nouveau(x)");
+    if (change === "to review") change = "à examiner";
+    if (change === "successful") change = "réussi(s)";
+
+    return { ...stat, label, change };
+  });
+
+  // Helper for status translation
+  const translateJobStatus = (status: string) => {
+    const map: Record<string, string> = {
+      DRAFT: "Brouillon",
+      ACTIVE: "Active",
+      PAUSED: "En pause",
+      ARCHIVED: "Archivée"
+    };
+    return map[status] || status;
+  };
+
+  const translateAppStatus = (status: string) => {
+    const map: Record<string, string> = {
+      NEW: "Nouveau",
+      CONTACTED: "Contacté",
+      QUALIFIED: "Qualifié",
+      PLACED: "Recruté",
+      REJECTED: "Refusé"
+    };
+    return map[status] || status;
+  };
+
   return (
     <div className="space-y-8">
       {/* Welcome Header */}
       <div>
         <h1 className="text-2xl font-bold text-slate-900">
-          Welcome to {agency.name}
+          Bienvenue chez {agency.name}
         </h1>
         <p className="text-slate-600 mt-1">
-          Here&apos;s what&apos;s happening at{" "}
-          <span className="font-medium">{agency.slug}</span> today.
+          Voici ce qui se passe chez{" "}
+          <span className="font-medium">{agency.slug}</span> aujourd&apos;hui.
         </p>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat) => (
+        {translatedStats.map((stat) => (
           <div
             key={stat.label}
             className="bg-white p-6 rounded-xl border border-slate-200"
@@ -164,14 +204,14 @@ export default async function DashboardPage() {
         {/* Recent Jobs */}
         <div className="bg-white rounded-xl border border-slate-200 p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold text-slate-900">Recent Jobs</h2>
+            <h2 className="text-lg font-semibold text-slate-900">Offres récentes</h2>
             <Link href="/dashboard/jobs" className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
-              View all →
+              Tout voir →
             </Link>
           </div>
           {jobs.length === 0 ? (
             <p className="text-slate-500 text-sm py-4">
-              No jobs yet. Create your first job posting!
+              Pas encore d&apos;offre. Créez votre première annonce !
             </p>
           ) : (
             <div className="space-y-3">
@@ -183,7 +223,7 @@ export default async function DashboardPage() {
                   <div>
                     <p className="font-medium text-slate-900">{job.title}</p>
                     <p className="text-sm text-slate-500">
-                      {job._count.applications} application
+                      {job._count.applications} candidature
                       {job._count.applications !== 1 ? "s" : ""}
                     </p>
                   </div>
@@ -198,7 +238,7 @@ export default async function DashboardPage() {
                             : "bg-slate-100 text-slate-600"
                     }`}
                   >
-                    {job.status}
+                    {translateJobStatus(job.status)}
                   </span>
                 </div>
               ))}
@@ -210,15 +250,15 @@ export default async function DashboardPage() {
         <div className="bg-white rounded-xl border border-slate-200 p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold text-slate-900">
-              Recent Applications
+              Candidatures récentes
             </h2>
             <Link href="/dashboard/candidates" className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
-              View all →
+              Tout voir →
             </Link>
           </div>
           {applications.length === 0 ? (
             <p className="text-slate-500 text-sm py-4">
-              No applications yet. Publish a job to start receiving candidates!
+              Pas encore de candidature. Publiez une offre pour recevoir des candidats !
             </p>
           ) : (
             <div className="space-y-3">
@@ -252,7 +292,7 @@ export default async function DashboardPage() {
                                 : "bg-slate-100 text-slate-600"
                       }`}
                     >
-                      {app.status}
+                      {translateAppStatus(app.status)}
                     </span>
                     <p className="text-xs text-slate-500 mt-1">
                       {formatTimeAgo(app.createdAt)}
@@ -269,11 +309,11 @@ export default async function DashboardPage() {
       <div className="bg-slate-50 rounded-xl border border-slate-200 p-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-slate-600">Current Plan</p>
+            <p className="text-sm text-slate-600">Forfait actuel</p>
             <p className="font-semibold text-slate-900">{activePlan}</p>
           </div>
           <Link href="/dashboard/billing" className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
-            Upgrade →
+            Mettre à niveau →
           </Link>
         </div>
       </div>

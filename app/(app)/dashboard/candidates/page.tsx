@@ -60,6 +60,15 @@ function getStatusVariant(status: Candidate["status"]) {
   }
 }
 
+function translateStatus(status: string): string {
+  const map: Record<string, string> = {
+    ACTIVE: "Actif",
+    DO_NOT_CONTACT: "Ne pas contacter",
+    BLACKLISTED: "Liste noire",
+  };
+  return map[status] || status;
+}
+
 export default function CandidatesPage() {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [total, setTotal] = useState(0);
@@ -85,14 +94,14 @@ export default function CandidatesPage() {
         const res = await fetch(`/api/candidates?${params.toString()}`);
         if (!res.ok) {
           const data = await res.json();
-          throw new Error(data.error || "Failed to fetch candidates");
+          throw new Error(data.error || "Impossible de récupérer les candidats");
         }
 
         const data: CandidatesResponse = await res.json();
         setCandidates(data.items);
         setTotal(data.total);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load candidates");
+        setError(err instanceof Error ? err.message : "Impossible de charger les candidats");
       } finally {
         setLoading(false);
       }
@@ -105,8 +114,8 @@ export default function CandidatesPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Talent Pool"
-        description="Browse and manage your candidate profiles."
+        title="Vivier de talents"
+        description="Parcourez et gérez vos profils candidats."
       />
 
       {/* Filters */}
@@ -118,7 +127,7 @@ export default function CandidatesPage() {
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="text"
-                placeholder="Search by name, email, location, skills..."
+                placeholder="Rechercher par nom, email, lieu..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="pl-9"
@@ -129,13 +138,13 @@ export default function CandidatesPage() {
             <div className="w-full md:w-48">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Status" />
+                  <SelectValue placeholder="Statut" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="ALL">All Statuses</SelectItem>
-                  <SelectItem value="ACTIVE">Active</SelectItem>
-                  <SelectItem value="DO_NOT_CONTACT">Do Not Contact</SelectItem>
-                  <SelectItem value="BLACKLISTED">Blacklisted</SelectItem>
+                  <SelectItem value="ALL">Tous les statuts</SelectItem>
+                  <SelectItem value="ACTIVE">Actif</SelectItem>
+                  <SelectItem value="DO_NOT_CONTACT">Ne pas contacter</SelectItem>
+                  <SelectItem value="BLACKLISTED">Liste noire</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -145,7 +154,7 @@ export default function CandidatesPage() {
               <Filter className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="text"
-                placeholder="Filter by sector..."
+                placeholder="Filtrer par secteur..."
                 value={sectorFilter}
                 onChange={(e) => setSectorFilter(e.target.value)}
                 className="pl-9"
@@ -164,7 +173,7 @@ export default function CandidatesPage() {
 
       {/* Results Count */}
       <div className="text-sm text-muted-foreground font-medium">
-        {loading ? "Loading..." : `${total} candidate${total !== 1 ? "s" : ""} found`}
+        {loading ? "Chargement..." : `${total} candidat${total !== 1 ? "s" : ""} trouvé${total !== 1 ? "s" : ""}`}
       </div>
 
       {/* Candidates Table */}
@@ -173,25 +182,25 @@ export default function CandidatesPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[300px]">Name</TableHead>
+                <TableHead className="w-[300px]">Nom</TableHead>
                 <TableHead>Contact</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Sectors</TableHead>
-                <TableHead>Skills</TableHead>
-                <TableHead className="text-right">Applications</TableHead>
+                <TableHead>Statut</TableHead>
+                <TableHead>Secteurs</TableHead>
+                <TableHead>Compétences</TableHead>
+                <TableHead className="text-right">Candidatures</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={6} className="h-24 text-center">
-                    Loading candidates...
+                    Chargement des candidats...
                   </TableCell>
                 </TableRow>
               ) : candidates.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
-                    No candidates found. Candidates are created automatically when someone applies to a job.
+                    Aucun candidat trouvé. Les candidats sont créés automatiquement lorsqu&apos;ils postulent à une offre.
                   </TableCell>
                 </TableRow>
               ) : (
@@ -226,7 +235,7 @@ export default function CandidatesPage() {
                     </TableCell>
                     <TableCell>
                       <Badge variant={getStatusVariant(candidate.status)} className="font-normal text-[10px] px-2">
-                        {candidate.status.replace(/_/g, " ")}
+                        {translateStatus(candidate.status)}
                       </Badge>
                     </TableCell>
                     <TableCell>
