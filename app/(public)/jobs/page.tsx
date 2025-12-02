@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { getTenantFromHost } from "@/lib/tenant";
+import { DEMO_AGENCY_SLUG } from "@/modules/auth/demo-mode";
 
 async function getAgencyAndJobs(tenantSlug: string | null) {
   if (!tenantSlug) return null;
@@ -48,7 +49,12 @@ function formatSalary(min: number | null, max: number | null, currency: string |
 export default async function PublicJobsPage() {
   const headersList = await headers();
   const host = headersList.get("host") || "";
-  const tenantSlug = getTenantFromHost(host);
+  
+  // Get tenant from host, fallback to demo agency for Vercel deployments without subdomains
+  let tenantSlug = getTenantFromHost(host);
+  if (!tenantSlug) {
+    tenantSlug = DEMO_AGENCY_SLUG;
+  }
 
   const data = await getAgencyAndJobs(tenantSlug);
 

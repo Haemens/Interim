@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { getTenantSlugFromRequest } from "@/lib/tenant";
+import { getTenantSlugWithFallback } from "@/lib/tenant";
 import {
   getCurrentMembershipOrThrow,
+  getCurrentUser,
   assertMinimumRole,
   UnauthorizedError,
   ForbiddenError,
@@ -53,7 +54,8 @@ export async function GET(
 ) {
   try {
     const { jobId } = await params;
-    const tenantSlug = getTenantSlugFromRequest(request);
+    const user = await getCurrentUser();
+    const tenantSlug = await getTenantSlugWithFallback(request, user?.id ?? null);
     
     if (!tenantSlug) {
       return NextResponse.json(

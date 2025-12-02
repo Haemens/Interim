@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { getTenantFromHost } from "@/lib/tenant";
+import { DEMO_AGENCY_SLUG } from "@/modules/auth/demo-mode";
 import { ApplicationForm } from "./application-form";
 
 interface JobDetailPageProps {
@@ -48,7 +49,12 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
   const resolvedSearchParams = await searchParams;
   const headersList = await headers();
   const host = headersList.get("host") || "";
-  const tenantSlug = getTenantFromHost(host);
+  
+  // Get tenant from host, fallback to demo agency for Vercel deployments without subdomains
+  let tenantSlug = getTenantFromHost(host);
+  if (!tenantSlug) {
+    tenantSlug = DEMO_AGENCY_SLUG;
+  }
 
   const data = await getJobData(tenantSlug, jobId);
 

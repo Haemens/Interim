@@ -1,9 +1,7 @@
-import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import { TENANT_HEADER } from "@/lib/tenant";
-import { getCurrentUser } from "@/modules/auth";
+import { getEffectiveTenant } from "@/lib/get-effective-tenant";
 import { PipelineBoard } from "./board";
 import { ActivityTimeline } from "./activity-timeline";
 
@@ -57,16 +55,11 @@ export default async function JobPipelinePage({
   params: Promise<{ jobId: string }>;
 }) {
   const { jobId } = await params;
-  const headersList = await headers();
-  const tenantSlug = headersList.get(TENANT_HEADER);
+  
+  // Get tenant with fallback for Vercel deployments without subdomains
+  const { tenantSlug, agency, user } = await getEffectiveTenant();
 
-  if (!tenantSlug) {
-    redirect("/login");
-  }
-
-  // Get current user
-  const user = await getCurrentUser();
-  if (!user) {
+  if (!tenantSlug || !agency || !user) {
     redirect("/login");
   }
 
