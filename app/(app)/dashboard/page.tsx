@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { db } from "@/lib/db";
 import { getEffectiveTenant } from "@/lib/get-effective-tenant";
 
@@ -164,9 +165,9 @@ export default async function DashboardPage() {
         <div className="bg-white rounded-xl border border-slate-200 p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold text-slate-900">Recent Jobs</h2>
-            <button className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+            <Link href="/dashboard/jobs" className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
               View all →
-            </button>
+            </Link>
           </div>
           {jobs.length === 0 ? (
             <p className="text-slate-500 text-sm py-4">
@@ -211,9 +212,9 @@ export default async function DashboardPage() {
             <h2 className="text-lg font-semibold text-slate-900">
               Recent Applications
             </h2>
-            <button className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+            <Link href="/dashboard/candidates" className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
               View all →
-            </button>
+            </Link>
           </div>
           {applications.length === 0 ? (
             <p className="text-slate-500 text-sm py-4">
@@ -271,9 +272,9 @@ export default async function DashboardPage() {
             <p className="text-sm text-slate-600">Current Plan</p>
             <p className="font-semibold text-slate-900">{activePlan}</p>
           </div>
-          <button className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+          <Link href="/dashboard/billing" className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
             Upgrade →
-          </button>
+          </Link>
         </div>
       </div>
     </div>

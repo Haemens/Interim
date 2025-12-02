@@ -130,7 +130,7 @@ async function main() {
       { userId: adminUser.id, agencyId: alphaStaff.id, role: "ADMIN" },
       { userId: recruiterUser.id, agencyId: alphaStaff.id, role: "RECRUITER" },
       { userId: betaOwner.id, agencyId: betaInterim.id, role: "OWNER" },
-      { userId: demoUser.id, agencyId: demoAgency.id, role: "RECRUITER" },
+      { userId: demoUser.id, agencyId: demoAgency.id, role: "OWNER" },
     ],
   });
 
