@@ -21,11 +21,18 @@ interface Job {
   publishedAt: Date | null;
 }
 
+interface JobFilters {
+  q?: string;
+  type?: string;
+  sector?: string;
+  location?: string;
+}
+
 // =============================================================================
 // DATA FETCHING
 // =============================================================================
 
-async function getAgencyAndJobs(tenantSlug: string | null) {
+async function getAgencyAndJobs(tenantSlug: string | null, filters: JobFilters = {}) {
   if (!tenantSlug) return null;
 
   const agency = await db.agency.findUnique({
@@ -34,11 +41,32 @@ async function getAgencyAndJobs(tenantSlug: string | null) {
 
   if (!agency) return null;
 
+  const where: any = {
+    agencyId: agency.id,
+    status: "ACTIVE",
+  };
+
+  // Apply search filter (title or location)
+  if (filters.q) {
+    where.OR = [
+      { title: { contains: filters.q, mode: "insensitive" } },
+      { description: { contains: filters.q, mode: "insensitive" } },
+      { location: { contains: filters.q, mode: "insensitive" } },
+    ];
+  }
+
+  // Apply contract type filter
+  if (filters.type) {
+    where.contractType = filters.type;
+  }
+
+  // Apply sector filter
+  if (filters.sector) {
+    where.sector = filters.sector;
+  }
+
   const jobs = await db.job.findMany({
-    where: {
-      agencyId: agency.id,
-      status: "ACTIVE",
-    },
+    where,
     orderBy: { publishedAt: "desc" },
     select: {
       id: true,
@@ -91,11 +119,22 @@ function truncateDescription(desc: string | null, maxLength: number = 120): stri
   return desc.substring(0, maxLength).trim() + "...";
 }
 
+import { JobFilters } from "./job-filters";
+
 // =============================================================================
 // PAGE COMPONENT
 // =============================================================================
 
-export default async function PublicJobsPage() {
+interface PageProps {
+  searchParams: Promise<{
+    q?: string;
+    type?: string;
+    sector?: string;
+  }>;
+}
+
+export default async function PublicJobsPage({ searchParams }: PageProps) {
+  const resolvedSearchParams = await searchParams;
   const headersList = await headers();
   const host = headersList.get("host") || "";
   
@@ -104,7 +143,11 @@ export default async function PublicJobsPage() {
     tenantSlug = DEMO_AGENCY_SLUG;
   }
 
-  const data = await getAgencyAndJobs(tenantSlug);
+  const data = await getAgencyAndJobs(tenantSlug, {
+    q: resolvedSearchParams.q,
+    type: resolvedSearchParams.type,
+    sector: resolvedSearchParams.sector,
+  });
 
   if (!data) {
     return (
@@ -128,37 +171,161 @@ export default async function PublicJobsPage() {
       {/* HERO SECTION */}
       {/* ================================================================== */}
       <header
-        className="py-16 px-4"
+        className="py-20 px-4 relative overflow-hidden"
         style={{ backgroundColor: primaryColor }}
       >
-        <div className="max-w-4xl mx-auto text-center text-white">
+        {/* Pattern overlay */}
+        <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+        
+        <div className="max-w-4xl mx-auto text-center text-white relative z-10">
           {agency.logoUrl && (
             <img
               src={agency.logoUrl}
               alt={agency.name}
-              className="h-16 mx-auto mb-6"
+              className="h-16 mx-auto mb-8 bg-white/10 p-2 rounded-xl backdrop-blur-sm shadow-lg"
             />
           )}
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">
-            Trouve ton <span className="underline decoration-4 underline-offset-4">prochain job</span> près de chez toi
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-6 leading-tight tracking-tight">
+            Trouve ton <span className="relative inline-block">prochain job<span className="absolute bottom-1 left-0 w-full h-2 bg-white/20 rounded-full"></span></span> près de chez toi
           </h1>
-          <p className="text-lg md:text-xl opacity-95 mb-8 max-w-2xl mx-auto">
-            Des offres d&apos;emploi <strong>simples et accessibles</strong> dans ta région. 
+          <p className="text-xl opacity-95 mb-12 max-w-2xl mx-auto font-medium text-white/90">
+            Des offres d&apos;emploi simples et accessibles dans ta région. 
             Pas besoin de CV parfait, juste de motivation !
           </p>
-          <a
-            href="#offres"
-            className="inline-block bg-white text-slate-900 font-semibold px-8 py-4 rounded-full text-lg hover:bg-slate-100 transition-colors shadow-lg"
-          >
-            👉 Voir les offres près de chez toi
-          </a>
         </div>
       </header>
+
+      {/* FILTERS BAR - Floating over the hero/content border */}
+      <div className="px-4">
+        <JobFilters />
+      </div>
+
+      {/* ================================================================== */}
+      {/* OFFRES D'EMPLOI */}
+      {/* ================================================================== */}
+      <section id="offres" className="py-16 px-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-end justify-between mb-8">
+            <h2 className="text-2xl font-bold text-slate-900">
+              Offres d&apos;emploi
+            </h2>
+            <p className="text-slate-500 font-medium">
+              {jobs.length > 0 
+                ? `${jobs.length} offre${jobs.length > 1 ? "s" : ""} disponible${jobs.length > 1 ? "s" : ""}`
+                : "0 offre trouvée"
+              }
+            </p>
+          </div>
+
+          {/* Liste des offres */}
+          {jobs.length === 0 ? (
+            <div className="bg-white rounded-2xl border border-slate-200 p-16 text-center shadow-sm">
+              <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-4xl">🔍</span>
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-3">
+                Aucune offre ne correspond à ta recherche
+              </h3>
+              <p className="text-slate-600 mb-8 max-w-md mx-auto">
+                Essaie de modifier tes filtres ou reviens plus tard, de nouvelles opportunités arrivent régulièrement !
+              </p>
+              <a href="/jobs" className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-indigo-700 bg-indigo-100 hover:bg-indigo-200 transition-colors">
+                Voir toutes les offres
+              </a>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {jobs.map((job: Job) => (
+                <Link
+                  key={job.id}
+                  href={`/jobs/${job.id}`}
+                  className="block bg-white rounded-2xl border border-slate-200 p-6 md:p-8 hover:border-indigo-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden"
+                >
+                  {/* Hover accent line */}
+                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
+                  <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between md:block">
+                        <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors">
+                          {job.title}
+                        </h3>
+                      </div>
+                      
+                      {/* Badges */}
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {job.location && (
+                          <span className="inline-flex items-center gap-1.5 text-xs font-medium bg-slate-100 text-slate-700 px-3 py-1.5 rounded-full border border-slate-200">
+                            📍 {job.location}
+                          </span>
+                        )}
+                        {job.contractType && (
+                          <span className="inline-flex items-center gap-1.5 text-xs font-medium bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-full border border-indigo-100">
+                            📄 {formatContractType(job.contractType)}
+                          </span>
+                        )}
+                        {job.sector && (
+                          <span className="inline-flex items-center gap-1.5 text-xs font-medium bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full border border-emerald-100">
+                            🏢 {job.sector}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Description courte */}
+                      {job.description && (
+                        <p className="text-sm text-slate-600 mb-4 leading-relaxed line-clamp-2">
+                          {truncateDescription(job.description, 160)}
+                        </p>
+                      )}
+
+                      {/* Points clés */}
+                      <div className="flex flex-wrap gap-4 text-xs font-medium text-slate-500">
+                        <span className="flex items-center gap-1.5 text-green-600 bg-green-50 px-2 py-1 rounded-md">
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                          Réponse rapide
+                        </span>
+                        <span className="flex items-center gap-1.5 text-blue-600 bg-blue-50 px-2 py-1 rounded-md">
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          Sans CV
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-start gap-4 md:min-w-[180px] pt-4 md:pt-0 border-t md:border-t-0 border-slate-100 mt-2 md:mt-0">
+                      {formatSalary(job.salaryMin, job.salaryMax, job.currency) ? (
+                        <span className="text-lg font-bold text-slate-900 bg-slate-50 px-3 py-1 rounded-lg">
+                          {formatSalary(job.salaryMin, job.salaryMax, job.currency)}
+                        </span>
+                      ) : (
+                        <span className="text-sm font-medium text-slate-400 italic">Salaire non précisé</span>
+                      )}
+                      
+                      <span
+                        className="inline-flex items-center justify-center text-sm font-bold px-6 py-3 rounded-xl text-white shadow-sm transition-all transform group-hover:translate-x-1"
+                        style={{ backgroundColor: primaryColor }}
+                      >
+                        Postuler
+                        <svg className="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* ================================================================== */}
       {/* COMMENT ÇA MARCHE */}
       {/* ================================================================== */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-20 px-4 bg-white border-t border-slate-100">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold text-slate-900 text-center mb-12">
             Comment ça marche ?
