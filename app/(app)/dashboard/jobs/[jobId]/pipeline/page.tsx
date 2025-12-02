@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { getEffectiveTenant } from "@/lib/get-effective-tenant";
+import { isDemoAgencySlug } from "@/modules/auth/demo-mode";
 import { PipelineBoard } from "./board";
 import { ActivityTimeline } from "./activity-timeline";
 
@@ -143,6 +144,7 @@ export default async function JobPipelinePage({
           <PipelineBoard
             jobId={jobId}
             canEdit={canEdit}
+            isDemo={isDemoAgencySlug(tenantSlug)}
           />
         </div>
 

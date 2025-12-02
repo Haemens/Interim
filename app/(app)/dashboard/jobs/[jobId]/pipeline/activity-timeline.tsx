@@ -30,11 +30,11 @@ function formatTimeAgo(dateString: string): string {
   const diffHours = Math.floor(diffMins / 60);
   const diffDays = Math.floor(diffHours / 24);
 
-  if (diffMins < 1) return "just now";
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays < 7) return `${diffDays}d ago`;
-  return date.toLocaleDateString();
+  if (diffMins < 1) return "à l'instant";
+  if (diffMins < 60) return `il y a ${diffMins}min`;
+  if (diffHours < 24) return `il y a ${diffHours}h`;
+  if (diffDays < 7) return `il y a ${diffDays}j`;
+  return date.toLocaleDateString("fr-FR");
 }
 
 function getEventIcon(type: string): string {
@@ -72,13 +72,13 @@ export function ActivityTimeline({ jobId }: ActivityTimelineProps) {
         const response = await fetch(`/api/jobs/${jobId}/activity?limit=15`);
 
         if (!response.ok) {
-          throw new Error("Failed to load activity");
+          throw new Error("Impossible de charger l'activité");
         }
 
         const data = await response.json();
         setItems(data.items || []);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load");
+        setError(err instanceof Error ? err.message : "Échec du chargement");
       } finally {
         setLoading(false);
       }
@@ -89,11 +89,11 @@ export function ActivityTimeline({ jobId }: ActivityTimelineProps) {
 
   return (
     <div className="bg-white rounded-xl border border-slate-200 p-4">
-      <h3 className="font-semibold text-slate-900 mb-4">Recent Activity</h3>
+      <h3 className="font-semibold text-slate-900 mb-4">Activité récente</h3>
 
       {loading && (
         <div className="text-center py-8 text-slate-500 text-sm">
-          Loading activity...
+          Chargement de l'activité...
         </div>
       )}
 
@@ -103,7 +103,7 @@ export function ActivityTimeline({ jobId }: ActivityTimelineProps) {
 
       {!loading && !error && items.length === 0 && (
         <div className="text-center py-8 text-slate-400 text-sm">
-          No activity yet
+          Aucune activité pour le moment
         </div>
       )}
 

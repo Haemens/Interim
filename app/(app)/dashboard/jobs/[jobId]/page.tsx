@@ -148,6 +148,17 @@ export default async function JobDetailPage({
     }
   };
 
+  const translateStatus = (status: string) => {
+    const map: Record<string, string> = {
+      ACTIVE: "Active",
+      DRAFT: "Brouillon",
+      PAUSED: "En pause",
+      CLOSED: "Fermée",
+      ARCHIVED: "Archivée",
+    };
+    return map[status] || status;
+  };
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -155,7 +166,7 @@ export default async function JobDetailPage({
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Link href="/dashboard/jobs" className="hover:text-foreground transition-colors">
-              Jobs
+              Offres
             </Link>
             <span>/</span>
             <span>{job.title}</span>
@@ -182,13 +193,13 @@ export default async function JobDetailPage({
             )}
             <div className="flex items-center gap-1.5">
               <Clock className="w-4 h-4" />
-              <span>Created {new Date(job.createdAt).toLocaleDateString()}</span>
+              <span>Créé le {new Date(job.createdAt).toLocaleDateString("fr-FR")}</span>
             </div>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <Badge variant={getStatusVariant(job.status)} className="text-sm px-3 py-1">
-            {job.status}
+            {translateStatus(job.status)}
           </Badge>
           <EditJobButton job={jobForEdit} isDemo={isDemo} canEdit={canEdit} />
         </div>
@@ -199,7 +210,7 @@ export default async function JobDetailPage({
         <Card>
           <CardHeader className="p-4 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Applications
+              Total candidatures
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
@@ -208,7 +219,7 @@ export default async function JobDetailPage({
         </Card>
         <Card>
           <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-sm font-medium text-blue-600">New</CardTitle>
+            <CardTitle className="text-sm font-medium text-blue-600">Nouveau</CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
             <div className="text-2xl font-bold">{stats.NEW || 0}</div>
@@ -216,7 +227,7 @@ export default async function JobDetailPage({
         </Card>
         <Card>
           <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-sm font-medium text-yellow-600">Contacted</CardTitle>
+            <CardTitle className="text-sm font-medium text-yellow-600">Contacté</CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
             <div className="text-2xl font-bold">{stats.CONTACTED || 0}</div>
@@ -224,7 +235,7 @@ export default async function JobDetailPage({
         </Card>
         <Card>
           <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-sm font-medium text-purple-600">Qualified</CardTitle>
+            <CardTitle className="text-sm font-medium text-purple-600">Qualifié</CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
             <div className="text-2xl font-bold">{stats.QUALIFIED || 0}</div>
@@ -232,7 +243,7 @@ export default async function JobDetailPage({
         </Card>
         <Card>
           <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-sm font-medium text-green-600">Placed</CardTitle>
+            <CardTitle className="text-sm font-medium text-green-600">Recruté</CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
             <div className="text-2xl font-bold">{stats.PLACED || 0}</div>
@@ -247,7 +258,7 @@ export default async function JobDetailPage({
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold flex items-center gap-2">
                 <List className="w-5 h-5" />
-                Candidate Pipeline
+                Pipeline Candidats
               </h2>
               <Button
                 asChild
@@ -256,12 +267,12 @@ export default async function JobDetailPage({
                 className="bg-white/10 text-white hover:bg-white/20 border-0"
               >
                 <Link href={`/dashboard/jobs/${jobId}/pipeline`}>
-                  Open Pipeline
+                  Ouvrir le Pipeline
                 </Link>
               </Button>
             </div>
             <p className="text-indigo-100 text-sm">
-              Manage applications, move candidates through stages, and track progress.
+              Gérez les candidatures, déplacez les candidats entre les étapes et suivez leur progression.
             </p>
           </div>
 
@@ -269,7 +280,7 @@ export default async function JobDetailPage({
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold flex items-center gap-2">
                 <Share2 className="w-5 h-5" />
-                Campaign & Content
+                Campagne & Contenu
               </h2>
               <Button
                 asChild
@@ -278,12 +289,12 @@ export default async function JobDetailPage({
                 className="bg-white/10 text-white hover:bg-white/20 border-0"
               >
                 <Link href={`/dashboard/jobs/${jobId}/campaign`}>
-                  View Campaign
+                  Voir la Campagne
                 </Link>
               </Button>
             </div>
             <p className="text-emerald-100 text-sm">
-              Generate AI content, schedule posts, and track campaign performance.
+              Générez du contenu IA, planifiez vos publications et suivez les performances.
             </p>
           </div>
         </div>
@@ -295,7 +306,7 @@ export default async function JobDetailPage({
         <div className="lg:col-span-2 space-y-8">
           <Card>
             <CardHeader>
-              <CardTitle>Job Description</CardTitle>
+              <CardTitle>Description du poste</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="prose prose-sm max-w-none text-muted-foreground">
@@ -309,7 +320,7 @@ export default async function JobDetailPage({
               {job.profile && (
                 <Card>
                   <CardHeader>
-                    <CardTitle>Candidate Profile</CardTitle>
+                    <CardTitle>Profil recherché</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="prose prose-sm max-w-none text-muted-foreground">
@@ -321,7 +332,7 @@ export default async function JobDetailPage({
               {job.benefits && (
                 <Card>
                   <CardHeader>
-                    <CardTitle>Benefits</CardTitle>
+                    <CardTitle>Avantages</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="prose prose-sm max-w-none text-muted-foreground">
@@ -353,15 +364,15 @@ export default async function JobDetailPage({
           {(job.salaryMin || job.salaryMax) && (
             <Card>
               <CardHeader>
-                <CardTitle>Salary Range</CardTitle>
+                <CardTitle>Rémunération</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-2xl font-bold text-foreground">
                   {job.salaryMin && job.salaryMax
-                    ? `${job.salaryMin.toLocaleString()} - ${job.salaryMax.toLocaleString()}`
+                    ? `${job.salaryMin.toLocaleString("fr-FR")} - ${job.salaryMax.toLocaleString("fr-FR")}`
                     : job.salaryMin
-                    ? `From ${job.salaryMin.toLocaleString()}`
-                    : `Up to ${job.salaryMax?.toLocaleString()}`}
+                    ? `À partir de ${job.salaryMin.toLocaleString("fr-FR")}`
+                    : `Jusqu'à ${job.salaryMax?.toLocaleString("fr-FR")}`}
                   <span className="text-sm font-normal text-muted-foreground ml-1">
                     {job.currency || "EUR"}
                   </span>
@@ -389,22 +400,22 @@ export default async function JobDetailPage({
 
           <Card>
             <CardHeader>
-              <CardTitle>Timeline</CardTitle>
+              <CardTitle>Historique</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex justify-between items-center text-sm">
-                <span className="text-muted-foreground">Created</span>
-                <span className="font-medium">{new Date(job.createdAt).toLocaleDateString()}</span>
+                <span className="text-muted-foreground">Création</span>
+                <span className="font-medium">{new Date(job.createdAt).toLocaleDateString("fr-FR")}</span>
               </div>
               {job.publishedAt && (
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-muted-foreground">Published</span>
-                  <span className="font-medium">{new Date(job.publishedAt).toLocaleDateString()}</span>
+                  <span className="text-muted-foreground">Publication</span>
+                  <span className="font-medium">{new Date(job.publishedAt).toLocaleDateString("fr-FR")}</span>
                 </div>
               )}
               <div className="flex justify-between items-center text-sm border-t pt-4">
-                <span className="text-muted-foreground">Last updated</span>
-                <span className="font-medium">{new Date(job.updatedAt).toLocaleDateString()}</span>
+                <span className="text-muted-foreground">Dernière mise à jour</span>
+                <span className="font-medium">{new Date(job.updatedAt).toLocaleDateString("fr-FR")}</span>
               </div>
             </CardContent>
           </Card>
@@ -412,25 +423,25 @@ export default async function JobDetailPage({
           {canEdit && (
             <Card>
               <CardHeader>
-                <CardTitle>Quick Links</CardTitle>
+                <CardTitle>Liens rapides</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <Button asChild variant="outline" className="w-full justify-start">
                   <Link href={`/dashboard/shortlists?jobId=${jobId}`}>
                     <Users className="w-4 h-4 mr-2" />
-                    View Shortlists
+                    Voir les Shortlists
                   </Link>
                 </Button>
                 <Button asChild variant="outline" className="w-full justify-start">
                   <Link href={`/jobs/${jobId}`} target="_blank">
                     <ExternalLink className="w-4 h-4 mr-2" />
-                    View Public Page
+                    Voir la page publique
                   </Link>
                 </Button>
                 <Button asChild variant="outline" className="w-full justify-start">
                   <Link href={`/dashboard/jobs/${jobId}/analytics`}>
                     <BarChart2 className="w-4 h-4 mr-2" />
-                    View Analytics
+                    Voir les statistiques
                   </Link>
                 </Button>
               </CardContent>

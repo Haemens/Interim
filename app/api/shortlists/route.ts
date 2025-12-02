@@ -11,7 +11,7 @@ import {
   ForbiddenError,
   MembershipNotFoundError,
 } from "@/modules/auth";
-import { assertNotDemoAgency, DemoReadOnlyError } from "@/modules/auth/demo-mode";
+import { assertNotDemoAgency, DemoReadOnlyError, isDemoAgency } from "@/modules/auth/demo-mode";
 import { TenantNotFoundError, TenantRequiredError } from "@/lib/tenant";
 import { assertFeature, PlanLimitError, getPlanDisplayName } from "@/modules/billing";
 import { logInfo, logError } from "@/lib/log";
@@ -201,8 +201,39 @@ export async function POST(request: NextRequest) {
     // RBAC: RECRUITER and above can create shortlists
     assertMinimumRole(membership, "RECRUITER");
 
-    // Demo mode: block mutations
-    assertNotDemoAgency(agency, "create shortlists");
+    // Demo mode: return simulated response instead of blocking
+    if (isDemoAgency(agency)) {
+      const body = await request.json();
+      const data = createShortlistSchema.parse(body);
+      
+      // Return a simulated shortlist for demo mode
+      const demoShareToken = `demo-${crypto.randomBytes(6).toString("hex")}`;
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://questhire.com";
+      
+      return NextResponse.json({
+        shortlist: {
+          id: `demo-shortlist-${Date.now()}`,
+          name: data.name,
+          note: data.note || null,
+          shareToken: demoShareToken,
+          shareUrl: `${baseUrl}/shortlist/${demoShareToken}`,
+          job: { id: data.jobId, title: "Demo Job" },
+          items: data.applicationIds.map((appId, index) => ({
+            id: `demo-item-${index}`,
+            applicationId: appId,
+            order: index,
+            application: {
+              id: appId,
+              fullName: "Demo Candidate",
+              status: "QUALIFIED",
+            },
+          })),
+          createdAt: new Date().toISOString(),
+        },
+        isDemo: true,
+        message: "Shortlist créée en mode démo (simulation)",
+      });
+    }
 
     // Plan check: ensure shortlists feature is available
     await assertFeature(agency.id, "shortlists");

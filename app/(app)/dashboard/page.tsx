@@ -78,9 +78,10 @@ function formatTimeAgo(date: Date): string {
   const diffHours = Math.floor(diffMins / 60);
   const diffDays = Math.floor(diffHours / 24);
 
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  return `${diffDays}d ago`;
+  if (diffMins < 1) return "à l'instant";
+  if (diffMins < 60) return `il y a ${diffMins}min`;
+  if (diffHours < 24) return `il y a ${diffHours}h`;
+  return `il y a ${diffDays}j`;
 }
 
 // =============================================================================
@@ -179,9 +180,9 @@ export default async function DashboardPage() {
         <h1 className="text-2xl font-bold text-slate-900">
           Bienvenue chez {agency.name}
         </h1>
-        <p className="text-slate-600 mt-1">
+        <p className="text-slate-500 mt-1">
           Voici ce qui se passe chez{" "}
-          <span className="font-medium">{agency.slug}</span> aujourd&apos;hui.
+          <span className="font-semibold text-indigo-600">{agency.slug}</span> aujourd&apos;hui.
         </p>
       </div>
 

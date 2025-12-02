@@ -48,6 +48,19 @@ function getStatusBadge(status: CandidateProfile["status"]) {
   }
 }
 
+function translateStatus(status: CandidateProfile["status"]) {
+  switch (status) {
+    case "ACTIVE":
+      return "Actif";
+    case "DO_NOT_CONTACT":
+      return "Ne pas contacter";
+    case "BLACKLISTED":
+      return "Liste noire";
+    default:
+      return status;
+  }
+}
+
 function getAppStatusBadge(status: string) {
   switch (status) {
     case "NEW":
@@ -65,6 +78,17 @@ function getAppStatusBadge(status: string) {
   }
 }
 
+function translateAppStatus(status: string) {
+  const map: Record<string, string> = {
+    NEW: "Nouveau",
+    CONTACTED: "Contacté",
+    QUALIFIED: "Qualifié",
+    PLACED: "Recruté",
+    REJECTED: "Refusé",
+  };
+  return map[status] || status;
+}
+
 export default function CandidateDetailPage({
   params,
 }: {
@@ -75,6 +99,7 @@ export default function CandidateDetailPage({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   // Editable fields
   const [status, setStatus] = useState<CandidateProfile["status"]>("ACTIVE");
@@ -89,7 +114,7 @@ export default function CandidateDetailPage({
         const res = await fetch(`/api/candidates/${id}`);
         if (!res.ok) {
           const data = await res.json();
-          throw new Error(data.error || "Failed to fetch candidate");
+          throw new Error(data.error || "Impossible de charger le candidat");
         }
 
         const data = await res.json();
@@ -100,7 +125,7 @@ export default function CandidateDetailPage({
         setSectors(data.candidate.sectors.join(", "));
         setLocation(data.candidate.location || "");
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load candidate");
+        setError(err instanceof Error ? err.message : "Impossible de charger le candidat");
       } finally {
         setLoading(false);
       }
@@ -112,6 +137,7 @@ export default function CandidateDetailPage({
   async function handleSave() {
     setSaving(true);
     setError(null);
+    setSaveSuccess(false);
 
     try {
       const res = await fetch(`/api/candidates/${id}`, {
@@ -128,13 +154,15 @@ export default function CandidateDetailPage({
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || "Failed to update candidate");
+        throw new Error(data.error || "Impossible de sauvegarder");
       }
 
       const data = await res.json();
       setCandidate(data.candidate);
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save changes");
+      setError(err instanceof Error ? err.message : "Échec de la sauvegarde");
     } finally {
       setSaving(false);
     }
@@ -143,14 +171,23 @@ export default function CandidateDetailPage({
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-slate-500">Loading candidate...</div>
+        <div className="flex items-center gap-3 text-slate-500">
+          <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+          </svg>
+          Chargement du profil...
+        </div>
       </div>
     );
   }
 
   if (error && !candidate) {
     return (
-      <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+      <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center gap-3">
+        <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
         {error}
       </div>
     );
@@ -167,21 +204,36 @@ export default function CandidateDetailPage({
         <div>
           <Link
             href="/dashboard/candidates"
-            className="text-sm text-slate-500 hover:text-slate-700 mb-2 inline-block"
+            className="text-sm text-slate-500 hover:text-indigo-600 mb-2 inline-flex items-center gap-1 transition-colors"
           >
-            ← Back to Talent Pool
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Retour au vivier
           </Link>
           <h1 className="text-2xl font-bold text-slate-900">{candidate.fullName}</h1>
-          <p className="text-slate-600">{candidate.email}</p>
+          <p className="text-slate-500">{candidate.email}</p>
         </div>
-        <span className={`text-sm px-3 py-1 rounded-full ${getStatusBadge(candidate.status)}`}>
-          {candidate.status.replace(/_/g, " ")}
+        <span className={`text-sm px-3 py-1.5 rounded-full font-medium ${getStatusBadge(candidate.status)}`}>
+          {translateStatus(candidate.status)}
         </span>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center gap-3">
+          <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
           {error}
+        </div>
+      )}
+
+      {saveSuccess && (
+        <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg flex items-center gap-3">
+          <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+          Modifications enregistrées !
         </div>
       )}
 
@@ -189,85 +241,88 @@ export default function CandidateDetailPage({
         {/* Profile Info */}
         <div className="lg:col-span-2 space-y-6">
           {/* Contact Info */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4">Contact Information</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-slate-500">Email</p>
-                <p className="font-medium">{candidate.email}</p>
+          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+            <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+              <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              Informations de contact
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Email</p>
+                <p className="font-medium text-slate-900">{candidate.email}</p>
               </div>
-              <div>
-                <p className="text-sm text-slate-500">Phone</p>
-                <p className="font-medium">{candidate.phone || "—"}</p>
+              <div className="p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Téléphone</p>
+                <p className="font-medium text-slate-900">{candidate.phone || "—"}</p>
               </div>
-              <div>
-                <p className="text-sm text-slate-500">Location</p>
-                <p className="font-medium">{candidate.location || "—"}</p>
+              <div className="p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Localisation</p>
+                <p className="font-medium text-slate-900">{candidate.location || "—"}</p>
               </div>
-              <div>
-                <p className="text-sm text-slate-500">Last Job Title</p>
-                <p className="font-medium">{candidate.lastJobTitle || "—"}</p>
+              <div className="p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Dernier poste</p>
+                <p className="font-medium text-slate-900">{candidate.lastJobTitle || "—"}</p>
               </div>
-              <div className="col-span-2">
-                <p className="text-sm text-slate-500 mb-2">CV/Resume</p>
+              <div className="md:col-span-2 p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">CV / Document</p>
                 {candidate.cvUrl ? (
                   <div className="flex items-center gap-3">
                     <a
                       href={candidate.cvUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition-colors"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium"
                     >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
-                      Download CV
-                    </a>
-                    <a
-                      href={candidate.cvUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-slate-500 hover:text-slate-700 truncate max-w-xs"
-                      title={candidate.cvUrl}
-                    >
-                      {candidate.cvUrl.split("/").pop()?.slice(0, 30)}...
+                      Télécharger le CV
                     </a>
                   </div>
                 ) : (
-                  <p className="text-slate-400 italic">No CV uploaded</p>
+                  <p className="text-slate-400 italic text-sm">Aucun CV disponible</p>
                 )}
               </div>
-              <div>
-                <p className="text-sm text-slate-500">Consent to Contact</p>
-                <p className="font-medium">{candidate.consentToContact ? "Yes" : "No"}</p>
+              <div className="p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Consentement</p>
+                <p className="font-medium text-slate-900">{candidate.consentToContact ? "Oui" : "Non"}</p>
               </div>
             </div>
           </div>
 
           {/* Applications */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4">
-              Applications ({candidate._count.applications})
+          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+            <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+              <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Candidatures ({candidate._count.applications})
             </h2>
             {candidate.applications.length === 0 ? (
-              <p className="text-slate-500">No applications yet.</p>
+              <p className="text-slate-500 text-sm py-4 text-center">Aucune candidature pour le moment.</p>
             ) : (
               <div className="space-y-3">
                 {candidate.applications.map((app) => (
                   <div
                     key={app.id}
-                    className="flex items-center justify-between p-3 bg-slate-50 rounded-lg"
+                    className="flex items-center justify-between p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
                   >
                     <div>
                       <p className="font-medium text-slate-900">{app.job.title}</p>
                       <p className="text-sm text-slate-500">
-                        {new Date(app.createdAt).toLocaleDateString()}
+                        {new Date(app.createdAt).toLocaleDateString("fr-FR", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        })}
                       </p>
                     </div>
                     <span
-                      className={`text-xs px-2 py-1 rounded-full ${getAppStatusBadge(app.status)}`}
+                      className={`text-xs px-2.5 py-1 rounded-full font-medium ${getAppStatusBadge(app.status)}`}
                     >
-                      {app.status}
+                      {translateAppStatus(app.status)}
                     </span>
                   </div>
                 ))}
@@ -278,78 +333,83 @@ export default function CandidateDetailPage({
 
         {/* Edit Panel */}
         <div className="space-y-6">
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4">Edit Profile</h2>
+          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+            <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+              <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              Modifier le profil
+            </h2>
             <div className="space-y-4">
               {/* Status */}
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Status
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                  Statut
                 </label>
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value as CandidateProfile["status"])}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white text-slate-900 transition-colors"
                 >
-                  <option value="ACTIVE">Active</option>
-                  <option value="DO_NOT_CONTACT">Do Not Contact</option>
-                  <option value="BLACKLISTED">Blacklisted</option>
+                  <option value="ACTIVE">Actif</option>
+                  <option value="DO_NOT_CONTACT">Ne pas contacter</option>
+                  <option value="BLACKLISTED">Liste noire</option>
                 </select>
               </div>
 
               {/* Location */}
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Location
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                  Localisation
                 </label>
                 <input
                   type="text"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  placeholder="City, Region"
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Ville, Région"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white text-slate-900 placeholder:text-slate-400 transition-colors"
                 />
               </div>
 
               {/* Sectors */}
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Sectors (comma-separated)
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                  Secteurs <span className="text-slate-400 font-normal">(séparés par virgule)</span>
                 </label>
                 <input
                   type="text"
                   value={sectors}
                   onChange={(e) => setSectors(e.target.value)}
-                  placeholder="Logistics, Manufacturing"
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Logistique, Industrie, BTP..."
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white text-slate-900 placeholder:text-slate-400 transition-colors"
                 />
               </div>
 
               {/* Skills */}
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Skills (comma-separated)
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                  Compétences <span className="text-slate-400 font-normal">(séparées par virgule)</span>
                 </label>
                 <input
                   type="text"
                   value={skills}
                   onChange={(e) => setSkills(e.target.value)}
-                  placeholder="CACES, night shift, forklift"
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="CACES, nuit, cariste..."
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white text-slate-900 placeholder:text-slate-400 transition-colors"
                 />
               </div>
 
               {/* Notes */}
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Internal Notes
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                  Notes internes
                 </label>
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   rows={4}
-                  placeholder="Add notes about this candidate..."
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Ajoutez des notes sur ce candidat..."
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white text-slate-900 placeholder:text-slate-400 resize-none transition-colors"
                 />
               </div>
 
@@ -357,27 +417,37 @@ export default function CandidateDetailPage({
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="w-full py-2 px-4 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-2.5 px-4 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
               >
-                {saving ? "Saving..." : "Save Changes"}
+                {saving ? (
+                  <>
+                    <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    Enregistrement...
+                  </>
+                ) : (
+                  "Enregistrer"
+                )}
               </button>
             </div>
           </div>
 
           {/* Dates */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <h3 className="text-sm font-medium text-slate-700 mb-3">Timeline</h3>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-slate-500">First Applied</span>
-                <span className="text-slate-900">
-                  {new Date(candidate.firstAppliedAt).toLocaleDateString()}
+          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+            <h3 className="text-sm font-semibold text-slate-900 mb-3">Historique</h3>
+            <div className="space-y-3 text-sm">
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500">Première candidature</span>
+                <span className="text-slate-900 font-medium">
+                  {new Date(candidate.firstAppliedAt).toLocaleDateString("fr-FR")}
                 </span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500">Last Applied</span>
-                <span className="text-slate-900">
-                  {new Date(candidate.lastAppliedAt).toLocaleDateString()}
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500">Dernière candidature</span>
+                <span className="text-slate-900 font-medium">
+                  {new Date(candidate.lastAppliedAt).toLocaleDateString("fr-FR")}
                 </span>
               </div>
             </div>
