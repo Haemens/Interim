@@ -226,7 +226,16 @@ export default async function JobDetailPage({
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <Badge variant={getStatusVariant(job.status)} className="text-sm px-3 py-1">
+          <Badge 
+            variant={getStatusVariant(job.status)} 
+            className={`text-sm px-3 py-1 ${
+              job.status === "ACTIVE" 
+                ? "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300 border-green-200 dark:border-green-800" 
+                : job.status === "PAUSED"
+                ? "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 border-amber-200 dark:border-amber-800"
+                : ""
+            }`}
+          >
             {translateStatus(job.status)}
           </Badge>
           <EditJobButton job={jobForEdit} isDemo={isDemo} canEdit={canEdit} />

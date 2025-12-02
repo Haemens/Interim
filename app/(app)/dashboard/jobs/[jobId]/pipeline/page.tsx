@@ -97,19 +97,19 @@ export default async function JobPipelinePage({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <div className="flex items-center gap-2 text-sm text-slate-500 mb-1">
-            <Link href="/dashboard/jobs" className="hover:text-slate-700">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+            <Link href="/dashboard/jobs" className="hover:text-foreground">
               Offres
             </Link>
             <span>/</span>
-            <Link href={`/dashboard/jobs/${jobId}`} className="hover:text-slate-700">
+            <Link href={`/dashboard/jobs/${jobId}`} className="hover:text-foreground">
               {job.title}
             </Link>
             <span>/</span>
-            <span className="text-slate-700">Pipeline</span>
+            <span className="text-foreground">Pipeline</span>
           </div>
-          <h1 className="text-2xl font-bold text-slate-900">{job.title}</h1>
-          <p className="text-slate-500 mt-1">
+          <h1 className="text-2xl font-bold text-foreground">{job.title}</h1>
+          <p className="text-muted-foreground mt-1">
             {job.location && <span>{job.location} • </span>}
             {job._count.applications} candidature{job._count.applications !== 1 ? "s" : ""}
           </p>
@@ -118,19 +118,19 @@ export default async function JobPipelinePage({
           <span
             className={`px-3 py-1 rounded-full text-sm font-medium ${
               job.status === "ACTIVE"
-                ? "bg-green-100 text-green-700"
+                ? "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300"
                 : job.status === "DRAFT"
-                ? "bg-slate-100 text-slate-700"
+                ? "bg-secondary text-secondary-foreground"
                 : job.status === "PAUSED"
-                ? "bg-yellow-100 text-yellow-700"
-                : "bg-red-100 text-red-700"
+                ? "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300"
+                : "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300"
             }`}
           >
             {translateStatus(job.status)}
           </span>
           <Link
             href={`/dashboard/jobs/${jobId}`}
-            className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50"
+            className="px-4 py-2 text-sm font-medium text-foreground bg-card border border-border rounded-lg hover:bg-secondary"
           >
             Détails de l&apos;offre
           </Link>

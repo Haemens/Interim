@@ -202,7 +202,7 @@ export function ApplicationCard({
               {data.candidatePhone && (
                 <a
                   href={`tel:${data.candidatePhone}`}
-                  className="p-1.5 rounded-md text-muted-foreground hover:text-green-600 hover:bg-green-50 transition-colors"
+                  className="p-1.5 rounded-md text-muted-foreground hover:text-green-600 hover:bg-green-100 dark:hover:bg-green-900/40 dark:hover:text-green-400 transition-colors"
                   title={`Appeler ${data.candidatePhone}`}
                   onClick={(e) => e.stopPropagation()}
                 >
@@ -212,7 +212,7 @@ export function ApplicationCard({
               {data.candidateEmail && (
                 <a
                   href={`mailto:${data.candidateEmail}`}
-                  className="p-1.5 rounded-md text-muted-foreground hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                  className="p-1.5 rounded-md text-muted-foreground hover:text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-900/40 dark:hover:text-blue-400 transition-colors"
                   title={`Email ${data.candidateEmail}`}
                   onClick={(e) => e.stopPropagation()}
                 >
@@ -226,7 +226,7 @@ export function ApplicationCard({
                     e.stopPropagation();
                     onQuickStatusChange(data.id, "CONTACTED");
                   }}
-                  className="p-1.5 rounded-md text-muted-foreground hover:text-amber-600 hover:bg-amber-50 transition-colors"
+                  className="p-1.5 rounded-md text-muted-foreground hover:text-amber-600 hover:bg-amber-100 dark:hover:bg-amber-900/40 dark:hover:text-amber-400 transition-colors"
                   title="Marquer comme contacté"
                 >
                   <MessageSquare className="w-3.5 h-3.5" />

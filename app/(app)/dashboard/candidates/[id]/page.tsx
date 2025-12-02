@@ -38,13 +38,13 @@ interface CandidateProfile {
 function getStatusBadge(status: CandidateProfile["status"]) {
   switch (status) {
     case "ACTIVE":
-      return "bg-green-100 text-green-700";
+      return "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300";
     case "DO_NOT_CONTACT":
-      return "bg-amber-100 text-amber-700";
+      return "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300";
     case "BLACKLISTED":
-      return "bg-red-100 text-red-700";
+      return "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300";
     default:
-      return "bg-slate-100 text-slate-700";
+      return "bg-secondary text-secondary-foreground";
   }
 }
 
@@ -64,17 +64,17 @@ function translateStatus(status: CandidateProfile["status"]) {
 function getAppStatusBadge(status: string) {
   switch (status) {
     case "NEW":
-      return "bg-blue-100 text-blue-700";
+      return "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300";
     case "CONTACTED":
-      return "bg-amber-100 text-amber-700";
+      return "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300";
     case "QUALIFIED":
-      return "bg-green-100 text-green-700";
+      return "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300";
     case "PLACED":
-      return "bg-emerald-100 text-emerald-700";
+      return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300";
     case "REJECTED":
-      return "bg-red-100 text-red-700";
+      return "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300";
     default:
-      return "bg-slate-100 text-slate-700";
+      return "bg-secondary text-secondary-foreground";
   }
 }
 
@@ -204,15 +204,15 @@ export default function CandidateDetailPage({
         <div>
           <Link
             href="/dashboard/candidates"
-            className="text-sm text-slate-500 hover:text-indigo-600 mb-2 inline-flex items-center gap-1 transition-colors"
+            className="text-sm text-muted-foreground hover:text-primary mb-2 inline-flex items-center gap-1 transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             Retour au vivier
           </Link>
-          <h1 className="text-2xl font-bold text-slate-900">{candidate.fullName}</h1>
-          <p className="text-slate-500">{candidate.email}</p>
+          <h1 className="text-2xl font-bold text-foreground">{candidate.fullName}</h1>
+          <p className="text-muted-foreground">{candidate.email}</p>
         </div>
         <span className={`text-sm px-3 py-1.5 rounded-full font-medium ${getStatusBadge(candidate.status)}`}>
           {translateStatus(candidate.status)}
@@ -220,7 +220,7 @@ export default function CandidateDetailPage({
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center gap-3">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg flex items-center gap-3">
           <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
@@ -229,7 +229,7 @@ export default function CandidateDetailPage({
       )}
 
       {saveSuccess && (
-        <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg flex items-center gap-3">
+        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 px-4 py-3 rounded-lg flex items-center gap-3">
           <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
@@ -241,39 +241,39 @@ export default function CandidateDetailPage({
         {/* Profile Info */}
         <div className="lg:col-span-2 space-y-6">
           {/* Contact Info */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
-              <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+              <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
               Informations de contact
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-3 bg-slate-50 rounded-lg">
-                <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Email</p>
-                <p className="font-medium text-slate-900">{candidate.email}</p>
+              <div className="p-3 bg-secondary rounded-lg">
+                <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Email</p>
+                <p className="font-medium text-foreground">{candidate.email}</p>
               </div>
-              <div className="p-3 bg-slate-50 rounded-lg">
-                <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Téléphone</p>
-                <p className="font-medium text-slate-900">{candidate.phone || "—"}</p>
+              <div className="p-3 bg-secondary rounded-lg">
+                <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Téléphone</p>
+                <p className="font-medium text-foreground">{candidate.phone || "—"}</p>
               </div>
-              <div className="p-3 bg-slate-50 rounded-lg">
-                <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Localisation</p>
-                <p className="font-medium text-slate-900">{candidate.location || "—"}</p>
+              <div className="p-3 bg-secondary rounded-lg">
+                <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Localisation</p>
+                <p className="font-medium text-foreground">{candidate.location || "—"}</p>
               </div>
-              <div className="p-3 bg-slate-50 rounded-lg">
-                <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Dernier poste</p>
-                <p className="font-medium text-slate-900">{candidate.lastJobTitle || "—"}</p>
+              <div className="p-3 bg-secondary rounded-lg">
+                <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Dernier poste</p>
+                <p className="font-medium text-foreground">{candidate.lastJobTitle || "—"}</p>
               </div>
-              <div className="md:col-span-2 p-3 bg-slate-50 rounded-lg">
-                <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">CV / Document</p>
+              <div className="md:col-span-2 p-3 bg-secondary rounded-lg">
+                <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">CV / Document</p>
                 {candidate.cvUrl ? (
                   <div className="flex items-center gap-3">
                     <a
                       href={candidate.cvUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -282,36 +282,36 @@ export default function CandidateDetailPage({
                     </a>
                   </div>
                 ) : (
-                  <p className="text-slate-400 italic text-sm">Aucun CV disponible</p>
+                  <p className="text-muted-foreground italic text-sm">Aucun CV disponible</p>
                 )}
               </div>
-              <div className="p-3 bg-slate-50 rounded-lg">
-                <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Consentement</p>
-                <p className="font-medium text-slate-900">{candidate.consentToContact ? "Oui" : "Non"}</p>
+              <div className="p-3 bg-secondary rounded-lg">
+                <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Consentement</p>
+                <p className="font-medium text-foreground">{candidate.consentToContact ? "Oui" : "Non"}</p>
               </div>
             </div>
           </div>
 
           {/* Applications */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
-              <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+              <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
               Candidatures ({candidate._count.applications})
             </h2>
             {candidate.applications.length === 0 ? (
-              <p className="text-slate-500 text-sm py-4 text-center">Aucune candidature pour le moment.</p>
+              <p className="text-muted-foreground text-sm py-4 text-center">Aucune candidature pour le moment.</p>
             ) : (
               <div className="space-y-3">
                 {candidate.applications.map((app) => (
                   <div
                     key={app.id}
-                    className="flex items-center justify-between p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+                    className="flex items-center justify-between p-4 bg-secondary rounded-lg hover:bg-secondary/80 transition-colors"
                   >
                     <div>
-                      <p className="font-medium text-slate-900">{app.job.title}</p>
-                      <p className="text-sm text-slate-500">
+                      <p className="font-medium text-foreground">{app.job.title}</p>
+                      <p className="text-sm text-muted-foreground">
                         {new Date(app.createdAt).toLocaleDateString("fr-FR", {
                           day: "numeric",
                           month: "long",
@@ -333,9 +333,9 @@ export default function CandidateDetailPage({
 
         {/* Edit Panel */}
         <div className="space-y-6">
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
-              <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+              <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
               </svg>
               Modifier le profil
@@ -343,13 +343,13 @@ export default function CandidateDetailPage({
             <div className="space-y-4">
               {/* Status */}
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                <label className="block text-sm font-medium text-foreground mb-1.5">
                   Statut
                 </label>
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value as CandidateProfile["status"])}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white text-slate-900 transition-colors"
+                  className="w-full px-4 py-2.5 bg-secondary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:bg-background text-foreground transition-colors"
                 >
                   <option value="ACTIVE">Actif</option>
                   <option value="DO_NOT_CONTACT">Ne pas contacter</option>
@@ -359,7 +359,7 @@ export default function CandidateDetailPage({
 
               {/* Location */}
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                <label className="block text-sm font-medium text-foreground mb-1.5">
                   Localisation
                 </label>
                 <input
@@ -367,41 +367,41 @@ export default function CandidateDetailPage({
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   placeholder="Ville, Région"
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white text-slate-900 placeholder:text-slate-400 transition-colors"
+                  className="w-full px-4 py-2.5 bg-secondary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:bg-background text-foreground placeholder:text-muted-foreground transition-colors"
                 />
               </div>
 
               {/* Sectors */}
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                  Secteurs <span className="text-slate-400 font-normal">(séparés par virgule)</span>
+                <label className="block text-sm font-medium text-foreground mb-1.5">
+                  Secteurs <span className="text-muted-foreground font-normal">(séparés par virgule)</span>
                 </label>
                 <input
                   type="text"
                   value={sectors}
                   onChange={(e) => setSectors(e.target.value)}
                   placeholder="Logistique, Industrie, BTP..."
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white text-slate-900 placeholder:text-slate-400 transition-colors"
+                  className="w-full px-4 py-2.5 bg-secondary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:bg-background text-foreground placeholder:text-muted-foreground transition-colors"
                 />
               </div>
 
               {/* Skills */}
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                  Compétences <span className="text-slate-400 font-normal">(séparées par virgule)</span>
+                <label className="block text-sm font-medium text-foreground mb-1.5">
+                  Compétences <span className="text-muted-foreground font-normal">(séparées par virgule)</span>
                 </label>
                 <input
                   type="text"
                   value={skills}
                   onChange={(e) => setSkills(e.target.value)}
                   placeholder="CACES, nuit, cariste..."
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white text-slate-900 placeholder:text-slate-400 transition-colors"
+                  className="w-full px-4 py-2.5 bg-secondary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:bg-background text-foreground placeholder:text-muted-foreground transition-colors"
                 />
               </div>
 
               {/* Notes */}
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                <label className="block text-sm font-medium text-foreground mb-1.5">
                   Notes internes
                 </label>
                 <textarea
@@ -409,7 +409,7 @@ export default function CandidateDetailPage({
                   onChange={(e) => setNotes(e.target.value)}
                   rows={4}
                   placeholder="Ajoutez des notes sur ce candidat..."
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white text-slate-900 placeholder:text-slate-400 resize-none transition-colors"
+                  className="w-full px-4 py-2.5 bg-secondary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:bg-background text-foreground placeholder:text-muted-foreground resize-none transition-colors"
                 />
               </div>
 
@@ -417,7 +417,7 @@ export default function CandidateDetailPage({
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="w-full py-2.5 px-4 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                className="w-full py-2.5 px-4 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
               >
                 {saving ? (
                   <>
@@ -435,18 +435,18 @@ export default function CandidateDetailPage({
           </div>
 
           {/* Dates */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-            <h3 className="text-sm font-semibold text-slate-900 mb-3">Historique</h3>
+          <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+            <h3 className="text-sm font-semibold text-foreground mb-3">Historique</h3>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between items-center">
-                <span className="text-slate-500">Première candidature</span>
-                <span className="text-slate-900 font-medium">
+                <span className="text-muted-foreground">Première candidature</span>
+                <span className="text-foreground font-medium">
                   {new Date(candidate.firstAppliedAt).toLocaleDateString("fr-FR")}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-slate-500">Dernière candidature</span>
-                <span className="text-slate-900 font-medium">
+                <span className="text-muted-foreground">Dernière candidature</span>
+                <span className="text-foreground font-medium">
                   {new Date(candidate.lastAppliedAt).toLocaleDateString("fr-FR")}
                 </span>
               </div>

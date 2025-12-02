@@ -22,11 +22,11 @@ interface PipelineMiniProps {
 // =============================================================================
 
 const STATUS_CONFIG = [
-  { key: "NEW", label: "New", color: "bg-blue-500", textColor: "text-blue-700", bgLight: "bg-blue-100" },
-  { key: "CONTACTED", label: "Contacted", color: "bg-amber-500", textColor: "text-amber-700", bgLight: "bg-amber-100" },
-  { key: "QUALIFIED", label: "Qualified", color: "bg-purple-500", textColor: "text-purple-700", bgLight: "bg-purple-100" },
-  { key: "PLACED", label: "Placed", color: "bg-green-500", textColor: "text-green-700", bgLight: "bg-green-100" },
-  { key: "REJECTED", label: "Rejected", color: "bg-slate-400", textColor: "text-slate-600", bgLight: "bg-slate-100" },
+  { key: "NEW", label: "Nouveau", color: "bg-blue-500", textColor: "text-blue-800 dark:text-blue-300", bgLight: "bg-blue-100 dark:bg-blue-900/40" },
+  { key: "CONTACTED", label: "Contacté", color: "bg-amber-500", textColor: "text-amber-800 dark:text-amber-300", bgLight: "bg-amber-100 dark:bg-amber-900/40" },
+  { key: "QUALIFIED", label: "Qualifié", color: "bg-purple-500", textColor: "text-purple-800 dark:text-purple-300", bgLight: "bg-purple-100 dark:bg-purple-900/40" },
+  { key: "PLACED", label: "Recruté", color: "bg-green-500", textColor: "text-green-800 dark:text-green-300", bgLight: "bg-green-100 dark:bg-green-900/40" },
+  { key: "REJECTED", label: "Refusé", color: "bg-slate-400", textColor: "text-secondary-foreground", bgLight: "bg-secondary" },
 ] as const;
 
 // =============================================================================
@@ -37,19 +37,19 @@ export function PipelineMini({ jobId, byStatus }: PipelineMiniProps) {
   const total = Object.values(byStatus).reduce((sum, count) => sum + count, 0);
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-6">
+    <div className="bg-card rounded-xl border border-border p-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-slate-900">Pipeline Overview</h3>
+        <h3 className="font-semibold text-foreground">Aperçu du Pipeline</h3>
         <Link
           href={`/dashboard/jobs/${jobId}/pipeline`}
-          className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+          className="text-sm text-primary hover:text-primary/80 font-medium"
         >
-          Open Pipeline →
+          Ouvrir le Pipeline →
         </Link>
       </div>
 
       {total === 0 ? (
-        <p className="text-slate-500 text-sm">No applications yet.</p>
+        <p className="text-muted-foreground text-sm">Aucune candidature pour le moment.</p>
       ) : (
         <>
           {/* Stacked Bar */}
