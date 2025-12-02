@@ -37,8 +37,9 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: "/login",
-    error: "/auth/error",
+    error: "/login",  // Redirect auth errors to login page
   },
+  debug: process.env.NODE_ENV === "development",
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -48,33 +49,48 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials, req) {
         if (!credentials?.email || !credentials?.password) {
+          console.log("[AUTH] Missing credentials");
           return null;
         }
+
+        console.log("[AUTH] Attempting login for:", credentials.email);
 
         // Rate limiting for login attempts
         const clientIp = getIpFromRequest(req);
-        const rateLimitResult = await rateLimit({
-          key: `auth-${clientIp}`,
-          limit: RATE_LIMITS.LOGIN.limit,
-          windowMs: RATE_LIMITS.LOGIN.windowMs,
-        });
+        
+        try {
+          const rateLimitResult = await rateLimit({
+            key: `auth-${clientIp}`,
+            limit: RATE_LIMITS.LOGIN.limit,
+            windowMs: RATE_LIMITS.LOGIN.windowMs,
+          });
 
-        if (!rateLimitResult.ok) {
-          logWarn("Login rate limit exceeded", { ip: clientIp.slice(0, 8) + "..." });
-          // Return null to indicate auth failure
-          // NextAuth will show generic error
-          return null;
+          if (!rateLimitResult.ok) {
+            logWarn("Login rate limit exceeded", { ip: clientIp.slice(0, 8) + "..." });
+            return null;
+          }
+        } catch (error) {
+          console.log("[AUTH] Rate limit error (continuing):", error);
+          // Continue without rate limiting if it fails
         }
 
         // Find user
-        const user = await db.user.findUnique({
-          where: { email: credentials.email.toLowerCase() },
-        });
+        let user;
+        try {
+          user = await db.user.findUnique({
+            where: { email: credentials.email.toLowerCase() },
+          });
+          console.log("[AUTH] User found:", !!user);
+        } catch (error) {
+          console.error("[AUTH] Database error:", error);
+          return null;
+        }
 
         if (!user || !user.hashedPassword) {
           logWarn("Login failed: user not found or no password", { 
             email: credentials.email.slice(0, 3) + "***",
           });
+          console.log("[AUTH] User not found or no password");
           return null;
         }
 
