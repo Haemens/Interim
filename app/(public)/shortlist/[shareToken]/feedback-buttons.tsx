@@ -39,7 +39,7 @@ export function FeedbackButtons({
   useEffect(() => {
     async function fetchFeedback() {
       try {
-        const res = await fetch(`/api/shortlists/${shareToken}/feedback`);
+        const res = await fetch(`/api/shortlists/public/${shareToken}/feedback`);
         if (res.ok) {
           const data = await res.json();
           if (data.feedback[applicationId]) {
@@ -62,7 +62,7 @@ export function FeedbackButtons({
   const submitFeedback = async (decision: "APPROVED" | "REJECTED", feedbackComment?: string) => {
     setSubmitting(true);
     try {
-      const res = await fetch(`/api/shortlists/${shareToken}/feedback`, {
+      const res = await fetch(`/api/shortlists/public/${shareToken}/feedback`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

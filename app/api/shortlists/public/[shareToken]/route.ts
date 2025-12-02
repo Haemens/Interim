@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
 // =============================================================================
-// GET /api/shortlists/[shareToken] - Public shortlist view (no auth required)
+// GET /api/shortlists/public/[shareToken] - Public shortlist view (no auth required)
 // =============================================================================
 
 export async function GET(

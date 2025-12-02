@@ -18,7 +18,7 @@ const feedbackSchema = z.object({
 });
 
 // =============================================================================
-// GET /api/shortlists/[shareToken]/feedback
+// GET /api/shortlists/public/[shareToken]/feedback
 // =============================================================================
 
 export async function GET(
@@ -87,7 +87,7 @@ export async function GET(
 }
 
 // =============================================================================
-// POST /api/shortlists/[shareToken]/feedback
+// POST /api/shortlists/public/[shareToken]/feedback
 // =============================================================================
 
 export async function POST(
