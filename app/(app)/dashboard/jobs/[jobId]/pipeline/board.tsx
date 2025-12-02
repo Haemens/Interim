@@ -22,7 +22,7 @@ import { Card } from "@/components/ui/card";
 import { ApplicationCard, ApplicationCardData } from "./application-card";
 import { PipelineColumn } from "./pipeline-column";
 import { CreateShortlistModal } from "./create-shortlist-modal";
-import { AlertCircle, CheckCircle2, X } from "lucide-react";
+import { AlertCircle, CheckCircle2, X, Sparkles, MessageSquare, UserCheck, Trophy, XCircle, Inbox } from "lucide-react";
 
 // =============================================================================
 // TYPES
@@ -66,6 +66,14 @@ const STATUS_COLORS: Record<ApplicationStatus, string> = {
   REJECTED: "bg-red-500/10 text-red-700 border-red-200 dark:bg-red-500/20 dark:text-red-300 dark:border-red-800",
 };
 
+const STATUS_ICONS: Record<ApplicationStatus, React.ReactNode> = {
+  NEW: <Sparkles className="w-4 h-4" />,
+  CONTACTED: <MessageSquare className="w-4 h-4" />,
+  QUALIFIED: <UserCheck className="w-4 h-4" />,
+  PLACED: <Trophy className="w-4 h-4" />,
+  REJECTED: <XCircle className="w-4 h-4" />,
+};
+
 // =============================================================================
 // COMPONENT
 // =============================================================================
@@ -99,7 +107,7 @@ export function PipelineBoard({ jobId, canEdit, canUseShortlists = true, isDemo 
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8,
+        distance: 5,
       },
     }),
     useSensor(KeyboardSensor)
@@ -336,37 +344,80 @@ export function PipelineBoard({ jobId, canEdit, canUseShortlists = true, isDemo 
           {columns.map((column) => (
             <PipelineColumn
               key={column.status}
-              status={column.status}
-              label={translateColumnLabel(column.status, column.label)}
-              color={STATUS_COLORS[column.status]}
-              count={column.applications.length}
-            >
-              <SortableContext
-                items={column.applications.map((app) => app.id)}
-                strategy={verticalListSortingStrategy}
               >
-                <div className="space-y-3 min-h-[150px]">
-                  {column.applications.map((app) => (
-                    <ApplicationCard
-                      key={app.id}
-                      data={app}
-                      isUpdating={updating === app.id}
-                      isDraggable={canEdit}
-                      selectionMode={selectionMode}
-                      isSelected={selectedIds.has(app.id)}
-                      onSelectToggle={handleSelectToggle}
-                    />
-                  ))}
-                  {column.applications.length === 0 && (
-                    <div className="text-center py-12 border-2 border-dashed border-muted rounded-lg">
-                      <p className="text-sm text-muted-foreground">Aucune candidature</p>
-                    </div>
-                  )}
-                </div>
-              </SortableContext>
-            </PipelineColumn>
-          ))}
+                Sélectionner pour shortlist
+              </Button>
+            ) : (
+              <Button asChild variant="secondary" size="sm">
+                <Link href="/dashboard/billing">
+                  Passer Pro pour les shortlists
+                </Link>
+              </Button>
+            )}
+          </div>
         </div>
+      </Card>
+    )}
+
+    {/* Error toast */}
+    {error && (
+      <div className="fixed bottom-4 right-4 bg-destructive/10 border border-destructive/20 text-destructive px-4 py-2 rounded-lg shadow-lg z-50 flex items-center gap-2">
+        <AlertCircle className="w-4 h-4" />
+        {error}
+      </div>
+    )}
+
+    {/* Board */}
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCorners}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
+      <div className="flex gap-6 overflow-x-auto pb-4 min-h-[calc(100vh-300px)]">
+        {columns.map((column) => (
+          <PipelineColumn
+            key={column.status}
+            status={column.status}
+            label={translateColumnLabel(column.status, column.label)}
+            color={STATUS_COLORS[column.status]}
+            count={column.applications.length}
+            icon={STATUS_ICONS[column.status]}
+          >
+            <SortableContext
+              items={column.applications.map((app) => app.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="space-y-3 min-h-[150px]">
+                {column.applications.map((app) => (
+                  <ApplicationCard
+                    key={app.id}
+                    data={app}
+                    isUpdating={updating === app.id}
+                    isDraggable={canEdit}
+                    selectionMode={selectionMode}
+                    isSelected={selectedIds.has(app.id)}
+                    onSelectToggle={handleSelectToggle}
+                  />
+                ))}
+                {column.applications.length === 0 && (
+                  <div className="flex flex-col items-center justify-center py-12 px-4 border-2 border-dashed border-muted/50 rounded-xl bg-muted/10 text-muted-foreground transition-colors hover:bg-muted/20 hover:border-muted">
+                    <div className="bg-background p-3 rounded-full mb-3 shadow-sm">
+                      {STATUS_ICONS[column.status]}
+                    </div>
+                    <p className="text-sm font-medium">Vide</p>
+                    <p className="text-xs opacity-70 text-center mt-1">
+                      {column.status === "NEW" 
+                        ? "En attente de candidats" 
+                        : "Glissez des candidats ici"}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </SortableContext>
+          </PipelineColumn>
+        ))}
+      </div>
 
         {/* Drag overlay */}
         <DragOverlay>
