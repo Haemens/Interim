@@ -20,8 +20,14 @@ interface GetEnvOptions {
 }
 
 /**
+ * Check if we're in build phase (Next.js sets this during build)
+ * During build, we should not throw errors for missing env vars
+ */
+const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
+
+/**
  * Get a required environment variable
- * Throws in production if missing, warns in development
+ * Throws in production runtime if missing, warns in development/build
  */
 function getRequiredEnv(key: string, options: GetEnvOptions = {}): string {
   const value = process.env[key];
@@ -41,7 +47,13 @@ function getRequiredEnv(key: string, options: GetEnvOptions = {}): string {
     return options.defaultValue;
   }
 
-  // In production, throw for missing required vars
+  // During build phase, don't throw - just return empty string
+  // The actual runtime will have the env vars from Vercel
+  if (isBuildPhase) {
+    return options.defaultValue ?? "";
+  }
+
+  // In production runtime, throw for missing required vars
   if (isProduction) {
     throw new Error(
       `Missing required environment variable: ${key}. ` +
