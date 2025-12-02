@@ -3,7 +3,23 @@
  * This file contains NO database imports and can be used in Edge Runtime (middleware)
  */
 
-const MAIN_DOMAINS = ["localhost", "questhire.com", "questhire.vercel.app"];
+const MAIN_DOMAINS = ["localhost", "questhire.com", "questhire.vercel.app", "interim-five.vercel.app"];
+
+// Vercel preview/production domains that should NOT be treated as tenant subdomains
+const VERCEL_DOMAINS = ["vercel.app"];
+
+/**
+ * Check if hostname is a Vercel deployment domain (not a tenant subdomain)
+ */
+function isVercelDeploymentDomain(hostname: string): boolean {
+  // Match patterns like: interim-five.vercel.app, interim-abc123-haemens.vercel.app
+  if (!hostname.endsWith(".vercel.app")) return false;
+  
+  const parts = hostname.split(".");
+  // vercel.app domains have format: [project-name].vercel.app or [project-name]-[hash]-[team].vercel.app
+  // These are NOT tenant subdomains
+  return parts.length <= 3 || parts[0].includes("-");
+}
 
 /**
  * Header name for passing tenant slug through middleware
@@ -23,6 +39,11 @@ export function getTenantFromHost(host: string | null): string | null {
 
   // Check if it's a main domain without subdomain
   if (MAIN_DOMAINS.includes(hostname)) {
+    return null;
+  }
+
+  // Check if it's a Vercel deployment domain (not a tenant subdomain)
+  if (isVercelDeploymentDomain(hostname)) {
     return null;
   }
 

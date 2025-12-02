@@ -22,30 +22,40 @@ interface LayoutData {
 }
 
 async function getLayoutData(tenantSlug: string | null, userId: string | null): Promise<LayoutData> {
-  if (!tenantSlug || !userId) {
+  if (!userId) {
     return { agency: null, memberships: [], jobLimitWarning: false };
   }
 
-  const [agency, memberships] = await Promise.all([
-    db.agency.findUnique({
-      where: { slug: tenantSlug },
-      include: {
-        subscriptions: {
-          where: { status: "ACTIVE" },
-          take: 1,
-        },
+  // First, get user's memberships
+  const memberships = await db.membership.findMany({
+    where: { userId },
+    include: {
+      agency: {
+        select: { name: true, slug: true },
       },
-    }),
-    db.membership.findMany({
-      where: { userId },
-      include: {
-        agency: {
-          select: { name: true, slug: true },
-        },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  // If no tenant slug provided (e.g., on Vercel without subdomain), use first membership
+  let effectiveTenantSlug = tenantSlug;
+  if (!effectiveTenantSlug && memberships.length > 0) {
+    effectiveTenantSlug = memberships[0].agency.slug;
+  }
+
+  if (!effectiveTenantSlug) {
+    return { agency: null, memberships: [], jobLimitWarning: false };
+  }
+
+  const agency = await db.agency.findUnique({
+    where: { slug: effectiveTenantSlug },
+    include: {
+      subscriptions: {
+        where: { status: "ACTIVE" },
+        take: 1,
       },
-      orderBy: { createdAt: "desc" },
-    }),
-  ]);
+    },
+  });
 
   // Check job limit warning
   let jobLimitWarning = false;
@@ -76,8 +86,8 @@ export default async function DashboardLayout({
 
   const { agency, memberships, jobLimitWarning } = await getLayoutData(tenantSlug, user.id);
 
-  // Redirect if user is not a member of this agency
-  if (!agency || !memberships.some((m) => m.agency.slug === tenantSlug)) {
+  // Redirect if no agency found or user has no memberships
+  if (!agency || memberships.length === 0) {
     redirect("/login");
   }
 

@@ -58,14 +58,23 @@ function LoginForm() {
       if (memberships && memberships.length > 0) {
         // Redirect to the first agency's dashboard
         const firstAgency = memberships[0];
-        const baseUrl = window.location.origin;
-        const protocol = baseUrl.includes("localhost") ? "http" : "https";
         const host = window.location.host;
 
         let dashboardUrl: string;
+        
+        // Check if we're on localhost
         if (host.includes("localhost")) {
-          dashboardUrl = `${protocol}://${firstAgency.slug}.localhost:3000/dashboard`;
-        } else {
+          dashboardUrl = `http://${firstAgency.slug}.localhost:3000/dashboard`;
+        } 
+        // Check if we're on Vercel (no subdomain support without custom domain)
+        else if (host.includes("vercel.app")) {
+          // On Vercel without custom domain, just go to /dashboard
+          // The app will need to handle tenant selection differently
+          dashboardUrl = "/dashboard";
+        }
+        // Custom domain with subdomain support
+        else {
+          const protocol = "https";
           const parts = host.split(".");
           const domain = parts.slice(-2).join(".");
           dashboardUrl = `${protocol}://${firstAgency.slug}.${domain}/dashboard`;
