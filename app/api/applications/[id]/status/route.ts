@@ -12,6 +12,7 @@ import {
 import { assertNotDemoAgency, DemoReadOnlyError } from "@/modules/auth/demo-mode";
 import { TenantNotFoundError, TenantRequiredError } from "@/lib/tenant";
 import { logInfo, logError, logEvent } from "@/lib/log";
+import { createMissionFromApplication } from "@/modules/mission/lifecycle";
 
 // =============================================================================
 // VALIDATION
@@ -101,6 +102,11 @@ export async function PATCH(
         note: true,
         jobId: true,
         fullName: true,
+        candidateId: true,
+        agencyId: true,
+        job: {
+          select: { clientId: true }
+        }
       },
     });
 
@@ -135,6 +141,26 @@ export async function PATCH(
         fullName: true,
       },
     });
+
+    // Auto-create mission if placed
+    if (newStatus === "PLACED" && previousStatus !== "PLACED") {
+      if (application.candidateId && application.job?.clientId) {
+        try {
+          await createMissionFromApplication(application.id, {
+            jobId: application.jobId,
+            candidateId: application.candidateId,
+            clientId: application.job.clientId,
+            agencyId: application.agencyId,
+            startDate: new Date(), // Default start today
+            endDatePlanned: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Default 1 week duration
+            createdById: userId,
+          });
+          logInfo("Auto-created mission for placed application", { applicationId });
+        } catch (err) {
+          logError("Failed to auto-create mission", { error: err instanceof Error ? err.message : "Unknown" });
+        }
+      }
+    }
 
     // Log event
     logEvent({

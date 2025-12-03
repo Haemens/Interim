@@ -1988,6 +1988,37 @@ CRON_SECRET="secure-random-string"
    - [ ] Demo mode banner appears where appropriate
    - [ ] All flows return success but don't mutate data
 
+## Missions / Assignment Tracking
+
+Track candidate placements and ongoing assignments.
+
+### Data Model
+
+**Mission** - A candidate placement:
+- `status`: PLANNED, ACTIVE, COMPLETED, CANCELLED, NO_SHOW, SUSPENDED
+- `dates`: startDate, endDatePlanned, endDateActual
+- `financials`: hourlyRate (pay), billingRate (bill)
+- `relations`: 1-1 with Application, linked to Candidate, Job, Client
+
+### Workflow
+
+1. **Creation**: Automatically created when an Application status is set to `PLACED`.
+2. **Tracking**: Recruiters monitor active missions via `/dashboard/missions`.
+3. **Updates**: Status changes (e.g., ACTIVE → COMPLETED) are tracked.
+
+### API Endpoints
+
+**`GET /api/missions`**
+- List missions with filters (status, date range, client, candidate).
+- RBAC: RECRUITER+
+
+**`GET /api/missions/[id]`**
+- Get mission details.
+
+**`PATCH /api/missions/[id]`**
+- Update mission status, dates, or notes.
+- Logs `MISSION_STATUS_CHANGED`.
+
 ## License
 
 Private - All rights reserved.

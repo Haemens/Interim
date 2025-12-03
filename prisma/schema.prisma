@@ -36,6 +36,8 @@ model User {
   createdContents     JobPostContent[] @relation("CreatedContent")
   lastEditedContents  JobPostContent[] @relation("LastEditedContent")
   createdPublications Publication[]    @relation("CreatedPublication")
+  createdMissions     Mission[]        @relation("CreatedMission")
+  updatedMissions     Mission[]        @relation("LastUpdatedMission")
 
   @@index([email])
 }
@@ -108,6 +110,7 @@ model Agency {
   clientFeedback     ClientFeedback[]
   timesheets         Timesheet[]
   socialAccounts     SocialAccount[]
+  missions           Mission[]
 
   @@index([slug])
 }
@@ -166,6 +169,7 @@ model Job {
   postContents JobPostContent[]
   publications Publication[]
   jobRequests  JobRequest[]
+  missions     Mission[]
 
   @@index([agencyId])
   @@index([status])
@@ -219,6 +223,7 @@ model Application {
   sourceChannel  Channel?          @relation(fields: [sourceChannelId], references: [id], onDelete: SetNull)
   shortlistItems ShortlistItem[]
   clientFeedback ClientFeedback[]
+  mission        Mission?
 
   @@index([jobId])
   @@index([agencyId])
@@ -430,6 +435,7 @@ model CandidateProfile {
   agency       Agency        @relation(fields: [agencyId], references: [id], onDelete: Cascade)
   applications Application[]
   timesheets   Timesheet[]
+  missions     Mission[]
 
   @@unique([agencyId, email])
   @@index([agencyId, status])
@@ -637,6 +643,7 @@ model Client {
   jobs        Job[]
   shortlists  Shortlist[]
   timesheets  Timesheet[]
+  missions    Mission[]
 
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -717,4 +724,65 @@ enum ClientDecision {
   PENDING
   APPROVED
   REJECTED
+}
+
+// =============================================================================
+// MISSIONS / ASSIGNMENTS
+// =============================================================================
+
+enum MissionStatus {
+  PLANNED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+  SUSPENDED
+}
+
+model Mission {
+  id              String        @id @default(cuid())
+  agencyId        String
+  clientId        String
+  jobId           String
+  candidateId     String
+  applicationId   String        @unique // 1-1 relation
+
+  status          MissionStatus @default(PLANNED)
+  
+  startDate       DateTime
+  endDatePlanned  DateTime
+  endDateActual   DateTime?
+  
+  location        String?       // site name or address
+  siteContactName String?
+  siteContactPhone String?
+  siteContactEmail String?
+  
+  hourlyRate      Decimal?      @db.Decimal(10, 2) // candidate pay
+  billingRate     Decimal?      @db.Decimal(10, 2) // client bill
+  
+  notes           String?       @db.Text
+  metadata        Json?         // schedule details etc.
+
+  createdById     String?
+  createdBy       User?         @relation("CreatedMission", fields: [createdById], references: [id])
+  lastUpdatedById String?
+  lastUpdatedBy   User?         @relation("LastUpdatedMission", fields: [lastUpdatedById], references: [id])
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Relations
+  agency      Agency           @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  client      Client           @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  job         Job              @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  candidate   CandidateProfile @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  application Application      @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([agencyId])
+  @@index([agencyId, status])
+  @@index([agencyId, endDatePlanned])
+  @@index([candidateId])
+  @@index([clientId])
+  @@index([jobId])
 }

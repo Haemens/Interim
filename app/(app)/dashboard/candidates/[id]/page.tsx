@@ -34,8 +34,17 @@ interface CandidateProfile {
   firstAppliedAt: string;
   lastAppliedAt: string;
   applications: Application[];
+  missions: {
+    id: string;
+    status: string;
+    startDate: string;
+    endDatePlanned: string;
+    job: { id: string; title: string };
+    client: { id: string; name: string };
+  }[];
   _count: {
     applications: number;
+    missions: number;
   };
 }
 
@@ -341,6 +350,40 @@ export default function CandidateDetailPage({
                       {translateAppStatus(app.status)}
                     </span>
                   </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Missions */}
+          <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+              <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Missions ({candidate._count.missions})
+            </h2>
+            {candidate.missions.length === 0 ? (
+              <p className="text-muted-foreground text-sm py-4 text-center">Aucune mission.</p>
+            ) : (
+              <div className="space-y-3">
+                {candidate.missions.map((mission) => (
+                  <Link
+                    href={`/dashboard/missions/${mission.id}`}
+                    key={mission.id}
+                    className="flex items-center justify-between p-4 bg-secondary rounded-lg hover:bg-secondary/80 transition-colors"
+                  >
+                    <div>
+                      <p className="font-medium text-foreground">{mission.job.title}</p>
+                      <p className="text-sm text-muted-foreground">{mission.client.name}</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Du {new Date(mission.startDate).toLocaleDateString()} au {new Date(mission.endDatePlanned).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <span className="text-xs px-2.5 py-1 rounded-full font-medium bg-background border border-border">
+                      {mission.status}
+                    </span>
+                  </Link>
                 ))}
               </div>
             )}

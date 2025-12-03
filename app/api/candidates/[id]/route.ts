@@ -124,8 +124,16 @@ export async function GET(
             },
           },
         },
+        missions: {
+          orderBy: { startDate: "desc" },
+          take: 10,
+          include: {
+            job: { select: { id: true, title: true } },
+            client: { select: { id: true, name: true } },
+          },
+        },
         _count: {
-          select: { applications: true },
+          select: { applications: true, missions: true },
         },
       },
     });
