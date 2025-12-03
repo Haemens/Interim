@@ -191,10 +191,10 @@ export default async function DashboardPage() {
         {translatedStats.map((stat, index) => {
           // Assign specific colors based on index for better visual distinction
           const colorSchemes = [
-            "bg-emerald-100 border-emerald-200 text-emerald-900 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-100",
-            "bg-blue-100 border-blue-200 text-blue-900 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-100",
-            "bg-amber-100 border-amber-200 text-amber-900 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-100",
-            "bg-purple-100 border-purple-200 text-purple-900 dark:bg-purple-900/20 dark:border-purple-800 dark:text-purple-100",
+            "bg-emerald-50 border-emerald-200 text-emerald-900 dark:bg-gradient-to-br dark:from-emerald-950/40 dark:to-teal-950/40 dark:border-emerald-900 dark:text-emerald-100",
+            "bg-blue-50 border-blue-200 text-blue-900 dark:bg-gradient-to-br dark:from-blue-950/40 dark:to-indigo-950/40 dark:border-blue-900 dark:text-blue-100",
+            "bg-amber-50 border-amber-200 text-amber-900 dark:bg-gradient-to-br dark:from-amber-950/40 dark:to-orange-950/40 dark:border-amber-900 dark:text-amber-100",
+            "bg-purple-50 border-purple-200 text-purple-900 dark:bg-gradient-to-br dark:from-purple-950/40 dark:to-pink-950/40 dark:border-purple-900 dark:text-purple-100",
           ];
           const colorClass = colorSchemes[index % colorSchemes.length];
           
