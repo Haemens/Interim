@@ -100,8 +100,8 @@ export async function GlobalView({ searchParams }: GlobalViewProps) {
   return (
     <div className="min-h-screen bg-white font-sans flex flex-col pt-16">
       {/* HERO SECTION */}
-      <section className="relative py-16 md:py-24 px-4 bg-gradient-to-b from-slate-50 to-white">
-        <div className="max-w-5xl mx-auto text-center mb-12">
+      <section className="relative pt-12 pb-8 md:pt-20 md:pb-12 px-4 bg-gradient-to-b from-slate-50 to-white">
+        <div className="max-w-5xl mx-auto text-center mb-8">
           <h1 className="text-4xl md:text-6xl font-bold text-slate-900 mb-6 tracking-tight">
             Trouvez votre prochaine <span className="text-indigo-600">mission d&apos;intérim</span>
           </h1>
@@ -115,9 +115,9 @@ export async function GlobalView({ searchParams }: GlobalViewProps) {
       </section>
 
       {/* BANNER - Compact */}
-      <section className="py-4 px-4">
+      <section className="pt-0 pb-4 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-[#FFDE59] rounded-2xl p-5 md:p-6 flex items-center justify-between relative overflow-hidden shadow-md">
+          <div className="bg-[#FFDE59] rounded-2xl p-4 md:p-5 flex items-center justify-between relative overflow-hidden shadow-md">
             {/* Decorative circles */}
             <div className="absolute top-0 right-0 w-40 h-40 bg-white opacity-20 rounded-full -translate-y-1/2 translate-x-1/3"></div>
 
