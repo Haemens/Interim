@@ -21,8 +21,10 @@ import {
   AlertCircle, 
   Share2,
   X,
-  Plus
+  Plus,
+  Link2
 } from "lucide-react";
+import { ConnectSocialModal } from "../../components/connect-social-modal";
 
 // =============================================================================
 // TYPES
@@ -827,6 +829,7 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
   const [editingPublication, setEditingPublication] = useState<Publication | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [regeneratingId, setRegeneratingId] = useState<string | null>(null);
+  const [showConnectModal, setShowConnectModal] = useState(false);
 
   // Fetch data
   const fetchData = async () => {
@@ -1090,10 +1093,10 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
           <Button
             variant="outline"
             className="hidden md:flex"
-            onClick={() => toast({ title: "Coming Soon", description: "Direct social media integration is coming soon! For now, copy/paste content to your platforms.", variant: "info" })}
+            onClick={() => setShowConnectModal(true)}
           >
-            <Share2 className="w-4 h-4 mr-2" />
-            Connect Accounts
+            <Link2 className="w-4 h-4 mr-2" />
+            Connecter
           </Button>
           
           {canEdit && (
@@ -1419,6 +1422,13 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
           onSave={fetchData}
           isDemo={isDemo}
           canEdit={canEdit}
+        />
+      )}
+
+      {showConnectModal && (
+        <ConnectSocialModal
+          onClose={() => setShowConnectModal(false)}
+          isDemo={isDemo}
         />
       )}
     </div>

@@ -107,6 +107,7 @@ model Agency {
   jobRequests        JobRequest[]
   clientFeedback     ClientFeedback[]
   timesheets         Timesheet[]
+  socialAccounts     SocialAccount[]
 
   @@index([slug])
 }
@@ -486,6 +487,10 @@ model Channel {
   isActive  Boolean     @default(true)
   notes     String?     @db.Text
 
+  // Link to connected social account for auto-publishing
+  socialAccountId String?
+  socialAccount   SocialAccount? @relation(fields: [socialAccountId], references: [id], onDelete: SetNull)
+
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
 
@@ -493,6 +498,48 @@ model Channel {
   applications Application[] // Applications that came from this channel
 
   @@index([agencyId])
+  @@index([socialAccountId])
+}
+
+// Connected social media accounts for OAuth-based publishing
+model SocialAccount {
+  id              String      @id @default(cuid())
+  agencyId        String
+  agency          Agency      @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  provider        SocialProvider  // LINKEDIN, INSTAGRAM, TIKTOK, FACEBOOK
+  providerAccountId String        // External account ID from the provider
+  accountName     String?         // Display name (e.g., "John Doe" or "Company Page")
+  accountHandle   String?         // Handle/username (e.g., "@company")
+  accountType     String?         // "personal", "page", "business"
+
+  // OAuth tokens (encrypted in production)
+  accessToken     String      @db.Text
+  refreshToken    String?     @db.Text
+  tokenExpiresAt  DateTime?
+  scope           String?     // OAuth scopes granted
+
+  // Status
+  isActive        Boolean     @default(true)
+  lastUsedAt      DateTime?
+  lastError       String?     @db.Text
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  // Channels linked to this account
+  channels        Channel[]
+
+  @@unique([agencyId, provider, providerAccountId])
+  @@index([agencyId])
+  @@index([provider])
+}
+
+enum SocialProvider {
+  LINKEDIN
+  INSTAGRAM
+  TIKTOK
+  FACEBOOK
 }
 
 model JobPostContent {
