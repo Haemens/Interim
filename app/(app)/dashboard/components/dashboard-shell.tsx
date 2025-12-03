@@ -138,6 +138,7 @@ export function DashboardShell({
                 key={item.name}
                 href={item.href}
                 onClick={() => setSidebarOpen(false)}
+                data-tour={item.tourId}
                 className={cn(
                   "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
                   isActive 
@@ -224,6 +225,7 @@ export function DashboardShell({
             </button>
             <Link 
               href="/dashboard/jobs?action=new" 
+              data-tour="create-job"
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm"
             >
               <Plus className="w-4 h-4" />

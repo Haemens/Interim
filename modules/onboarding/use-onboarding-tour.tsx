@@ -8,8 +8,8 @@ import { useState, useCallback, useEffect } from "react";
 
 export type OnboardingStep =
   | "welcome"
+  | "create-job"
   | "jobs"
-  | "pipeline"
   | "candidates"
   | "analytics"
   | "billing"
@@ -25,43 +25,43 @@ export interface OnboardingStepInfo {
 export const ONBOARDING_STEPS: OnboardingStepInfo[] = [
   {
     id: "welcome",
-    title: "Welcome to QuestHire! 👋",
+    title: "Bienvenue sur Interim ! 👋",
     description:
-      "Let's take a quick tour to help you get started. You'll learn how to create jobs, manage candidates, and track your hiring pipeline.",
+      "Faisons un tour rapide pour vous aider à démarrer. Vous apprendrez à créer des offres, gérer vos candidats et suivre vos recrutements.",
+  },
+  {
+    id: "create-job",
+    title: "Créez votre première offre",
+    description:
+      "Commencez par publier une offre d'emploi via ce bouton. C'est le point de départ pour recevoir des candidatures.",
+    target: '[data-tour="create-job"]',
   },
   {
     id: "jobs",
-    title: "Create Your First Job",
+    title: "Gérez vos recrutements",
     description:
-      "Start by creating a job posting. You can add details like title, location, salary, and requirements. Jobs can be published to your public careers page.",
+      "Retrouvez toutes vos offres ici. Cliquez sur une offre pour accéder à son tableau de suivi (pipeline Kanban) et gérer les étapes de recrutement.",
     target: '[data-tour="jobs"]',
   },
   {
-    id: "pipeline",
-    title: "Visual Candidate Pipeline",
-    description:
-      "Each job has a Kanban-style pipeline. Drag candidates through stages: New → Contacted → Qualified → Interview → Placed.",
-    target: '[data-tour="pipeline"]',
-  },
-  {
     id: "candidates",
-    title: "Your Talent Pool",
+    title: "Votre vivier de talents",
     description:
-      "Every applicant is automatically added to your talent pool. Search and re-contact past candidates for new opportunities.",
+      "Tous les candidats sont automatiquement ajoutés à votre vivier. Retrouvez-les facilement ici pour vos futurs besoins.",
     target: '[data-tour="candidates"]',
   },
   {
     id: "analytics",
-    title: "Track Your Performance",
+    title: "Suivez vos performances",
     description:
-      "View real-time analytics on your hiring funnel, source effectiveness, and team performance.",
+      "Visualisez en temps réel vos statistiques de recrutement, l'efficacité de vos sources et l'activité de votre équipe.",
     target: '[data-tour="analytics"]',
   },
   {
     id: "billing",
-    title: "Plans & Billing",
+    title: "Abonnement & Équipe",
     description:
-      "Manage your subscription, upgrade your plan, or add team members. Start with our free trial!",
+      "Gérez votre abonnement, changez de forfait ou invitez vos collaborateurs depuis cet onglet.",
     target: '[data-tour="billing"]',
   },
 ];
