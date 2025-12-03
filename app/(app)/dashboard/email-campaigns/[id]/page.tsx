@@ -54,7 +54,7 @@ export default function CampaignEditorPage({ params }: { params: Promise<{ id: s
       setRecipientCount(data.campaign.totalRecipientsPlanned);
     } catch (e) {
       console.error(e);
-      toast({ title: "Error", description: "Failed to load campaign", variant: "destructive" });
+      toast({ title: "Error", description: "Failed to load campaign", variant: "error" });
     } finally {
       setLoading(false);
     }
@@ -71,7 +71,7 @@ export default function CampaignEditorPage({ params }: { params: Promise<{ id: s
       if (!res.ok) throw new Error("Save failed");
       toast({ title: "Saved", description: "Campaign updated successfully" });
     } catch (e) {
-      toast({ title: "Error", description: "Failed to save changes", variant: "destructive" });
+      toast({ title: "Error", description: "Failed to save changes", variant: "error" });
     } finally {
       setSaving(false);
     }
@@ -85,7 +85,7 @@ export default function CampaignEditorPage({ params }: { params: Promise<{ id: s
       setRecipientCount(data.count);
       toast({ title: "Audience Updated", description: `${data.count} recipients found.` });
     } catch (e) {
-      toast({ title: "Error", description: "Failed to calculate audience", variant: "destructive" });
+      toast({ title: "Error", description: "Failed to calculate audience", variant: "error" });
     }
   }
 
@@ -99,7 +99,7 @@ export default function CampaignEditorPage({ params }: { params: Promise<{ id: s
       toast({ title: "Launched!", description: "Campaign is now sending." });
       router.push("/dashboard/email-campaigns");
     } catch (e) {
-      toast({ title: "Error", description: "Failed to launch campaign", variant: "destructive" });
+      toast({ title: "Error", description: "Failed to launch campaign", variant: "error" });
     } finally {
       setLaunching(false);
     }
