@@ -16,6 +16,7 @@ import { getClientsForAgency } from "@/modules/client";
 import { logInfo } from "@/lib/log";
 import { nanoid } from "nanoid";
 import { assertFeature, PlanLimitError, getPlanDisplayName } from "@/modules/billing";
+import { logActivityEvent } from "@/modules/activity";
 
 // =============================================================================
 // VALIDATION
@@ -179,6 +180,16 @@ export async function POST(request: NextRequest) {
       clientId: client.id,
       agencyId: agency.id,
       name: client.name,
+    });
+
+    await logActivityEvent({
+      agencyId: agency.id,
+      actorUserId: user.id,
+      targetType: "CLIENT",
+      targetId: client.id,
+      action: "CREATED",
+      summary: `${user.name || "User"} created client "${client.name}"`,
+      metadata: { name: client.name }
     });
 
     return NextResponse.json({ client }, { status: 201 });

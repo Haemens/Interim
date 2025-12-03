@@ -13,6 +13,7 @@ import { assertNotDemoAgency, DemoReadOnlyError } from "@/modules/auth/demo-mode
 import { TenantNotFoundError, TenantRequiredError } from "@/lib/tenant";
 import { logInfo, logError, logEvent } from "@/lib/log";
 import { createMissionFromApplication } from "@/modules/mission/lifecycle";
+import { logActivityEvent } from "@/modules/activity";
 
 // =============================================================================
 // VALIDATION
@@ -175,6 +176,29 @@ export async function PATCH(
         newStatus,
       },
     });
+
+    // Log activity timeline
+    await logActivityEvent({
+      agencyId,
+      actorUserId: userId,
+      targetType: "APPLICATION",
+      targetId: applicationId,
+      action: "STATUS_CHANGED",
+      summary: `${context.user.name || "User"} moved ${application.fullName} to ${newStatus}`,
+      metadata: { previousStatus, newStatus, candidateName: application.fullName }
+    });
+
+    if (application.candidateId) {
+      await logActivityEvent({
+        agencyId,
+        actorUserId: userId,
+        targetType: "CANDIDATE",
+        targetId: application.candidateId,
+        action: "CANDIDATE_MOVED_STAGE",
+        summary: `${context.user.name || "User"} moved ${application.fullName} to ${newStatus}`,
+        metadata: { jobId: application.jobId, applicationId, newStatus }
+      });
+    }
 
     logInfo("Application status updated", {
       applicationId,

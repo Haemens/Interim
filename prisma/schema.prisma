@@ -18,6 +18,8 @@ model User {
   email          String    @unique
   emailVerified  DateTime?
   name           String?
+  firstName      String?
+  lastName       String?
   hashedPassword String?   // bcrypt hashed password for credentials auth
   image          String?
   invitedAt      DateTime? // When user was invited to platform
@@ -38,6 +40,10 @@ model User {
   createdPublications Publication[]    @relation("CreatedPublication")
   createdMissions     Mission[]        @relation("CreatedMission")
   updatedMissions     Mission[]        @relation("LastUpdatedMission")
+  createdSegments     EmailSegment[]
+  createdEmailCampaigns EmailCampaign[]
+  activityEvents        ActivityEvent[]
+  contactedCandidates   CandidateProfile[] @relation("LastContactedBy")
 
   @@index([email])
 }
@@ -111,6 +117,9 @@ model Agency {
   timesheets         Timesheet[]
   socialAccounts     SocialAccount[]
   missions           Mission[]
+  emailSegments      EmailSegment[]
+  emailCampaigns     EmailCampaign[]
+  activityEvents     ActivityEvent[]
 
   @@index([slug])
 }
@@ -170,6 +179,7 @@ model Job {
   publications Publication[]
   jobRequests  JobRequest[]
   missions     Mission[]
+  emailCampaigns EmailCampaign[]
 
   @@index([agencyId])
   @@index([status])
@@ -425,7 +435,16 @@ model CandidateProfile {
   bic                  String?
   hourlyRate           Decimal?        @db.Decimal(10, 2)
 
+  // Availability & Preferences
+  availabilityDate     DateTime?       // Next available date
+  availabilityTags     String[]        // ["Night", "Weekend", "Full-time"]
+  experienceYears      Int?
+  mobilityRadius       Int?            // km
+  preferredContractTypes String[]      // ["INTERIM", "CDD", "CDI"]
+
   consentToContact Boolean         @default(true)
+  isEmailOptedOut  Boolean         @default(false)
+  emailPreferences Json?
   consentGivenAt   DateTime?
   firstAppliedAt   DateTime        @default(now())
   lastAppliedAt    DateTime        @default(now())
@@ -436,10 +455,29 @@ model CandidateProfile {
   applications Application[]
   timesheets   Timesheet[]
   missions     Mission[]
+  documents    CandidateDocument[]
+  emailReceived EmailCampaignRecipient[]
+  
+  lastContactedAt   DateTime?
+  lastContactedById String?
+  lastContactedBy   User?     @relation("LastContactedBy", fields: [lastContactedById], references: [id])
 
   @@unique([agencyId, email])
   @@index([agencyId, status])
   @@index([agencyId])
+}
+
+model CandidateDocument {
+  id          String   @id @default(cuid())
+  candidateId String
+  candidate   CandidateProfile @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  
+  type        String   // "CV", "ID_CARD", "LICENSE", "CERTIFICATE", "OTHER"
+  name        String
+  url         String
+  createdAt   DateTime @default(now())
+  
+  @@index([candidateId])
 }
 
 // =============================================================================
@@ -785,4 +823,160 @@ model Mission {
   @@index([candidateId])
   @@index([clientId])
   @@index([jobId])
+}
+
+// =============================================================================
+// EMAIL CAMPAIGNS & SEGMENTS
+// =============================================================================
+
+enum EmailCampaignStatus {
+  DRAFT
+  SCHEDULED
+  SENDING
+  PAUSED
+  COMPLETED
+  CANCELLED
+}
+
+enum EmailCampaignSendMode {
+  IMMEDIATE
+  SCHEDULED
+}
+
+enum EmailRecipientStatus {
+  PENDING
+  SENT
+  BOUNCED
+  OPENED
+  CLICKED
+  UNSUBSCRIBED
+  FAILED
+}
+
+model EmailSegment {
+  id          String   @id @default(cuid())
+  agencyId    String
+  name        String
+  description String?  @db.Text
+  definition  Json     // Serialized filters
+  createdById String?
+  createdBy   User?    @relation(fields: [createdById], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  agency    Agency          @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  campaigns EmailCampaign[]
+
+  @@index([agencyId])
+}
+
+model EmailCampaign {
+  id                     String                @id @default(cuid())
+  agencyId               String
+  createdById            String?
+  jobId                  String?
+  name                   String
+  subject                String
+  bodyHtml               String                @db.Text
+  bodyText               String?               @db.Text
+  status                 EmailCampaignStatus   @default(DRAFT)
+  sendMode               EmailCampaignSendMode @default(IMMEDIATE)
+  scheduledAt            DateTime?
+  segmentId              String?
+  totalRecipientsPlanned Int                   @default(0)
+  
+  // Stats
+  sentCount        Int @default(0)
+  openCount        Int @default(0)
+  clickCount       Int @default(0)
+  bounceCount      Int @default(0)
+  unsubscribeCount Int @default(0)
+
+  utmSource   String?
+  utmCampaign String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  agency     Agency                   @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  createdBy  User?                    @relation(fields: [createdById], references: [id])
+  job        Job?                     @relation(fields: [jobId], references: [id], onDelete: SetNull)
+  segment    EmailSegment?            @relation(fields: [segmentId], references: [id], onDelete: SetNull)
+  recipients EmailCampaignRecipient[]
+
+  @@index([agencyId, status])
+  @@index([jobId])
+}
+
+model EmailCampaignRecipient {
+  id             String               @id @default(cuid())
+  campaignId     String
+  candidateId    String
+  email          String
+  status         EmailRecipientStatus @default(PENDING)
+  sentAt         DateTime?
+  openedAt       DateTime?
+  clickedAt      DateTime?
+  bouncedAt      DateTime?
+  unsubscribedAt DateTime?
+  lastError      String?              @db.Text
+
+  campaign  EmailCampaign    @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  candidate CandidateProfile @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, candidateId])
+  @@index([campaignId, status])
+}
+
+// =============================================================================
+// ACTIVITY TIMELINE
+// =============================================================================
+
+enum ActivityTargetType {
+  JOB
+  APPLICATION
+  CANDIDATE
+  CLIENT
+  JOB_REQUEST
+  SHORTLIST
+  EMAIL_CAMPAIGN
+  PUBLICATION
+  MISSION
+  OTHER
+}
+
+enum ActivityAction {
+  CREATED
+  UPDATED
+  STATUS_CHANGED
+  NOTE_ADDED
+  EMAIL_SENT
+  EMAIL_CAMPAIGN_LAUNCHED
+  CONTACT_LOGGED
+  SHORTLIST_CREATED
+  CANDIDATE_MOVED_STAGE
+  MISSION_STARTED
+  MISSION_ENDED
+  OTHER
+}
+
+model ActivityEvent {
+  id          String   @id @default(cuid())
+  agencyId    String
+  actorUserId String?
+  
+  targetType  ActivityTargetType
+  targetId    String
+  action      ActivityAction
+  summary     String
+  metadata    Json?
+  
+  createdAt   DateTime @default(now())
+
+  agency      Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  actor       User?  @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([agencyId, createdAt])
+  @@index([targetType, targetId, createdAt])
 }

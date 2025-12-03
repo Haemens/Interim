@@ -17,6 +17,7 @@ import { logInfo, logError, logEvent } from "@/lib/log";
 import { captureException } from "@/lib/monitoring";
 import { getClientIp } from "@/lib/client-ip";
 import { applyRateLimit, RATE_LIMITS } from "@/lib/rate-limit";
+import { upsertCandidateFromApplication } from "@/modules/candidate/service";
 
 // =============================================================================
 // VALIDATION SCHEMAS
@@ -39,6 +40,8 @@ const createApplicationSchema = z.object({
   sourceDetail: z.string().max(500).optional(),
   channelId: z.string().cuid().optional().or(z.literal("")),
   consentToContact: z.boolean().default(true),
+  availabilityDate: z.string().optional(), // ISO date string
+  mobilityRadius: z.number().optional(),
 });
 
 // =============================================================================
@@ -250,74 +253,20 @@ export async function POST(request: NextRequest) {
     let candidateId: string | null = null;
     
     if (data.email) {
-      const existingProfile = await db.candidateProfile.findUnique({
-        where: {
-          agencyId_email: {
-            agencyId: agency.id,
-            email: data.email,
-          },
-        },
-      });
-
-      if (existingProfile) {
-        // Update existing profile
-        const updatedProfile = await db.candidateProfile.update({
-          where: { id: existingProfile.id },
-          data: {
-            fullName: data.fullName,
-            phone: data.phone || existingProfile.phone,
-            cvUrl: data.cvUrl || existingProfile.cvUrl,
-            lastAppliedAt: new Date(),
-            lastJobTitle: job.title,
-            // Add job sector to sectors if not already present
-            sectors: existingProfile.sectors.includes(job.sector || "")
-              ? existingProfile.sectors
-              : job.sector
-                ? [...existingProfile.sectors, job.sector]
-                : existingProfile.sectors,
-          },
-        });
-        candidateId = updatedProfile.id;
-        
-        logInfo("Updated candidate profile", {
-          profileId: updatedProfile.id,
-          email: data.email,
-        });
-        
-        await logEvent({
-          type: "APPLICATION_CREATED",
-          agencyId: agency.id,
-          payload: { profileId: updatedProfile.id, action: "profile_updated" },
-        });
-      } else {
-        // Create new profile
-        const newProfile = await db.candidateProfile.create({
-          data: {
+        const result = await upsertCandidateFromApplication({
             agencyId: agency.id,
             email: data.email,
             fullName: data.fullName,
             phone: data.phone || null,
             cvUrl: data.cvUrl || null,
-            skills: job.tags || [],
-            sectors: job.sector ? [job.sector] : [],
-            lastJobTitle: job.title,
-            consentToContact: data.consentToContact,
-            consentGivenAt: data.consentToContact ? new Date() : null,
-          },
+            availabilityDate: data.availabilityDate ? new Date(data.availabilityDate) : null,
+            mobilityRadius: data.mobilityRadius || null,
+            jobId: job.id,
         });
-        candidateId = newProfile.id;
+        candidateId = result.id;
         
-        logInfo("Created new candidate profile", {
-          profileId: newProfile.id,
-          email: data.email,
-        });
-        
-        await logEvent({
-          type: "APPLICATION_CREATED",
-          agencyId: agency.id,
-          payload: { profileId: newProfile.id, action: "profile_created" },
-        });
-      }
+        // Log event for application (using candidateId)
+        // Note: upsertCandidateFromApplication doesn't log events yet, we keep existing logs below for Application
     }
 
     // Create application with source tracking

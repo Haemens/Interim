@@ -30,6 +30,9 @@ const updateCandidateSchema = z.object({
   iban: z.string().max(50).optional(),
   bic: z.string().max(20).optional(),
   hourlyRate: z.number().or(z.string().regex(/^\d+(\.\d{1,2})?$/)).optional(),
+  availabilityDate: z.string().optional().nullable(),
+  experienceYears: z.number().int().optional().nullable(),
+  mobilityRadius: z.number().int().optional().nullable(),
 });
 
 // =============================================================================
@@ -111,6 +114,14 @@ export async function GET(
         agencyId: agency.id,
       },
       include: {
+        lastContactedBy: {
+          select: {
+            id: true,
+            name: true,
+            firstName: true,
+            lastName: true,
+          }
+        },
         applications: {
           orderBy: { createdAt: "desc" },
           take: 20,
@@ -135,6 +146,9 @@ export async function GET(
         _count: {
           select: { applications: true, missions: true },
         },
+        documents: {
+            orderBy: { createdAt: 'desc' }
+        }
       },
     });
 
@@ -214,6 +228,9 @@ export async function PATCH(
         ...(data.iban !== undefined && { iban: data.iban }),
         ...(data.bic !== undefined && { bic: data.bic }),
         ...(data.hourlyRate !== undefined && { hourlyRate: data.hourlyRate }),
+        ...(data.availabilityDate !== undefined && { availabilityDate: data.availabilityDate ? new Date(data.availabilityDate) : null }),
+        ...(data.experienceYears !== undefined && { experienceYears: data.experienceYears }),
+        ...(data.mobilityRadius !== undefined && { mobilityRadius: data.mobilityRadius }),
       },
     });
 
@@ -223,6 +240,61 @@ export async function PATCH(
     });
 
     return NextResponse.json({ candidate });
+  } catch (error) {
+    return handleError(error);
+  }
+}
+
+// =============================================================================
+// DELETE /api/candidates/[id] - Delete candidate (GDPR)
+// =============================================================================
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const currentUser = await getCurrentUser();
+    const tenantSlug = await getTenantSlugWithFallback(request, currentUser?.id ?? null);
+
+    if (!tenantSlug) {
+      return NextResponse.json({ error: "Tenant slug required" }, { status: 400 });
+    }
+
+    // Get membership context
+    const { agency, membership } = await getCurrentMembershipOrThrow(tenantSlug);
+
+    // RBAC: ADMIN and above can delete candidates
+    assertMinimumRole(membership, "ADMIN");
+
+    // Demo mode: block deletion
+    assertNotDemoAgency(agency, "delete candidates");
+
+    // Find candidate - ensure it belongs to this agency
+    const candidate = await db.candidateProfile.findFirst({
+      where: {
+        id,
+        agencyId: agency.id,
+      },
+    });
+
+    if (!candidate) {
+      return NextResponse.json({ error: "Candidate not found" }, { status: 404 });
+    }
+
+    // Delete candidate
+    await db.candidateProfile.delete({
+      where: { id },
+    });
+
+    logInfo("Deleted candidate", {
+      candidateId: id,
+      agencyId: agency.id,
+      userId: currentUser?.id,
+    });
+
+    return NextResponse.json({ success: true });
   } catch (error) {
     return handleError(error);
   }

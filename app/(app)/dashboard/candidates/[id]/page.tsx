@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useEffect, use } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { ContactWarning } from "@/components/activity/contact-warning";
+import { ActivityTimeline } from "@/components/activity/activity-timeline";
 
 interface Application {
   id: string;
@@ -33,6 +36,13 @@ interface CandidateProfile {
   consentToContact: boolean;
   firstAppliedAt: string;
   lastAppliedAt: string;
+  lastContactedAt?: string;
+  lastContactedBy?: {
+    id: string;
+    name: string;
+    firstName?: string;
+    lastName?: string;
+  };
   applications: Application[];
   missions: {
     id: string;
@@ -46,6 +56,10 @@ interface CandidateProfile {
     applications: number;
     missions: number;
   };
+  documents?: { id: string; name: string; url: string }[];
+  availabilityDate?: string;
+  experienceYears?: number;
+  mobilityRadius?: number;
 }
 
 function getStatusBadge(status: CandidateProfile["status"]) {
@@ -108,6 +122,7 @@ export default function CandidateDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
+  const router = useRouter();
   const [candidate, setCandidate] = useState<CandidateProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -124,6 +139,9 @@ export default function CandidateDetailPage({
   const [iban, setIban] = useState("");
   const [bic, setBic] = useState("");
   const [hourlyRate, setHourlyRate] = useState("");
+  const [availabilityDate, setAvailabilityDate] = useState("");
+  const [experienceYears, setExperienceYears] = useState("");
+  const [mobilityRadius, setMobilityRadius] = useState("");
 
   useEffect(() => {
     async function fetchCandidate() {
@@ -145,6 +163,9 @@ export default function CandidateDetailPage({
         setIban(data.candidate.iban || "");
         setBic(data.candidate.bic || "");
         setHourlyRate(data.candidate.hourlyRate || "");
+        setAvailabilityDate(data.candidate.availabilityDate ? new Date(data.candidate.availabilityDate).toISOString().split('T')[0] : "");
+        setExperienceYears(data.candidate.experienceYears?.toString() || "");
+        setMobilityRadius(data.candidate.mobilityRadius?.toString() || "");
       } catch (err) {
         setError(err instanceof Error ? err.message : "Impossible de charger le candidat");
       } finally {
@@ -174,6 +195,9 @@ export default function CandidateDetailPage({
           iban: iban || undefined,
           bic: bic || undefined,
           hourlyRate: hourlyRate || undefined,
+          availabilityDate: availabilityDate || undefined,
+          experienceYears: experienceYears ? parseInt(experienceYears) : undefined,
+          mobilityRadius: mobilityRadius ? parseInt(mobilityRadius) : undefined,
         }),
       });
 
@@ -190,6 +214,21 @@ export default function CandidateDetailPage({
       setError(err instanceof Error ? err.message : "Échec de la sauvegarde");
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (!confirm("Êtes-vous sûr de vouloir supprimer définitivement ce candidat ? Cette action est irréversible et anonymisera les données associées.")) return;
+    
+    try {
+      const res = await fetch(`/api/candidates/${id}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Suppression échouée");
+      }
+      router.push("/dashboard/candidates");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Impossible de supprimer le candidat.");
     }
   }
 
@@ -243,6 +282,11 @@ export default function CandidateDetailPage({
           {translateStatus(candidate.status)}
         </span>
       </div>
+
+      <ContactWarning 
+        lastContactedAt={candidate.lastContactedAt}
+        lastContactedByName={candidate.lastContactedBy ? (candidate.lastContactedBy.firstName || candidate.lastContactedBy.name) : undefined}
+      />
 
       {error && (
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg flex items-center gap-3">
@@ -388,6 +432,17 @@ export default function CandidateDetailPage({
               </div>
             )}
           </div>
+
+          {/* Activity Section */}
+          <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+               <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+               </svg>
+               Activité & Historique
+            </h2>
+            <ActivityTimeline targetType="CANDIDATE" targetId={candidate.id} />
+          </div>
         </div>
 
         {/* Edit Panel */}
@@ -497,6 +552,66 @@ export default function CandidateDetailPage({
           <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
             <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
               <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Disponibilité & Préférences
+            </h2>
+            <div className="space-y-4">
+                <div>
+                    <label className="block text-sm font-medium text-foreground mb-1.5">Disponibilité</label>
+                    <input 
+                        type="date" 
+                        value={availabilityDate} 
+                        onChange={e => setAvailabilityDate(e.target.value)} 
+                        className="w-full px-4 py-2.5 bg-secondary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:bg-background text-foreground transition-colors"
+                    />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label className="block text-sm font-medium text-foreground mb-1.5">Expérience (ans)</label>
+                        <input 
+                            type="number" 
+                            value={experienceYears} 
+                            onChange={e => setExperienceYears(e.target.value)} 
+                            className="w-full px-4 py-2.5 bg-secondary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:bg-background text-foreground transition-colors"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-foreground mb-1.5">Mobilité (km)</label>
+                        <input 
+                            type="number" 
+                            value={mobilityRadius} 
+                            onChange={e => setMobilityRadius(e.target.value)} 
+                            className="w-full px-4 py-2.5 bg-secondary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:bg-background text-foreground transition-colors"
+                        />
+                    </div>
+                </div>
+            </div>
+            
+            <h2 className="text-lg font-semibold text-foreground mt-8 mb-4 flex items-center gap-2">
+              <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Documents
+            </h2>
+            {candidate.documents && candidate.documents.length > 0 ? (
+                <ul className="space-y-2">
+                    {candidate.documents.map(doc => (
+                        <li key={doc.id} className="flex items-center justify-between p-3 bg-secondary rounded-lg text-sm">
+                            <span className="font-medium">{doc.name}</span>
+                            <a href={doc.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Voir</a>
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p className="text-sm text-muted-foreground italic">Aucun document.</p>
+            )}
+          </div>
+
+          {/* Payroll Info */}
+          <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+              <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
               Informations de Paie
@@ -577,6 +692,27 @@ export default function CandidateDetailPage({
                   {new Date(candidate.lastAppliedAt).toLocaleDateString("fr-FR")}
                 </span>
               </div>
+            </div>
+          </div>
+          {/* Danger Zone */}
+          <div className="bg-red-50 dark:bg-red-900/10 rounded-xl border border-red-200 dark:border-red-900 p-6 shadow-sm mt-6">
+            <h2 className="text-lg font-semibold text-red-800 dark:text-red-400 mb-4 flex items-center gap-2">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              Zone de Danger (GDPR)
+            </h2>
+            <div className="flex items-center justify-between flex-wrap gap-4">
+                <p className="text-sm text-red-700 dark:text-red-300">
+                    Supprimer définitivement ce candidat.
+                    <br/>Cette action est irréversible.
+                </p>
+                <button 
+                    onClick={handleDelete}
+                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+                >
+                    Supprimer le candidat
+                </button>
             </div>
           </div>
         </div>

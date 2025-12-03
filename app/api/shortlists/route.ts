@@ -15,6 +15,7 @@ import { assertNotDemoAgency, DemoReadOnlyError, isDemoAgency } from "@/modules/
 import { TenantNotFoundError, TenantRequiredError } from "@/lib/tenant";
 import { assertFeature, PlanLimitError, getPlanDisplayName } from "@/modules/billing";
 import { logInfo, logError } from "@/lib/log";
+import { logActivityEvent } from "@/modules/activity";
 
 // =============================================================================
 // VALIDATION SCHEMAS
@@ -311,6 +312,16 @@ export async function POST(request: NextRequest) {
     });
 
     const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+
+    await logActivityEvent({
+      agencyId: agency.id,
+      actorUserId: user.id,
+      targetType: "SHORTLIST",
+      targetId: shortlist.id,
+      action: "SHORTLIST_CREATED",
+      summary: `${user.name || "User"} created shortlist "${shortlist.name}" for job "${job.title}"`,
+      metadata: { jobId: job.id, name: shortlist.name }
+    });
 
     return NextResponse.json(
       {

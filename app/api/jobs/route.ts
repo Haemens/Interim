@@ -18,6 +18,7 @@ import {
   getPlanDisplayName,
 } from "@/modules/billing";
 import { logInfo, logError, logWarn, logEvent } from "@/lib/log";
+import { logActivityEvent } from "@/modules/activity";
 import { sendTemplatedEmail } from "@/lib/email";
 import { getTenantUrl } from "@/lib/tenant";
 import type { Agency, Job } from "@prisma/client";
@@ -381,6 +382,17 @@ export async function POST(request: NextRequest) {
       userId: user.id,
       jobId: job.id,
       payload: { title: job.title, status: job.status },
+    });
+
+    // Log activity timeline
+    await logActivityEvent({
+      agencyId: agency.id,
+      actorUserId: user.id,
+      targetType: "JOB",
+      targetId: job.id,
+      action: "CREATED",
+      summary: `${user.name || "User"} created job "${job.title}"`,
+      metadata: { title: job.title }
     });
 
     logInfo("Job created successfully", { jobId: job.id, title: job.title });

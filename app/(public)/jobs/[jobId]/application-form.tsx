@@ -29,6 +29,8 @@ interface StoredProfile {
   email: string;
   phone: string;
   cvUrl: string;
+  availabilityDate?: string;
+  mobilityRadius?: string;
 }
 
 function loadStoredProfile(): StoredProfile | null {
@@ -76,6 +78,8 @@ export function ApplicationForm({
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [cvUrl, setCvUrl] = useState("");
+  const [availabilityDate, setAvailabilityDate] = useState("");
+  const [mobilityRadius, setMobilityRadius] = useState("");
   const [consent, setConsent] = useState(false);
 
   // File upload state
@@ -93,6 +97,8 @@ export function ApplicationForm({
       setEmail(stored.email || "");
       setPhone(stored.phone || "");
       setCvUrl(stored.cvUrl || "");
+      setAvailabilityDate(stored.availabilityDate || "");
+      setMobilityRadius(stored.mobilityRadius || "");
       setPrefilled(true);
     }
   }, []);
@@ -183,6 +189,8 @@ export function ApplicationForm({
           email: email || undefined,
           phone: phone || undefined,
           cvUrl: cvUrl || undefined,
+          availabilityDate: availabilityDate || undefined,
+          mobilityRadius: mobilityRadius ? parseInt(mobilityRadius) : undefined,
           source: effectiveSource,
           sourceDetail: sourceDetail || undefined,
           channelId: channelId || undefined,
@@ -196,7 +204,7 @@ export function ApplicationForm({
       }
 
       // Save profile to localStorage for quick apply on future applications
-      saveProfile({ fullName, email, phone, cvUrl });
+      saveProfile({ fullName, email, phone, cvUrl, availabilityDate, mobilityRadius });
 
       setFormState("success");
     } catch (err) {
@@ -299,6 +307,35 @@ export function ApplicationForm({
             className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             placeholder="+33 6 12 34 56 78"
           />
+        </div>
+
+        {/* Availability & Mobility */}
+        <div className="grid grid-cols-2 gap-4">
+            <div>
+                <label htmlFor="availability" className="block text-sm font-medium text-slate-700 mb-1">
+                    Next Available
+                </label>
+                <input
+                    type="date"
+                    id="availability"
+                    value={availabilityDate}
+                    onChange={(e) => setAvailabilityDate(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                />
+            </div>
+            <div>
+                <label htmlFor="mobility" className="block text-sm font-medium text-slate-700 mb-1">
+                    Mobility (km)
+                </label>
+                <input
+                    type="number"
+                    id="mobility"
+                    value={mobilityRadius}
+                    onChange={(e) => setMobilityRadius(e.target.value)}
+                    placeholder="20"
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                />
+            </div>
         </div>
 
         {/* CV Upload */}
