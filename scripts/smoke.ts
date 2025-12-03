@@ -14,7 +14,13 @@
  *   1 = Some tests failed
  */
 
+import * as dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
+import { PrismaNeon } from "@prisma/adapter-neon";
+
+// Load environment variables
+dotenv.config({ path: ".env.local" });
+dotenv.config({ path: ".env" });
 
 // =============================================================================
 // CONFIGURATION
@@ -262,7 +268,13 @@ async function main() {
   console.log(`${colors.blue}╚════════════════════════════════════════╝${colors.reset}`);
   console.log(`\nTarget: ${BASE_URL}`);
 
-  const prisma = new PrismaClient();
+  const databaseUrl = process.env.DATABASE_URL;
+  if (!databaseUrl) {
+    console.error(`${colors.red}✗ DATABASE_URL environment variable is not set${colors.reset}`);
+    process.exit(1);
+  }
+  const adapter = new PrismaNeon({ connectionString: databaseUrl });
+  const prisma = new PrismaClient({ adapter });
 
   try {
     // Run all test suites
