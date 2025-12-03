@@ -197,7 +197,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get membership context
-    const { agency, membership } = await getCurrentMembershipOrThrow(tenantSlug);
+    const { agency, membership, user: dbUser } = await getCurrentMembershipOrThrow(tenantSlug);
 
     // RBAC: RECRUITER and above can create shortlists
     assertMinimumRole(membership, "RECRUITER");
@@ -315,11 +315,11 @@ export async function POST(request: NextRequest) {
 
     await logActivityEvent({
       agencyId: agency.id,
-      actorUserId: user.id,
+      actorUserId: dbUser.id,
       targetType: "SHORTLIST",
       targetId: shortlist.id,
       action: "SHORTLIST_CREATED",
-      summary: `${user.name || "User"} created shortlist "${shortlist.name}" for job "${job.title}"`,
+      summary: `${dbUser.name || "User"} created shortlist "${shortlist.name}" for job "${job.title}"`,
       metadata: { jobId: job.id, name: shortlist.name }
     });
 

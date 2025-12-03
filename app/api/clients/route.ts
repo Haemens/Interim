@@ -143,7 +143,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get membership context
-    const { agency, membership } = await getCurrentMembershipOrThrow(tenantSlug);
+    const { agency, membership, user: dbUser } = await getCurrentMembershipOrThrow(tenantSlug);
 
     // RBAC: ADMIN and above can create clients
     assertMinimumRole(membership, "ADMIN");
@@ -184,11 +184,11 @@ export async function POST(request: NextRequest) {
 
     await logActivityEvent({
       agencyId: agency.id,
-      actorUserId: user.id,
+      actorUserId: dbUser.id,
       targetType: "CLIENT",
       targetId: client.id,
       action: "CREATED",
-      summary: `${user.name || "User"} created client "${client.name}"`,
+      summary: `${dbUser.name || "User"} created client "${client.name}"`,
       metadata: { name: client.name }
     });
 
