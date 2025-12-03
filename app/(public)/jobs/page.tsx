@@ -12,6 +12,7 @@ interface PageProps {
     sector?: string;
     location?: string;
     page?: string;
+    agency?: string;
   }>;
 }
 
@@ -46,9 +47,13 @@ export default async function PublicJobsPage({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
   
   const tenantSlug = getTenantFromHost(host);
+  
+  // Allow accessing agency view via query param on main domain
+  const agencyParam = typeof resolvedSearchParams.agency === "string" ? resolvedSearchParams.agency : undefined;
+  const effectiveTenantSlug = tenantSlug || agencyParam;
 
-  if (tenantSlug) {
-    return <AgencyView tenantSlug={tenantSlug} searchParams={resolvedSearchParams} />;
+  if (effectiveTenantSlug) {
+    return <AgencyView tenantSlug={effectiveTenantSlug} searchParams={resolvedSearchParams} />;
   }
 
   return <GlobalView searchParams={resolvedSearchParams} />;
