@@ -112,14 +112,14 @@ export function ApplicationForm({
 
     // Validate file type
     if (!ALLOWED_FILE_TYPES.includes(file.type)) {
-      setUploadError("Please upload a PDF or Word document");
+      setUploadError("Veuillez télécharger un fichier PDF ou Word");
       setSelectedFile(null);
       return;
     }
 
     // Validate file size
     if (file.size > MAX_FILE_SIZE) {
-      setUploadError(`File too large. Maximum size is ${formatFileSize(MAX_FILE_SIZE)}`);
+      setUploadError(`Fichier trop volumineux. Taille maximum : ${formatFileSize(MAX_FILE_SIZE)}`);
       setSelectedFile(null);
       return;
     }
@@ -141,14 +141,14 @@ export function ApplicationForm({
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to upload file");
+        throw new Error(data.error || "Échec du téléchargement");
       }
 
       setCvUrl(data.url);
       setUploadedFileName(file.name);
       setUploadState("success");
     } catch (err) {
-      setUploadError(err instanceof Error ? err.message : "Upload failed");
+      setUploadError(err instanceof Error ? err.message : "Échec du téléchargement");
       setUploadState("error");
       setSelectedFile(null);
     }
@@ -169,7 +169,7 @@ export function ApplicationForm({
     e.preventDefault();
 
     if (!consent) {
-      setErrorMessage("Please accept the consent checkbox to continue.");
+      setErrorMessage("Veuillez accepter les conditions pour continuer.");
       return;
     }
 
@@ -200,7 +200,7 @@ export function ApplicationForm({
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || "Failed to submit application");
+        throw new Error(data.error || "Échec de l'envoi de la candidature");
       }
 
       // Save profile to localStorage for quick apply on future applications
@@ -210,40 +210,34 @@ export function ApplicationForm({
     } catch (err) {
       setFormState("error");
       setErrorMessage(
-        err instanceof Error ? err.message : "Something went wrong"
+        err instanceof Error ? err.message : "Une erreur est survenue"
       );
     }
   }
 
   if (formState === "success") {
     return (
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
-        <div className="text-center">
-          <div className="text-4xl mb-4">🎉</div>
-          <h3 className="text-lg font-semibold text-slate-900 mb-2">
-            Application Submitted!
-          </h3>
-          <p className="text-slate-600 text-sm">
-            Thank you for applying for <strong>{jobTitle}</strong> at{" "}
-            <strong>{agencyName}</strong>.
-          </p>
-          <p className="text-slate-500 text-sm mt-2">
-            We&apos;ll review your application and get back to you soon.
-          </p>
-        </div>
+      <div className="text-center py-4">
+        <div className="text-4xl mb-4">🎉</div>
+        <h3 className="text-lg font-semibold text-slate-900 mb-2">
+          Candidature envoyée !
+        </h3>
+        <p className="text-slate-600 text-sm">
+          Merci pour votre candidature au poste de <strong>{jobTitle}</strong> chez{" "}
+          <strong>{agencyName}</strong>.
+        </p>
+        <p className="text-slate-500 text-sm mt-2">
+          Nous examinerons votre profil et reviendrons vers vous rapidement.
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-6">
-      <h3 className="text-lg font-semibold text-slate-900 mb-4">
-        Apply for this position
-      </h3>
-
+    <div>
       {prefilled && (
         <div className="mb-4 p-3 bg-blue-50 border border-blue-200 text-blue-700 text-sm rounded-lg">
-          ✨ We&apos;ve prefilled your details from a previous application.
+          ✨ Vos informations ont été pré-remplies depuis une candidature précédente.
         </div>
       )}
 
@@ -260,7 +254,7 @@ export function ApplicationForm({
             htmlFor="fullName"
             className="block text-sm font-medium text-slate-700 mb-1"
           >
-            Full Name <span className="text-red-500">*</span>
+            Nom complet <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -269,7 +263,7 @@ export function ApplicationForm({
             onChange={(e) => setFullName(e.target.value)}
             required
             className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-            placeholder="John Doe"
+            placeholder="Jean Dupont"
           />
         </div>
 
@@ -287,7 +281,7 @@ export function ApplicationForm({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-            placeholder="john@example.com"
+            placeholder="jean@exemple.com"
           />
         </div>
 
@@ -297,7 +291,7 @@ export function ApplicationForm({
             htmlFor="phone"
             className="block text-sm font-medium text-slate-700 mb-1"
           >
-            Phone
+            Téléphone
           </label>
           <input
             type="tel"
@@ -305,7 +299,7 @@ export function ApplicationForm({
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-            placeholder="+33 6 12 34 56 78"
+            placeholder="06 12 34 56 78"
           />
         </div>
 
@@ -313,7 +307,7 @@ export function ApplicationForm({
         <div className="grid grid-cols-2 gap-4">
             <div>
                 <label htmlFor="availability" className="block text-sm font-medium text-slate-700 mb-1">
-                    Next Available
+                    Disponibilité
                 </label>
                 <input
                     type="date"
@@ -325,7 +319,7 @@ export function ApplicationForm({
             </div>
             <div>
                 <label htmlFor="mobility" className="block text-sm font-medium text-slate-700 mb-1">
-                    Mobility (km)
+                    Mobilité (km)
                 </label>
                 <input
                     type="number"
@@ -341,7 +335,7 @@ export function ApplicationForm({
         {/* CV Upload */}
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">
-            CV / Resume
+            CV
           </label>
           
           {uploadState === "success" && uploadedFileName ? (
@@ -356,7 +350,7 @@ export function ApplicationForm({
                 onClick={handleRemoveFile}
                 className="text-green-600 hover:text-green-800 text-sm font-medium"
               >
-                Remove
+                Supprimer
               </button>
             </div>
           ) : uploadState === "uploading" ? (
@@ -366,7 +360,7 @@ export function ApplicationForm({
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
-              <span className="text-sm text-blue-800">Uploading...</span>
+              <span className="text-sm text-blue-800">Téléchargement...</span>
             </div>
           ) : (
             // Show file input
@@ -387,7 +381,7 @@ export function ApplicationForm({
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
                 <span className="text-sm text-slate-600">
-                  Click to upload CV (PDF, DOC, DOCX)
+                  Cliquez pour télécharger votre CV (PDF, DOC, DOCX)
                 </span>
               </label>
             </div>
@@ -398,7 +392,7 @@ export function ApplicationForm({
           )}
           
           <p className="text-xs text-slate-500 mt-1">
-            Max file size: 5 MB. Or paste a link below.
+            Taille max : 5 Mo. Ou collez un lien ci-dessous.
           </p>
           
           {/* Fallback URL input */}
@@ -408,7 +402,7 @@ export function ApplicationForm({
               value={cvUrl}
               onChange={(e) => setCvUrl(e.target.value)}
               className="mt-2 w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
-              placeholder="Or paste a link to your CV..."
+              placeholder="Ou collez un lien vers votre CV..."
             />
           )}
         </div>
@@ -423,8 +417,8 @@ export function ApplicationForm({
             className="mt-1 h-4 w-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500"
           />
           <label htmlFor="consent" className="text-sm text-slate-600">
-            I agree to be contacted regarding job opportunities and understand
-            my data will be processed according to the privacy policy.{" "}
+            J&apos;accepte d&apos;être contacté(e) concernant des opportunités d&apos;emploi et 
+            je comprends que mes données seront traitées conformément à la politique de confidentialité.{" "}
             <span className="text-red-500">*</span>
           </label>
         </div>
@@ -436,17 +430,13 @@ export function ApplicationForm({
           className="w-full py-3 px-4 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           style={{ backgroundColor: primaryColor }}
         >
-          {formState === "submitting" ? "Submitting..." : "Submit Application"}
+          {formState === "submitting" ? "Envoi en cours..." : "Envoyer ma candidature"}
         </button>
       </form>
 
       <p className="text-xs text-slate-500 text-center mt-4">
-        Your data is handled securely and will only be used for recruitment
-        purposes.
-      </p>
-      <p className="text-xs text-slate-400 text-center mt-2">
-        We may reuse your profile details for future applications with this
-        agency, always respecting your consent.
+        Vos données sont traitées de manière sécurisée et utilisées uniquement 
+        à des fins de recrutement.
       </p>
     </div>
   );

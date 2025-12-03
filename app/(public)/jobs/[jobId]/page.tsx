@@ -5,8 +5,7 @@ import { db } from "@/lib/db";
 import { getTenantFromHost } from "@/lib/tenant";
 import { DEMO_AGENCY_SLUG } from "@/modules/auth/demo-mode";
 import { ApplicationForm } from "./application-form";
-import { MapPin, FileText, Building, Euro, ArrowLeft, CheckCircle2, Calendar, Clock } from "lucide-react";
-import { PublicFooter } from "../../components/public-footer";
+import { MapPin, FileText, Building, Euro, ArrowLeft, CheckCircle2, Calendar, Clock, Banknote, CalendarDays, Timer } from "lucide-react";
 
 interface JobDetailPageProps {
   params: Promise<{ jobId: string }>;
@@ -86,8 +85,13 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
   const sourceDetail = typeof resolvedSearchParams.sourceDetail === "string" ? resolvedSearchParams.sourceDetail : undefined;
   const channelId = typeof resolvedSearchParams.channelId === "string" ? resolvedSearchParams.channelId : undefined;
 
+  // Build agency public URL
+  const agencyPublicUrl = `https://${agency.slug}.questhire.fr`;
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans flex flex-col">
+      {/* No navigation bar - clean job detail page */}
+      
       {/* Header */}
       <header
         className="py-16 px-4 relative overflow-hidden"
@@ -97,13 +101,13 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
         <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
 
         <div className="max-w-4xl mx-auto relative z-10">
-          <Link
-            href="/"
+          <a
+            href={agencyPublicUrl}
             className="inline-flex items-center text-white/80 hover:text-white text-sm mb-8 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm transition-colors hover:bg-white/20"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Voir les autres offres
-          </Link>
+            Voir les autres offres de {agency.name}
+          </a>
           
           <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-6 leading-tight tracking-tight">
             {job.title}
@@ -138,10 +142,10 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
       </header>
 
       {/* Content */}
-      <main className="max-w-7xl mx-auto px-4 py-12 -mt-10 relative z-20 flex-grow w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <main className="max-w-6xl mx-auto px-4 py-12 -mt-10 relative z-20 flex-grow w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* Job Details */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-3 space-y-8">
             {/* Description */}
             <section className="bg-white rounded-2xl shadow-lg border border-slate-100 p-8">
               <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3 border-b border-slate-100 pb-4">
@@ -204,9 +208,58 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
             )}
           </div>
 
-          {/* Application Form */}
-          <div className="lg:col-span-1">
+          {/* Sidebar */}
+          <div className="lg:col-span-2">
             <div className="sticky top-8 space-y-6">
+              {/* Salary Card */}
+              {salary && (
+                <div className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-2xl shadow-lg border border-emerald-100 p-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 bg-emerald-100 rounded-lg">
+                      <Banknote className="w-5 h-5 text-emerald-600" />
+                    </div>
+                    <h3 className="font-bold text-slate-900">Rémunération</h3>
+                  </div>
+                  <p className="text-2xl font-bold text-emerald-700">{salary}</p>
+                  <p className="text-sm text-slate-500 mt-1">Salaire brut</p>
+                </div>
+              )}
+
+              {/* Mission Info Card */}
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl shadow-lg border border-blue-100 p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 bg-blue-100 rounded-lg">
+                    <CalendarDays className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <h3 className="font-bold text-slate-900">Informations mission</h3>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-slate-600 flex items-center gap-2">
+                      <Calendar className="w-4 h-4" /> Début
+                    </span>
+                    <span className="font-semibold text-slate-900">Dès que possible</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-slate-600 flex items-center gap-2">
+                      <Timer className="w-4 h-4" /> Durée
+                    </span>
+                    <span className="font-semibold text-slate-900">
+                      {job.contractType === "INTERIM" ? "Mission intérim" : 
+                       job.contractType === "CONTRACT" ? "CDD" :
+                       job.contractType === "FULL_TIME" ? "CDI" : "À définir"}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-slate-600 flex items-center gap-2">
+                      <FileText className="w-4 h-4" /> Contrat
+                    </span>
+                    <span className="font-semibold text-slate-900">{formatContractType(job.contractType)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Application Form */}
               <div className="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden transform transition-all hover:shadow-2xl">
                 <div className="p-5 bg-gradient-to-r from-slate-50 to-white border-b border-slate-100">
                   <h3 className="font-bold text-slate-900 text-center text-lg">Postuler maintenant</h3>
@@ -238,7 +291,20 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
         </div>
       </main>
 
-      <PublicFooter agencyName={agency.name} />
+      {/* Simple footer */}
+      <footer className="py-8 px-4 border-t border-slate-200 bg-white mt-auto">
+        <div className="max-w-6xl mx-auto text-center">
+          <p className="text-sm text-slate-500">
+            Offre proposée par <span className="font-semibold text-slate-700">{agency.name}</span>
+          </p>
+          <a 
+            href={agencyPublicUrl}
+            className="text-sm text-indigo-600 hover:text-indigo-700 mt-2 inline-block"
+          >
+            Voir toutes nos offres →
+          </a>
+        </div>
+      </footer>
     </div>
   );
 }
