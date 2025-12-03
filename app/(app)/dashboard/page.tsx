@@ -140,7 +140,7 @@ export default async function DashboardPage() {
 
     if (label === "Active Jobs") label = "Offres actives";
     if (label === "Total Applications") label = "Total candidatures";
-    if (label === "New Candidates") label = "Nouveaux candidats";
+    if (label === "New Candidates") label = "Candidatures à traiter";
     if (label === "Placements") label = "Recrutements";
 
     if (change === "published") change = "publié";

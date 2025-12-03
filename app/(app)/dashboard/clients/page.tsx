@@ -53,6 +53,11 @@ export default function ClientsPage() {
 
       const res = await fetch(`/api/clients?${params.toString()}`);
       if (!res.ok) {
+        // Si c'est une 404 ou liste vide, on peut juste mettre une liste vide
+        if (res.status === 404) {
+             setClients([]);
+             return;
+        }
         const data = await res.json();
         throw new Error(data.error || "Échec du chargement des clients");
       }

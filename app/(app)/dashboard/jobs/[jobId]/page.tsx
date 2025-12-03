@@ -244,7 +244,7 @@ export default async function JobDetailPage({
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-        <Card>
+        <Card className="bg-secondary/20 border-border shadow-sm">
           <CardHeader className="p-4 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Total candidatures
@@ -254,36 +254,36 @@ export default async function JobDetailPage({
             <div className="text-2xl font-bold">{job._count.applications}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-blue-50/50 dark:bg-blue-950/20 border-blue-100 dark:border-blue-900 shadow-sm">
           <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-sm font-medium text-blue-600">Nouveau</CardTitle>
+            <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-400">Nouveau</CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
-            <div className="text-2xl font-bold">{stats.NEW || 0}</div>
+            <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">{stats.NEW || 0}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-amber-50/50 dark:bg-amber-950/20 border-amber-100 dark:border-amber-900 shadow-sm">
           <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-sm font-medium text-yellow-600">Contacté</CardTitle>
+            <CardTitle className="text-sm font-medium text-amber-700 dark:text-amber-400">Contacté</CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
-            <div className="text-2xl font-bold">{stats.CONTACTED || 0}</div>
+            <div className="text-2xl font-bold text-amber-900 dark:text-amber-100">{stats.CONTACTED || 0}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-purple-50/50 dark:bg-purple-950/20 border-purple-100 dark:border-purple-900 shadow-sm">
           <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-sm font-medium text-purple-600">Qualifié</CardTitle>
+            <CardTitle className="text-sm font-medium text-purple-700 dark:text-purple-400">Qualifié</CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
-            <div className="text-2xl font-bold">{stats.QUALIFIED || 0}</div>
+            <div className="text-2xl font-bold text-purple-900 dark:text-purple-100">{stats.QUALIFIED || 0}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-100 dark:border-emerald-900 shadow-sm">
           <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-sm font-medium text-green-600">Recruté</CardTitle>
+            <CardTitle className="text-sm font-medium text-emerald-700 dark:text-emerald-400">Recruté</CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
-            <div className="text-2xl font-bold">{stats.PLACED || 0}</div>
+            <div className="text-2xl font-bold text-emerald-900 dark:text-emerald-100">{stats.PLACED || 0}</div>
           </CardContent>
         </Card>
       </div>

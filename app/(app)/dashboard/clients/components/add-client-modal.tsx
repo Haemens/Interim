@@ -73,6 +73,16 @@ export function AddClientModal({ onClose, onSuccess }: AddClientModalProps) {
       const data = await res.json();
 
       if (!res.ok) {
+        // Handle specific errors
+        if (res.status === 403 && data.error?.code === "DEMO_READ_ONLY") {
+             toast({
+                title: "Mode Démo",
+                description: "Cette action n'est pas disponible en mode démo.",
+                variant: "info" // Or warning/info
+             });
+             // Don't throw to avoid generic error handling
+             return; 
+        }
         throw new Error(data.error || "Failed to create client");
       }
 

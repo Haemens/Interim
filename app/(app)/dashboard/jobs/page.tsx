@@ -193,33 +193,33 @@ export default function JobsPage() {
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40 border-blue-100 dark:border-blue-900 shadow-sm">
+        <Card className="bg-card dark:bg-gradient-to-br dark:from-blue-950/40 dark:to-indigo-950/40 border border-blue-200 dark:border-blue-900 shadow-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wider">Total Offres</CardTitle>
+            <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-400 uppercase tracking-wider">Total Offres</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-blue-900 dark:text-blue-100">{stats.total}</div>
-            <p className="text-xs text-blue-600/80 dark:text-blue-400 mt-1">Toutes les offres créées</p>
+            <div className="text-3xl font-bold text-blue-950 dark:text-blue-100">{stats.total}</div>
+            <p className="text-xs text-muted-foreground dark:text-blue-400 mt-1">Toutes les offres créées</p>
           </CardContent>
         </Card>
         
-        <Card className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/40 border-emerald-100 dark:border-emerald-900 shadow-sm">
+        <Card className="bg-card dark:bg-gradient-to-br dark:from-emerald-950/40 dark:to-teal-950/40 border border-emerald-200 dark:border-emerald-900 shadow-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Offres Actives</CardTitle>
+            <CardTitle className="text-sm font-medium text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Offres Actives</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-emerald-900 dark:text-emerald-100">{stats.active}</div>
-            <p className="text-xs text-emerald-600/80 dark:text-emerald-400 mt-1">Visibles par les candidats</p>
+            <div className="text-3xl font-bold text-emerald-950 dark:text-emerald-100">{stats.active}</div>
+            <p className="text-xs text-muted-foreground dark:text-emerald-400 mt-1">Publiées</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/40 dark:to-pink-950/40 border-purple-100 dark:border-purple-900 shadow-sm">
+        <Card className="bg-card dark:bg-gradient-to-br dark:from-purple-950/40 dark:to-pink-950/40 border border-purple-200 dark:border-purple-900 shadow-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-purple-600 dark:text-purple-400 uppercase tracking-wider">Candidatures</CardTitle>
+            <CardTitle className="text-sm font-medium text-purple-700 dark:text-purple-400 uppercase tracking-wider">Candidatures</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-purple-900 dark:text-purple-100">{stats.applications}</div>
-            <p className="text-xs text-purple-600/80 dark:text-purple-400 mt-1">Total reçues</p>
+            <div className="text-3xl font-bold text-purple-950 dark:text-purple-100">{stats.applications}</div>
+            <p className="text-xs text-muted-foreground dark:text-purple-400 mt-1">Reçues au total</p>
           </CardContent>
         </Card>
       </div>
