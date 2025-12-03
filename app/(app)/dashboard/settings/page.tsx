@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Upload, X, Image as ImageIcon } from "lucide-react";
+import { Upload, X, Image as ImageIcon, Download } from "lucide-react";
 
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState<"general" | "branding" | "notifications">("general");
+  const [activeTab, setActiveTab] = useState<"general" | "branding" | "notifications" | "import">("general");
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const logoInputRef = useRef<HTMLInputElement>(null);
@@ -48,6 +48,7 @@ export default function SettingsPage() {
     { key: "general", label: "Général" },
     { key: "branding", label: "Marque" },
     { key: "notifications", label: "Notifications" },
+    { key: "import", label: "Import CSV" },
   ];
 
   return (
