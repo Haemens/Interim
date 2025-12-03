@@ -17,6 +17,9 @@ export function middleware(request: NextRequest) {
   if (tenantSlug) {
     requestHeaders.set(TENANT_HEADER, tenantSlug);
   }
+  
+  // Add pathname to headers for layout decisions
+  requestHeaders.set("x-pathname", request.nextUrl.pathname);
 
   // Create response with modified headers
   const response = NextResponse.next({

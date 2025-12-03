@@ -11,10 +11,14 @@ export default async function PublicLayout({
   const headersList = await headers();
   const host = headersList.get("host") || "";
   const tenantSlug = getTenantFromHost(host);
+  
+  // Get current path to check if we're on a job detail page
+  const pathname = headersList.get("x-pathname") || headersList.get("x-invoke-path") || "";
+  const isJobDetailPage = /\/jobs\/[^/]+$/.test(pathname);
 
   // Only show global QuestHire navigation on the main domain (no tenant subdomain)
-  // Tenant pages usually have their own branding/navigation embedded in the page component
-  const showGlobalNav = !tenantSlug;
+  // and NOT on job detail pages (they have their own header/footer)
+  const showGlobalNav = !tenantSlug && !isJobDetailPage;
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">

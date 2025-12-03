@@ -92,8 +92,8 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
   const sourceDetail = typeof resolvedSearchParams.sourceDetail === "string" ? resolvedSearchParams.sourceDetail : undefined;
   const channelId = typeof resolvedSearchParams.channelId === "string" ? resolvedSearchParams.channelId : undefined;
 
-  // Build agency public URL
-  const agencyPublicUrl = `https://${agency.slug}.questhire.fr`;
+  // Build return URL - use /jobs for global job board
+  const returnUrl = `/jobs`;
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans flex flex-col">
@@ -109,7 +109,7 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
 
         <div className="max-w-4xl mx-auto relative z-10">
           <a
-            href={agencyPublicUrl}
+            href={returnUrl}
             className="inline-flex items-center text-white/80 hover:text-white text-sm mb-8 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm transition-colors hover:bg-white/20"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -305,7 +305,7 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
             Offre proposée par <span className="font-semibold text-slate-700">{agency.name}</span>
           </p>
           <a 
-            href={agencyPublicUrl}
+            href={returnUrl}
             className="text-sm text-indigo-600 hover:text-indigo-700 mt-2 inline-block"
           >
             Voir toutes nos offres →
