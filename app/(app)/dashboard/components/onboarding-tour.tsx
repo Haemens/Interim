@@ -25,7 +25,7 @@ export function OnboardingTour({ isDemo = false }: OnboardingTourProps) {
     prevStep,
     skipTour,
     completeTour,
-  } = useOnboardingTour({ autoStart: !isDemo });
+  } = useOnboardingTour({ autoStart: true }); // Always allow onboarding, even in demo mode
 
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -66,8 +66,8 @@ export function OnboardingTour({ isDemo = false }: OnboardingTourProps) {
     };
   }, [isActive, currentStepInfo]);
 
-  // Don't show tour in demo mode or while loading
-  if (isDemo || isLoading || !isActive || !currentStepInfo || !mounted) {
+  // Don't show tour while loading
+  if (isLoading || !isActive || !currentStepInfo || !mounted) {
     return null;
   }
 

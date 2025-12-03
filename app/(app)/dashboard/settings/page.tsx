@@ -1,9 +1,48 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { Upload, X, Image as ImageIcon } from "lucide-react";
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<"general" | "branding" | "notifications">("general");
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null);
+
+  const handleLogoClick = () => {
+    logoInputRef.current?.click();
+  };
+
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        alert("Veuillez sélectionner une image (PNG, JPG, etc.)");
+        return;
+      }
+      // Validate file size (2MB max)
+      if (file.size > 2 * 1024 * 1024) {
+        alert("Le fichier est trop volumineux. Maximum 2MB.");
+        return;
+      }
+      setLogoFile(file);
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLogoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveLogo = () => {
+    setLogoFile(null);
+    setLogoPreview(null);
+    if (logoInputRef.current) {
+      logoInputRef.current.value = "";
+    }
+  };
 
   const tabs = [
     { key: "general", label: "Général" },
@@ -129,29 +168,54 @@ export default function SettingsPage() {
 
             <div className="border-t border-border pt-6">
               <h3 className="text-lg font-medium text-foreground mb-4">Logo</h3>
-              <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:bg-muted/50 transition-colors cursor-pointer">
-                <div className="text-muted-foreground mb-2">
-                  <svg
-                    className="w-10 h-10 mx-auto"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+              
+              {/* Hidden file input */}
+              <input
+                ref={logoInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleLogoChange}
+                className="hidden"
+              />
+              
+              {logoPreview ? (
+                /* Logo preview */
+                <div className="relative inline-block">
+                  <div className="border-2 border-border rounded-lg p-4 bg-muted/30">
+                    <img
+                      src={logoPreview}
+                      alt="Logo preview"
+                      className="max-h-32 max-w-xs object-contain"
                     />
-                  </svg>
+                  </div>
+                  <button
+                    onClick={handleRemoveLogo}
+                    className="absolute -top-2 -right-2 p-1 bg-destructive text-destructive-foreground rounded-full hover:bg-destructive/90 transition-colors"
+                    title="Supprimer le logo"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    {logoFile?.name}
+                  </p>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Glissez-déposez votre logo ici, ou cliquez pour parcourir
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  PNG, JPG jusqu&apos;à 2MB
-                </p>
-              </div>
+              ) : (
+                /* Upload zone */
+                <div 
+                  onClick={handleLogoClick}
+                  className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:bg-muted/50 hover:border-primary/50 transition-colors cursor-pointer"
+                >
+                  <div className="text-muted-foreground mb-2">
+                    <Upload className="w-10 h-10 mx-auto" />
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Glissez-déposez votre logo ici, ou <span className="text-primary font-medium">cliquez pour parcourir</span>
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    PNG, JPG jusqu&apos;à 2MB
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="flex justify-end">
