@@ -25,7 +25,7 @@ import { cn } from "@/lib/utils";
 import { AgencySwitcher } from "../agency-switcher";
 import { SignOutButton } from "../sign-out-button";
 import { DemoBanner } from "./demo-banner";
-import { OnboardingTour } from "./onboarding-tour";
+import { OnboardingTour, ReplayTourButton } from "./onboarding-tour";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 interface DashboardShellProps {
@@ -197,6 +197,11 @@ export function DashboardShell({
               <p className="text-xs text-muted-foreground truncate">{user.email}</p>
             </div>
             <SignOutButton />
+          </div>
+          
+          {/* Tour Replay */}
+          <div className="pt-2 border-t border-border mt-2 flex justify-center">
+            <ReplayTourButton />
           </div>
         </div>
       </aside>

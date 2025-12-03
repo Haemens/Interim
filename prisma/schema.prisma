@@ -106,6 +106,7 @@ model Agency {
   clients            Client[]
   jobRequests        JobRequest[]
   clientFeedback     ClientFeedback[]
+  timesheets         Timesheet[]
 
   @@index([slug])
 }
@@ -410,6 +411,13 @@ model CandidateProfile {
   location         String?         // city / region
   notes            String?         @db.Text // internal notes
   status           CandidateStatus @default(ACTIVE)
+  
+  // Payroll Info
+  socialSecurityNumber String?
+  iban                 String?
+  bic                  String?
+  hourlyRate           Decimal?        @db.Decimal(10, 2)
+
   consentToContact Boolean         @default(true)
   consentGivenAt   DateTime?
   firstAppliedAt   DateTime        @default(now())
@@ -419,10 +427,46 @@ model CandidateProfile {
 
   agency       Agency        @relation(fields: [agencyId], references: [id], onDelete: Cascade)
   applications Application[]
+  timesheets   Timesheet[]
 
   @@unique([agencyId, email])
   @@index([agencyId, status])
   @@index([agencyId])
+}
+
+// =============================================================================
+// TIMESHEETS (Payroll & Billing)
+// =============================================================================
+
+model Timesheet {
+  id          String   @id @default(cuid())
+  agencyId    String
+  clientId    String
+  candidateId String
+
+  periodStart DateTime
+  periodEnd   DateTime
+  totalHours  Decimal         @db.Decimal(10, 2)
+  status      TimesheetStatus @default(PENDING)
+  notes       String?         @db.Text
+
+  agency    Agency           @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  client    Client           @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  candidate CandidateProfile @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([agencyId])
+  @@index([clientId])
+  @@index([candidateId])
+}
+
+enum TimesheetStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  PAID
 }
 
 // =============================================================================
@@ -544,6 +588,7 @@ model Client {
   feedback    ClientFeedback[]
   jobs        Job[]
   shortlists  Shortlist[]
+  timesheets  Timesheet[]
 
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt

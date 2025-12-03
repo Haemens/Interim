@@ -11,6 +11,7 @@ import type {
   ClientJobRequest,
   ClientJob,
   ClientShortlist,
+  ClientTimesheet,
   ClientKPIs,
   GetClientsParams,
   ClientsListResult,
@@ -160,6 +161,15 @@ export async function getClientDetail(
           },
         },
       },
+      timesheets: {
+        orderBy: { periodStart: "desc" },
+        take: 50,
+        include: {
+          candidate: {
+            select: { fullName: true },
+          },
+        },
+      },
     },
   });
 
@@ -207,6 +217,17 @@ export async function getClientDetail(
       createdAt: sl.createdAt,
     };
   });
+
+  // Transform timesheets
+  const timesheets: ClientTimesheet[] = client.timesheets.map((ts) => ({
+    id: ts.id,
+    candidateName: ts.candidate.fullName,
+    periodStart: ts.periodStart,
+    periodEnd: ts.periodEnd,
+    totalHours: Number(ts.totalHours),
+    status: ts.status,
+    createdAt: ts.createdAt,
+  }));
 
   // Calculate KPIs
   const activeJobs = client.jobs.filter((j) => j.status === "ACTIVE").length;
@@ -256,6 +277,7 @@ export async function getClientDetail(
     jobRequests,
     jobs,
     shortlists,
+    timesheets,
     kpis,
   };
 }

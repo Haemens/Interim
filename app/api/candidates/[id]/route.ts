@@ -26,6 +26,10 @@ const updateCandidateSchema = z.object({
   location: z.string().max(200).optional(),
   lastJobTitle: z.string().max(200).optional(),
   phone: z.string().max(50).optional(),
+  socialSecurityNumber: z.string().max(50).optional(),
+  iban: z.string().max(50).optional(),
+  bic: z.string().max(20).optional(),
+  hourlyRate: z.number().or(z.string().regex(/^\d+(\.\d{1,2})?$/)).optional(),
 });
 
 // =============================================================================
@@ -198,6 +202,10 @@ export async function PATCH(
         ...(data.location !== undefined && { location: data.location }),
         ...(data.lastJobTitle !== undefined && { lastJobTitle: data.lastJobTitle }),
         ...(data.phone !== undefined && { phone: data.phone }),
+        ...(data.socialSecurityNumber !== undefined && { socialSecurityNumber: data.socialSecurityNumber }),
+        ...(data.iban !== undefined && { iban: data.iban }),
+        ...(data.bic !== undefined && { bic: data.bic }),
+        ...(data.hourlyRate !== undefined && { hourlyRate: data.hourlyRate }),
       },
     });
 

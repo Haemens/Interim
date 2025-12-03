@@ -107,8 +107,12 @@ export function useOnboardingTour(
           const data = await res.json();
           setHasSeenTour(data.hasSeenTour);
           
-          // Auto-start tour for new users
-          if (autoStart && !data.hasSeenTour) {
+          // Check for force tour param
+          const params = new URLSearchParams(window.location.search);
+          const forceTour = params.get("tour") === "true";
+          
+          // Auto-start tour for new users or if forced
+          if (autoStart && (!data.hasSeenTour || forceTour)) {
             setCurrentStep("welcome");
           }
         }

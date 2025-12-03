@@ -25,6 +25,10 @@ interface CandidateProfile {
   lastJobTitle?: string;
   location?: string;
   notes?: string;
+  socialSecurityNumber?: string;
+  iban?: string;
+  bic?: string;
+  hourlyRate?: string;
   status: "ACTIVE" | "DO_NOT_CONTACT" | "BLACKLISTED";
   consentToContact: boolean;
   firstAppliedAt: string;
@@ -107,6 +111,10 @@ export default function CandidateDetailPage({
   const [skills, setSkills] = useState("");
   const [sectors, setSectors] = useState("");
   const [location, setLocation] = useState("");
+  const [ssn, setSsn] = useState("");
+  const [iban, setIban] = useState("");
+  const [bic, setBic] = useState("");
+  const [hourlyRate, setHourlyRate] = useState("");
 
   useEffect(() => {
     async function fetchCandidate() {
@@ -124,6 +132,10 @@ export default function CandidateDetailPage({
         setSkills(data.candidate.skills.join(", "));
         setSectors(data.candidate.sectors.join(", "));
         setLocation(data.candidate.location || "");
+        setSsn(data.candidate.socialSecurityNumber || "");
+        setIban(data.candidate.iban || "");
+        setBic(data.candidate.bic || "");
+        setHourlyRate(data.candidate.hourlyRate || "");
       } catch (err) {
         setError(err instanceof Error ? err.message : "Impossible de charger le candidat");
       } finally {
@@ -149,6 +161,10 @@ export default function CandidateDetailPage({
           skills: skills.split(",").map((s) => s.trim()).filter(Boolean),
           sectors: sectors.split(",").map((s) => s.trim()).filter(Boolean),
           location: location || undefined,
+          socialSecurityNumber: ssn || undefined,
+          iban: iban || undefined,
+          bic: bic || undefined,
+          hourlyRate: hourlyRate || undefined,
         }),
       });
 
@@ -431,6 +447,74 @@ export default function CandidateDetailPage({
                   "Enregistrer"
                 )}
               </button>
+            </div>
+          </div>
+
+          {/* Payroll Info */}
+          <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+              <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              Informations de Paie
+            </h2>
+            <div className="space-y-4">
+              {/* Hourly Rate */}
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1.5">
+                  Taux Horaire (€)
+                </label>
+                <input
+                  type="number"
+                  value={hourlyRate}
+                  onChange={(e) => setHourlyRate(e.target.value)}
+                  placeholder="0.00"
+                  step="0.01"
+                  className="w-full px-4 py-2.5 bg-secondary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:bg-background text-foreground placeholder:text-muted-foreground transition-colors"
+                />
+              </div>
+
+              {/* SSN */}
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1.5">
+                  Numéro Sécurité Sociale
+                </label>
+                <input
+                  type="text"
+                  value={ssn}
+                  onChange={(e) => setSsn(e.target.value)}
+                  placeholder="1 23 45 67..."
+                  className="w-full px-4 py-2.5 bg-secondary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:bg-background text-foreground placeholder:text-muted-foreground transition-colors"
+                />
+              </div>
+
+              {/* IBAN */}
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1.5">
+                  IBAN
+                </label>
+                <input
+                  type="text"
+                  value={iban}
+                  onChange={(e) => setIban(e.target.value)}
+                  placeholder="FR76..."
+                  className="w-full px-4 py-2.5 bg-secondary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:bg-background text-foreground placeholder:text-muted-foreground transition-colors"
+                />
+              </div>
+
+              {/* BIC */}
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1.5">
+                  BIC
+                </label>
+                <input
+                  type="text"
+                  value={bic}
+                  onChange={(e) => setBic(e.target.value)}
+                  placeholder="ABCD..."
+                  className="w-full px-4 py-2.5 bg-secondary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:bg-background text-foreground placeholder:text-muted-foreground transition-colors"
+                />
+              </div>
             </div>
           </div>
 

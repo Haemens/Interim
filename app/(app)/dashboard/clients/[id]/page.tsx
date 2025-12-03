@@ -42,6 +42,16 @@ interface ClientShortlist {
   createdAt: string;
 }
 
+interface ClientTimesheet {
+  id: string;
+  candidateName: string;
+  periodStart: string;
+  periodEnd: string;
+  totalHours: number;
+  status: string;
+  createdAt: string;
+}
+
 interface ClientKPIs {
   totalJobs: number;
   activeJobs: number;
@@ -69,6 +79,7 @@ interface ClientDetail {
   jobRequests: ClientJobRequest[];
   jobs: ClientJob[];
   shortlists: ClientShortlist[];
+  timesheets: ClientTimesheet[];
   kpis: ClientKPIs;
 }
 
@@ -102,7 +113,7 @@ export default function ClientDetailPage() {
 
   const [client, setClient] = useState<ClientDetail | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"requests" | "jobs" | "shortlists">("requests");
+  const [activeTab, setActiveTab] = useState<"requests" | "jobs" | "shortlists" | "timesheets">("requests");
 
   useEffect(() => {
     async function fetchClient() {
@@ -222,6 +233,7 @@ export default function ClientDetailPage() {
             { key: "requests", label: "Job Requests", count: client.jobRequests.length },
             { key: "jobs", label: "Jobs", count: client.jobs.length },
             { key: "shortlists", label: "Shortlists", count: client.shortlists.length },
+            { key: "timesheets", label: "Timesheets", count: client.timesheets.length },
           ].map((tab) => (
             <button
               key={tab.key}
@@ -407,6 +419,55 @@ export default function ClientDetailPage() {
                             Public →
                           </a>
                         </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </>
+        )}
+
+        {/* Timesheets Tab */}
+        {activeTab === "timesheets" && (
+          <>
+            {client.timesheets.length === 0 ? (
+              <div className="p-8 text-center text-slate-500">
+                No timesheets recorded for this client yet.
+              </div>
+            ) : (
+              <table className="w-full">
+                <thead className="bg-slate-50 border-b border-slate-200">
+                  <tr>
+                    <th className="text-left px-6 py-3 text-sm font-medium text-slate-600">Candidate</th>
+                    <th className="text-left px-6 py-3 text-sm font-medium text-slate-600">Period</th>
+                    <th className="text-center px-6 py-3 text-sm font-medium text-slate-600">Hours</th>
+                    <th className="text-center px-6 py-3 text-sm font-medium text-slate-600">Status</th>
+                    <th className="text-right px-6 py-3 text-sm font-medium text-slate-600">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {client.timesheets.map((ts) => (
+                    <tr key={ts.id} className="hover:bg-slate-50">
+                      <td className="px-6 py-4 font-medium text-slate-900">{ts.candidateName}</td>
+                      <td className="px-6 py-4 text-slate-600 text-sm">
+                        {formatDate(ts.periodStart)} - {formatDate(ts.periodEnd)}
+                      </td>
+                      <td className="px-6 py-4 text-center font-medium">{ts.totalHours}h</td>
+                      <td className="px-6 py-4 text-center">
+                        <span className={`text-xs px-2 py-1 rounded-full ${
+                          ts.status === "APPROVED" ? "bg-green-100 text-green-700" :
+                          ts.status === "PAID" ? "bg-blue-100 text-blue-700" :
+                          ts.status === "REJECTED" ? "bg-red-100 text-red-700" :
+                          "bg-amber-100 text-amber-700"
+                        }`}>
+                          {ts.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <button className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+                          View
+                        </button>
                       </td>
                     </tr>
                   ))}

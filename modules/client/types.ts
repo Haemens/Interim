@@ -63,6 +63,16 @@ export interface ClientShortlist {
   createdAt: Date;
 }
 
+export interface ClientTimesheet {
+  id: string;
+  candidateName: string;
+  periodStart: Date;
+  periodEnd: Date;
+  totalHours: number;
+  status: string;
+  createdAt: Date;
+}
+
 export interface ClientKPIs {
   totalJobs: number;
   activeJobs: number;
@@ -92,6 +102,7 @@ export interface ClientDetail {
   jobRequests: ClientJobRequest[];
   jobs: ClientJob[];
   shortlists: ClientShortlist[];
+  timesheets: ClientTimesheet[];
   
   // KPIs
   kpis: ClientKPIs;
