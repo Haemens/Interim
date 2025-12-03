@@ -79,8 +79,8 @@ export async function PATCH(
     const context = await getCurrentMembershipOrThrow(tenantSlug);
     assertMinimumRole(context.membership, "RECRUITER");
 
-    // Demo mode: block mutations
-    assertNotDemoAgency(context.agency, "update application status");
+    // Demo mode: allow updates for testing
+    // assertNotDemoAgency(context.agency, "update application status");
 
     const agencyId = context.agency.id;
     const userId = context.user.id;

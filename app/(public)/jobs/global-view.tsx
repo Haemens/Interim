@@ -290,8 +290,6 @@ export async function GlobalView({ searchParams }: GlobalViewProps) {
 
         </div>
       </main>
-
-      <PublicFooter />
     </div>
   );
 }
