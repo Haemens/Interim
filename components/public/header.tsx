@@ -71,14 +71,13 @@ export function PublicHeader() {
 
           {/* Right Side */}
           <div className="flex items-center gap-4">
-            <Link href="/signup" passHref>
-              <Button variant="ghost" className="hidden sm:flex text-slate-600 hover:text-indigo-600 font-medium">
-                Pour les agences
-              </Button>
+            <Link href="/login" className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors hidden sm:block">
+              Connexion employeur
             </Link>
-            <div className="w-px h-6 bg-slate-200 hidden sm:block"></div>
-            <Link href="/login" className="text-sm font-medium text-slate-700 hover:text-indigo-600 transition-colors">
-              Se connecter
+            <Link href="/login?type=candidate" passHref>
+              <Button className="bg-indigo-600 text-white hover:bg-indigo-700 rounded-full px-6">
+                Connexion employé
+              </Button>
             </Link>
           </div>
         </div>
@@ -112,17 +111,16 @@ export function PublicHeader() {
           </Link>
           <Link href="/product" className="hover:text-white transition-colors">Produit</Link>
           <Link href="/pricing" className="hover:text-white transition-colors">Tarifs</Link>
-          <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
         </div>
         <div className="flex items-center gap-4 md:gap-6">
-          <Link href="/login" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">
-            Connexion
+          <Link href="/login?type=candidate" className="text-sm font-medium text-slate-300 hover:text-white transition-colors hidden sm:block">
+            Connexion employé
           </Link>
           <Link
-            href="/signup"
+            href="/login"
             className="hidden md:inline-flex bg-white text-slate-950 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-slate-200 transition-colors"
           >
-            Essai gratuit
+            Connexion employeur
           </Link>
         </div>
       </div>

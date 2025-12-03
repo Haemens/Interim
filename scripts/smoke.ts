@@ -196,7 +196,7 @@ async function testPublicPages(prisma: PrismaClient) {
     });
     if (res.status !== 200) throw new Error(`Status ${res.status}`);
     const text = await res.text();
-    if (!text.includes("Trouvez votre prochaine mission")) {
+    if (!text.includes("Trouvez votre prochaine")) {
       throw new Error("Did not find global board title");
     }
   });

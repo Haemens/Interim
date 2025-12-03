@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { PublicFooter } from "@/components/public/footer";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { JobSearchForm } from "@/components/public/job-search-form";
 
 // =============================================================================
 // HELPERS
@@ -108,76 +109,7 @@ export async function GlobalView({ searchParams }: GlobalViewProps) {
         </div>
 
         {/* SEARCH MODULE */}
-        <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-100 p-4 md:p-6 relative z-10">
-          <form action="/jobs" method="GET">
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-4">
-              {/* Keyword Input */}
-              <div className="md:col-span-4 relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                <Input 
-                  name="q" 
-                  defaultValue={searchParams.q} 
-                  placeholder="Métier, mot-clé ou entreprise" 
-                  className="pl-10 h-12 text-base border-slate-200 bg-slate-50 focus:bg-white"
-                />
-              </div>
-
-              {/* Location Input */}
-              <div className="md:col-span-3 relative">
-                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                <Input 
-                  name="location" 
-                  defaultValue={searchParams.location} 
-                  placeholder="Ville ou code postal" 
-                  className="pl-10 h-12 text-base border-slate-200 bg-slate-50 focus:bg-white"
-                />
-              </div>
-
-              {/* Job Type Select */}
-              <div className="md:col-span-3">
-                <div className="relative">
-                  <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 z-10" />
-                  <select 
-                    name="type" 
-                    defaultValue={searchParams.type}
-                    className="w-full h-12 pl-10 pr-4 appearance-none bg-slate-50 border border-slate-200 rounded-md text-base text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none cursor-pointer"
-                  >
-                    <option value="">Tous types</option>
-                    <option value="INTERIM">Intérim</option>
-                    <option value="CONTRACT">CDD</option>
-                    <option value="FULL_TIME">CDI</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Search Button */}
-              <div className="md:col-span-2">
-                <Button type="submit" className="w-full h-12 text-base font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-200 transition-all hover:-translate-y-0.5">
-                  Rechercher
-                </Button>
-              </div>
-            </div>
-
-            {/* Secondary Filters */}
-            <div className="flex items-center gap-3 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
-              {filterPills.map((pill, idx) => (
-                <button 
-                  key={idx}
-                  type="button" 
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 bg-white hover:border-indigo-200 hover:bg-indigo-50 text-sm font-medium text-slate-600 transition-colors whitespace-nowrap"
-                >
-                  {pill.label}
-                  <span className="bg-slate-100 text-slate-500 text-xs px-1.5 py-0.5 rounded-full">{pill.count}</span>
-                </button>
-              ))}
-              <div className="h-6 w-px bg-slate-200 mx-2 hidden md:block"></div>
-              <button type="button" className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-indigo-600 whitespace-nowrap">
-                <Filter className="w-4 h-4" />
-                Tous les filtres
-              </button>
-            </div>
-          </form>
-        </div>
+        <JobSearchForm />
       </section>
 
       {/* BANNER */}
