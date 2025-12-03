@@ -22,7 +22,10 @@ import {
   Share2,
   X,
   Plus,
-  Link2
+  Link2,
+  RefreshCw,
+  Sparkles,
+  MessageSquare
 } from "lucide-react";
 import { ConnectSocialModal } from "../../components/connect-social-modal";
 
@@ -177,7 +180,7 @@ function ContentEditModal({ content, jobId, onClose, onSave, isDemo, canEdit }: 
 
       if (!response.ok) {
         if (data.code === "DEMO_READ_ONLY") {
-          toast({ title: "Mode Démo", description: "Vous êtes en mode démo. Créez votre agence pour modifier le contenu.", variant: "warning" });
+          toast({ title: "Mode Démo", description: "Créez votre agence pour modifier le contenu.", variant: "warning" });
           return;
         }
         if (data.code === "INVALID_STATUS_TRANSITION") {
@@ -220,9 +223,9 @@ function ContentEditModal({ content, jobId, onClose, onSave, isDemo, canEdit }: 
               {config.icon}
             </span>
             <div>
-              <h2 className="text-lg font-bold text-foreground">Edit {config.label}</h2>
+              <h2 className="text-lg font-bold text-foreground">Modifier {config.label}</h2>
               <p className="text-xs text-muted-foreground">
-                {content.generatedAt && `Generated ${new Date(content.generatedAt).toLocaleDateString()}`}
+                {content.generatedAt && `Généré le ${new Date(content.generatedAt).toLocaleDateString()}`}
               </p>
             </div>
           </div>
@@ -234,7 +237,7 @@ function ContentEditModal({ content, jobId, onClose, onSave, isDemo, canEdit }: 
         {/* Demo warning */}
         {isDemo && (
           <div className="mx-6 mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-sm flex-shrink-0">
-            <strong>Demo Mode:</strong> Changes cannot be saved. Create your own agency to edit content.
+            <strong>Mode Démo:</strong> Les changements ne seront pas sauvegardés.
           </div>
         )}
 
@@ -244,20 +247,20 @@ function ContentEditModal({ content, jobId, onClose, onSave, isDemo, canEdit }: 
             {/* Title */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">
-                Title (optional)
+                Titre (optionnel)
               </label>
               <Input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 disabled={!canEdit}
-                placeholder="Custom title for this content..."
+                placeholder="Titre personnalisé..."
               />
             </div>
 
             {/* Body */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">
-                Content <span className="text-destructive">*</span>
+                Contenu <span className="text-destructive">*</span>
               </label>
               <textarea
                 value={body}
@@ -271,7 +274,7 @@ function ContentEditModal({ content, jobId, onClose, onSave, isDemo, canEdit }: 
             {/* Hashtags */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">
-                Suggested Hashtags
+                Hashtags suggérés
               </label>
               <Input
                 value={hashtags}
@@ -284,7 +287,7 @@ function ContentEditModal({ content, jobId, onClose, onSave, isDemo, canEdit }: 
             {/* Status */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">
-                Status
+                Statut
               </label>
               <div className="flex items-center gap-3">
                 {(["DRAFT", "APPROVED", "ARCHIVED"] as ContentStatus[]).map((s) => (
@@ -313,36 +316,13 @@ function ContentEditModal({ content, jobId, onClose, onSave, isDemo, canEdit }: 
                   </label>
                 ))}
               </div>
-              {status !== content.status && (
-                <p className="text-xs text-muted-foreground">
-                  Status will change from {STATUS_CONFIG[content.status].label} to {STATUS_CONFIG[status].label}
-                </p>
-              )}
             </div>
-
-            {/* Audit info */}
-            {(content.lastEditedBy || content.createdBy) && (
-              <div className="pt-4 border-t border-border text-xs text-muted-foreground space-y-1">
-                {content.createdBy && (
-                  <p>Created by {content.createdBy.name || content.createdBy.email}</p>
-                )}
-                {content.lastEditedBy && content.lastEditedAt && (
-                  <p>
-                    Last edited by {content.lastEditedBy.name || content.lastEditedBy.email} on{" "}
-                    {new Date(content.lastEditedAt).toLocaleString()}
-                  </p>
-                )}
-                {content.approvedAt && content.status === "APPROVED" && (
-                  <p>Approved on {new Date(content.approvedAt).toLocaleString()}</p>
-                )}
-              </div>
-            )}
           </div>
 
           {/* Actions */}
           <div className="border-t border-border px-6 py-4 flex items-center justify-end gap-3 flex-shrink-0 bg-secondary/30">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              Annuler
             </Button>
             {canEdit && (
               <Button
@@ -352,10 +332,10 @@ function ContentEditModal({ content, jobId, onClose, onSave, isDemo, canEdit }: 
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Saving...
+                    Enregistrement...
                   </>
                 ) : (
-                  "Save Changes"
+                  "Enregistrer"
                 )}
               </Button>
             )}
@@ -413,7 +393,7 @@ function PlanPublicationModal({ content, contentId, channelId, jobId, channels, 
 
       if (!response.ok) {
         if (data.code === "DEMO_READ_ONLY") {
-          toast({ title: "Mode Démo", description: "Vous êtes en mode démo. Créez votre agence pour planifier des publications.", variant: "warning" });
+          toast({ title: "Mode Démo", description: "Créez votre agence pour planifier des publications.", variant: "warning" });
           return;
         }
         throw new Error(data.error || "Échec de la planification");
@@ -442,7 +422,7 @@ function PlanPublicationModal({ content, contentId, channelId, jobId, channels, 
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-2xl">
         <div className="border-b border-border px-6 py-4 flex items-center justify-between">
-          <h2 className="text-lg font-bold">Plan Publication</h2>
+          <h2 className="text-lg font-bold">Planifier la Publication</h2>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="w-5 h-5" />
           </Button>
@@ -460,11 +440,11 @@ function PlanPublicationModal({ content, contentId, channelId, jobId, channels, 
 
           <div className="space-y-2">
             <label className="text-sm font-medium">
-              Channel <span className="text-destructive">*</span>
+              Canal <span className="text-destructive">*</span>
             </label>
             <Select value={selectedChannelId} onValueChange={setSelectedChannelId}>
               <SelectTrigger>
-                <SelectValue placeholder="Select a channel..." />
+                <SelectValue placeholder="Sélectionner un canal..." />
               </SelectTrigger>
               <SelectContent>
                 {channels.map((ch) => (
@@ -478,27 +458,28 @@ function PlanPublicationModal({ content, contentId, channelId, jobId, channels, 
 
           <div className="space-y-2">
             <label className="text-sm font-medium">
-              Scheduled Date (optional)
+              Date de publication (optionnel)
             </label>
             <Input
               type="datetime-local"
               value={scheduledAt}
               onChange={(e) => setScheduledAt(e.target.value)}
             />
+            <p className="text-xs text-muted-foreground">Laissez vide pour publier maintenant ou sauvegarder en brouillon.</p>
           </div>
 
           <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              Annuler
             </Button>
             <Button type="submit" disabled={isSubmitting || isDemo}>
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Planning...
+                  Planification...
                 </>
               ) : (
-                "Plan Publication"
+                "Planifier"
               )}
             </Button>
           </div>
@@ -549,7 +530,7 @@ function PublicationEditModal({ publication, jobId, onClose, onSave, isDemo, can
 
       if (!response.ok) {
         if (data.code === "DEMO_READ_ONLY") {
-          toast({ title: "Mode Démo", description: "Vous êtes en mode démo. Créez votre agence pour modifier la publication.", variant: "warning" });
+          toast({ title: "Mode Démo", description: "Créez votre agence pour modifier la publication.", variant: "warning" });
           return;
         }
         throw new Error(data.error || "Échec de la mise à jour");
@@ -578,7 +559,7 @@ function PublicationEditModal({ publication, jobId, onClose, onSave, isDemo, can
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-2xl">
         <div className="border-b border-border px-6 py-4 flex items-center justify-between">
-          <h2 className="text-lg font-bold">Update Publication</h2>
+          <h2 className="text-lg font-bold">Modifier la Publication</h2>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="w-5 h-5" />
           </Button>
@@ -595,9 +576,9 @@ function PublicationEditModal({ publication, jobId, onClose, onSave, isDemo, can
 
           {/* Status */}
           <div className="space-y-2">
-            <label className="text-sm font-medium">Status</label>
+            <label className="text-sm font-medium">Statut</label>
             <div className="flex flex-wrap gap-2">
-              {(["PLANNED", "PUBLISHED", "FAILED"] as PublicationStatus[]).map((s) => (
+              {(["DRAFT", "SCHEDULED", "PUBLISHED", "FAILED"] as PublicationStatus[]).map((s) => (
                 <label
                   key={s}
                   className={cn(
@@ -627,7 +608,7 @@ function PublicationEditModal({ publication, jobId, onClose, onSave, isDemo, can
           {/* External URL */}
           <div className="space-y-2">
             <label className="text-sm font-medium">
-              Post URL {status === "PUBLISHED" && <span className="text-muted-foreground font-normal">(optional)</span>}
+              URL du post {status === "PUBLISHED" && <span className="text-muted-foreground font-normal">(optionnel)</span>}
             </label>
             <Input
               type="url"
@@ -642,14 +623,14 @@ function PublicationEditModal({ publication, jobId, onClose, onSave, isDemo, can
           {status === "FAILED" && (
             <div className="space-y-2">
               <label className="text-sm font-medium">
-                Error Message
+                Message d&apos;erreur
               </label>
               <textarea
                 value={errorMessage}
                 onChange={(e) => setErrorMessage(e.target.value)}
                 disabled={!canEdit}
                 rows={2}
-                placeholder="What went wrong..."
+                placeholder="Raison de l'échec..."
                 className="w-full px-4 py-3 border border-input rounded-md focus:ring-2 focus:ring-ring focus:border-input bg-background text-sm resize-none"
               />
             </div>
@@ -657,17 +638,17 @@ function PublicationEditModal({ publication, jobId, onClose, onSave, isDemo, can
 
           <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              Annuler
             </Button>
             {canEdit && (
               <Button type="submit" disabled={isSubmitting || isDemo}>
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Saving...
+                    Enregistrement...
                   </>
                 ) : (
-                  "Save Changes"
+                  "Enregistrer"
                 )}
               </Button>
             )}
@@ -694,7 +675,6 @@ interface CampaignMatrixProps {
 }
 
 function CampaignMatrix({ jobId, contents, channels, publications, onPlanClick, onPublicationClick, onCopyLink, canEdit }: CampaignMatrixProps) {
-  // Build a lookup map: contentId -> channelId -> publication
   const pubMap = new Map<string, Map<string, Publication>>();
   publications.forEach((pub) => {
     if (!pubMap.has(pub.content.id)) {
@@ -703,7 +683,6 @@ function CampaignMatrix({ jobId, contents, channels, publications, onPlanClick, 
     pubMap.get(pub.content.id)!.set(pub.channel.id, pub);
   });
 
-  // Filter to only show non-archived content
   const activeContents = contents.filter((c) => c.status !== "ARCHIVED");
 
   if (activeContents.length === 0 || channels.length === 0) {
@@ -713,15 +692,15 @@ function CampaignMatrix({ jobId, contents, channels, publications, onPlanClick, 
   return (
     <Card className="overflow-hidden border-none shadow-md">
       <CardHeader className="px-6 py-4 border-b border-border bg-secondary/20">
-        <CardTitle className="text-base font-semibold">Campaign Matrix</CardTitle>
-        <p className="text-sm text-muted-foreground">Track which content is planned or published on each channel</p>
+        <CardTitle className="text-base font-semibold">Matrice de Campagne</CardTitle>
+        <p className="text-sm text-muted-foreground">Suivez le contenu planifié ou publié sur chaque canal</p>
       </CardHeader>
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead className="bg-secondary/30">
             <tr>
               <th className="px-6 py-4 text-left text-xs font-medium text-muted-foreground uppercase sticky left-0 bg-secondary/30 z-10 border-b border-border">
-                Content
+                Contenu
               </th>
               {channels.map((channel) => (
                 <th key={channel.id} className="px-6 py-4 text-center text-xs font-medium text-muted-foreground uppercase min-w-[160px] border-b border-border">
@@ -731,10 +710,10 @@ function CampaignMatrix({ jobId, contents, channels, publications, onPlanClick, 
                     <button
                       onClick={() => onCopyLink(channel)}
                       className="inline-flex items-center gap-1 px-2 py-1 text-[10px] font-medium text-primary bg-primary/10 rounded hover:bg-primary/20 transition-colors"
-                      title="Copy apply link for this channel"
+                      title="Copier le lien de candidature"
                     >
                       <Share2 className="w-3 h-3" />
-                      Link
+                      Lien
                     </button>
                   </div>
                 </th>
@@ -784,7 +763,7 @@ function CampaignMatrix({ jobId, contents, channels, publications, onPlanClick, 
                           <button
                             onClick={() => onPlanClick(content.id, channel.id)}
                             className="inline-flex items-center justify-center w-8 h-8 rounded-full border-2 border-dashed border-muted-foreground/30 text-muted-foreground/50 hover:border-primary hover:text-primary transition-all hover:scale-110"
-                            title="Plan publication"
+                            title="Planifier une publication"
                           >
                             <Plus className="w-4 h-4" />
                           </button>
@@ -831,7 +810,6 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
   const [regeneratingId, setRegeneratingId] = useState<string | null>(null);
   const [showConnectModal, setShowConnectModal] = useState(false);
 
-  // Fetch data
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -904,7 +882,7 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
     await navigator.clipboard.writeText(text);
     setCopiedId(content.id);
     setTimeout(() => setCopiedId(null), 2000);
-    toast({ title: "Copied!", description: "Content copied to clipboard.", variant: "success" });
+    toast({ title: "Copié !", description: "Contenu copié dans le presse-papier.", variant: "success" });
   };
 
   const handleContentUpdate = (updated: Content) => {
@@ -912,8 +890,6 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
   };
 
   const handleCopyApplyLink = async (channel: Channel) => {
-    // Build the apply link with source tracking params
-    // Use relative URL - the public job page will be at /jobs/{jobId}
     const sourceDetail = `${channel.type.toLowerCase()}_${channel.name.toLowerCase().replace(/\s+/g, "_")}`;
     const params = new URLSearchParams({
       source: "channel",
@@ -921,24 +897,22 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
       channelId: channel.id,
     });
     
-    // Build full URL using current origin
     const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
     const applyUrl = `${baseUrl}/jobs/${jobId}?${params.toString()}`;
     
     await navigator.clipboard.writeText(applyUrl);
     toast({
-      title: "Apply Link Copied!",
-      description: `Link for ${channel.name} copied to clipboard.`,
+      title: "Lien copié !",
+      description: `Lien pour ${channel.name} copié.`,
       variant: "success",
     });
   };
 
-  // AI Generation handler
   const handleGenerateWithAi = async () => {
     if (!canUseAi) {
       toast({
-        title: "Upgrade Required",
-        description: "AI content generation requires a Pro or Agency Plus plan.",
+        title: "Mise à niveau requise",
+        description: "La génération IA nécessite un plan Pro ou Agency Plus.",
         variant: "warning",
       });
       return;
@@ -958,18 +932,18 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
 
       if (!response.ok) {
         if (data.code === "DEMO_READ_ONLY") {
-          toast({ title: "Demo Mode", description: data.error, variant: "warning" });
+          toast({ title: "Mode Démo", description: data.error, variant: "warning" });
           return;
         }
         if (data.code === "PLAN_LIMIT") {
-          toast({ title: "Upgrade Required", description: data.error, variant: "warning" });
+          toast({ title: "Mise à niveau requise", description: data.error, variant: "warning" });
           return;
         }
-        throw new Error(data.error || "Failed to generate AI content");
+        throw new Error(data.error || "Échec de la génération IA");
       }
 
       toast({
-        title: data.usedAi ? "AI Content Generated" : "Content Generated",
+        title: data.usedAi ? "Contenu IA généré" : "Contenu généré",
         description: data.message,
         variant: "success",
       });
@@ -977,8 +951,8 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
       await fetchData();
     } catch (error) {
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to generate content",
+        title: "Erreur",
+        description: error instanceof Error ? error.message : "Échec de la génération",
         variant: "error",
       });
     } finally {
@@ -986,12 +960,11 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
     }
   };
 
-  // Regenerate single variant with AI
   const handleRegenerateWithAi = async (contentId: string) => {
     if (!canUseAi) {
       toast({
-        title: "Upgrade Required",
-        description: "AI content regeneration requires a Pro or Agency Plus plan.",
+        title: "Mise à niveau requise",
+        description: "La régénération IA nécessite un plan Pro.",
         variant: "warning",
       });
       return;
@@ -1009,20 +982,20 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to regenerate content");
+        throw new Error(data.error || "Échec de la régénération");
       }
 
       toast({
-        title: "Content Regenerated",
-        description: `${data.content.variant} content has been regenerated.`,
+        title: "Contenu régénéré",
+        description: `Le contenu ${data.content.variant} a été régénéré.`,
         variant: "success",
       });
 
       await fetchData();
     } catch (error) {
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to regenerate content",
+        title: "Erreur",
+        description: error instanceof Error ? error.message : "Échec de la régénération",
         variant: "error",
       });
     } finally {
@@ -1030,12 +1003,11 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
     }
   };
 
-  // Publish now handler
   const handlePublishNow = async (publicationId: string) => {
     if (!canAutoPublish) {
       toast({
-        title: "Upgrade Required",
-        description: "Auto-publishing requires a Pro or Agency Plus plan.",
+        title: "Mise à niveau requise",
+        description: "La publication auto nécessite un plan Pro.",
         variant: "warning",
       });
       return;
@@ -1051,11 +1023,11 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || data.error || "Failed to publish");
+        throw new Error(data.message || data.error || "Échec de la publication");
       }
 
       toast({
-        title: data.success ? "Published!" : "Publication Failed",
+        title: data.success ? "Publié !" : "Échec de la publication",
         description: data.message,
         variant: data.success ? "success" : "error",
       });
@@ -1063,8 +1035,8 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
       await fetchData();
     } catch (error) {
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to publish",
+        title: "Erreur",
+        description: error instanceof Error ? error.message : "Échec de la publication",
         variant: "error",
       });
     } finally {
@@ -1076,7 +1048,7 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
     return (
       <div className="bg-background rounded-xl border border-border p-8 text-center shadow-sm">
         <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" />
-        <p className="text-muted-foreground mt-4">Loading social content...</p>
+        <p className="text-muted-foreground mt-4">Chargement du contenu social...</p>
       </div>
     );
   }
@@ -1086,8 +1058,8 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-foreground">Social Content</h2>
-          <p className="text-sm text-muted-foreground">Generate drafts and track publications manually.</p>
+          <h2 className="text-xl font-bold text-foreground">Contenu Social</h2>
+          <p className="text-sm text-muted-foreground">Générez des posts et suivez vos publications.</p>
         </div>
         <div className="flex items-center gap-3">
           <Button
@@ -1101,47 +1073,45 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
           
           {canEdit && (
             <div className="flex items-center gap-3">
-              {/* Template Generation */}
-            <Button
-              variant="outline"
-              onClick={handleGenerate}
-              disabled={isGenerating || isGeneratingAi}
-            >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Copy className="w-4 h-4 mr-2" />
-                  Template
-                </>
-              )}
-            </Button>
-            
-            {/* AI Generation */}
-            <Button
-              onClick={() => setShowAiModal(true)}
-              disabled={isGenerating || isGeneratingAi}
-              className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white border-none"
-            >
-              {isGeneratingAi ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  AI Generating...
-                </>
-              ) : (
-                <>
-                  <Wand2 className="w-4 h-4 mr-2" />
-                  Generate with AI
-                  {!canUseAi && <span className="ml-2 text-[10px] bg-white/20 px-1.5 py-0.5 rounded font-medium">Pro</span>}
-                </>
-              )}
-            </Button>
-          </div>
-        )}
-      </div>
+              <Button
+                variant="outline"
+                onClick={handleGenerate}
+                disabled={isGenerating || isGeneratingAi}
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Génération...
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-4 h-4 mr-2" />
+                    Modèle
+                  </>
+                )}
+              </Button>
+              
+              <Button
+                onClick={() => setShowAiModal(true)}
+                disabled={isGenerating || isGeneratingAi}
+                className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white border-none"
+              >
+                {isGeneratingAi ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    IA Génération...
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="w-4 h-4 mr-2" />
+                    Générer avec l&apos;IA
+                    {!canUseAi && <span className="ml-2 text-[10px] bg-white/20 px-1.5 py-0.5 rounded font-medium">Pro</span>}
+                  </>
+                )}
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* AI Generation Modal */}
@@ -1151,7 +1121,7 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
             <CardHeader className="flex flex-row items-center justify-between border-b border-border py-4">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Wand2 className="w-5 h-5 text-primary" />
-                AI Content Generation
+                Génération de Contenu IA
               </CardTitle>
               <Button variant="ghost" size="icon" onClick={() => setShowAiModal(false)}>
                 <X className="w-5 h-5" />
@@ -1160,36 +1130,36 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
 
             <CardContent className="p-6 space-y-6">
               <p className="text-sm text-muted-foreground">
-                Generate engaging social content using AI. Choose a tone and language for your content.
+                Générez du contenu social engageant grâce à l&apos;IA. Choisissez le ton et la langue.
               </p>
 
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Tone</label>
+                  <label className="text-sm font-medium">Ton</label>
                   <Select value={aiTone} onValueChange={(val) => setAiTone(val as AiTone)}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select tone" />
+                      <SelectValue placeholder="Sélectionner un ton" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="default">Default - Balanced & Professional</SelectItem>
-                      <SelectItem value="friendly">Friendly - Warm & Conversational</SelectItem>
-                      <SelectItem value="formal">Formal - Business-like</SelectItem>
-                      <SelectItem value="punchy">Punchy - Bold & Attention-grabbing</SelectItem>
+                      <SelectItem value="default">Par défaut - Équilibré & Pro</SelectItem>
+                      <SelectItem value="friendly">Amical - Chaleureux & Conversationnel</SelectItem>
+                      <SelectItem value="formal">Formel - Sérieux & Business</SelectItem>
+                      <SelectItem value="punchy">Percutant - Audacieux & Accrocheur</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Language</label>
+                  <label className="text-sm font-medium">Langue</label>
                   <Select value={aiLanguage} onValueChange={setAiLanguage}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select language" />
+                      <SelectValue placeholder="Sélectionner une langue" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="fr">French</SelectItem>
-                      <SelectItem value="en">English</SelectItem>
-                      <SelectItem value="es">Spanish</SelectItem>
-                      <SelectItem value="de">German</SelectItem>
+                      <SelectItem value="fr">Français</SelectItem>
+                      <SelectItem value="en">Anglais</SelectItem>
+                      <SelectItem value="es">Espagnol</SelectItem>
+                      <SelectItem value="de">Allemand</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -1197,7 +1167,7 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
 
               <div className="flex justify-end gap-3 pt-2">
                 <Button variant="outline" onClick={() => setShowAiModal(false)}>
-                  Cancel
+                  Annuler
                 </Button>
                 <Button
                   onClick={handleGenerateWithAi}
@@ -1205,14 +1175,14 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
                   className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white"
                 >
                   <Wand2 className="w-4 h-4 mr-2" />
-                  Generate Content
+                  Générer
                 </Button>
               </div>
 
               {!canUseAi && (
                 <div className="bg-amber-50 text-amber-800 text-xs p-3 rounded-md flex items-center gap-2">
                   <AlertCircle className="w-4 h-4" />
-                  AI generation requires a Pro or Agency Plus plan
+                  La génération IA nécessite un plan Pro
                 </div>
               )}
             </CardContent>
@@ -1236,41 +1206,87 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
 
       {/* Content list */}
       {contents.length === 0 ? (
-        <Card className="border-dashed">
-          <CardContent className="p-12 text-center flex flex-col items-center gap-4">
-            <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center">
-              <Copy className="w-8 h-8 text-muted-foreground" />
+        <Card className="border-dashed border-2 bg-muted/10">
+          <CardContent className="p-12 text-center flex flex-col items-center gap-6">
+            <div className="w-20 h-20 bg-gradient-to-br from-indigo-100 to-violet-100 rounded-2xl flex items-center justify-center shadow-inner">
+              <Sparkles className="w-10 h-10 text-indigo-500" />
             </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-1">Pas encore de contenu</h3>
+            <div className="max-w-md mx-auto space-y-2">
+              <h3 className="text-xl font-bold text-foreground">Générez votre pack social</h3>
               <p className="text-muted-foreground">
-                Générez un pack de contenu social pour créer des posts prêts à l&apos;emploi pour TikTok, Instagram, LinkedIn et WhatsApp.
+                Créez instantanément des posts optimisés pour TikTok, Instagram, LinkedIn et WhatsApp grâce à notre IA.
               </p>
             </div>
-            {canEdit && (
-              <Button onClick={handleGenerate} disabled={isGenerating}>
-                Générer un pack social
-              </Button>
+            
+            <div className="flex flex-col sm:flex-row gap-3 mt-2">
+              {canEdit && (
+                <Button 
+                  onClick={() => setShowAiModal(true)} 
+                  disabled={isGeneratingAi}
+                  size="lg"
+                  className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white shadow-lg shadow-indigo-200"
+                >
+                  <Wand2 className="w-5 h-5 mr-2" />
+                  Générer avec l&apos;IA
+                </Button>
+              )}
+              {canEdit && (
+                <Button 
+                  variant="outline"
+                  onClick={handleGenerate} 
+                  disabled={isGenerating}
+                  size="lg"
+                >
+                  Utiliser un modèle
+                </Button>
+              )}
+            </div>
+
+            {channels.length === 0 && (
+               <div className="mt-6 p-4 bg-blue-50 border border-blue-100 rounded-xl flex items-start gap-3 text-left max-w-md">
+                 <Link2 className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                 <div>
+                   <h4 className="font-medium text-blue-900">Connectez vos réseaux</h4>
+                   <p className="text-sm text-blue-700 mt-1">
+                     Pour publier directement, n&apos;oubliez pas de <button onClick={() => setShowConnectModal(true)} className="underline font-semibold hover:text-blue-800">connecter vos comptes</button>.
+                   </p>
+                 </div>
+               </div>
             )}
           </CardContent>
         </Card>
       ) : (
         <div className="space-y-4">
-          <h3 className="font-semibold text-lg text-foreground">Variantes de contenu</h3>
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-lg text-foreground flex items-center gap-2">
+              <MessageSquare className="w-5 h-5 text-primary" />
+              Variantes de contenu
+            </h3>
+            {contents.length > 0 && (
+              <Badge variant="secondary" className="bg-secondary/50">
+                {contents.length} variantes
+              </Badge>
+            )}
+          </div>
+          
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             {contents.map((content) => {
               const config = VARIANT_CONFIG[content.variant];
               const statusConfig = STATUS_CONFIG[content.status];
+              const isRegenerating = regeneratingId === content.id;
 
               return (
-                <Card key={content.id} className={cn(content.status === "ARCHIVED" && "opacity-60")}>
+                <Card key={content.id} className={cn(
+                  "transition-all hover:shadow-md border-muted/60",
+                  content.status === "ARCHIVED" && "opacity-60 bg-muted/20"
+                )}>
                   <CardContent className="p-5">
                     {/* Header */}
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3">
-                        <span className={`w-10 h-10 rounded-lg flex items-center justify-center text-lg ${config.color} shadow-sm`}>
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-lg ${config.color} shadow-sm ring-1 ring-black/5`}>
                           {config.icon}
-                        </span>
+                        </div>
                         <div>
                           <h4 className="font-semibold text-foreground">{config.label}</h4>
                           {content.title && <p className="text-sm text-muted-foreground">{content.title}</p>}
@@ -1282,15 +1298,18 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
                     </div>
 
                     {/* Body preview */}
-                    <div className="bg-secondary/30 rounded-lg p-4 mb-4 border border-border/50">
-                      <pre className="text-sm text-foreground whitespace-pre-wrap font-mono leading-relaxed line-clamp-4">{content.body}</pre>
+                    <div className="bg-gradient-to-b from-secondary/30 to-secondary/10 rounded-xl p-4 mb-4 border border-border/50 min-h-[120px] relative group">
+                      <div className="text-sm text-foreground whitespace-pre-wrap font-sans leading-relaxed line-clamp-6">
+                        {content.body}
+                      </div>
+                      <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-background/10 to-transparent pointer-events-none" />
                     </div>
 
                     {/* Hashtags */}
                     {content.suggestedHashtags && (
-                      <div className="mb-4">
-                        <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider font-medium">Hashtags suggérés</p>
-                        <p className="text-sm text-primary truncate font-medium">{content.suggestedHashtags}</p>
+                      <div className="mb-4 px-4 py-2 bg-primary/5 rounded-lg border border-primary/10">
+                        <p className="text-xs text-primary/70 mb-1 uppercase tracking-wider font-bold">Hashtags</p>
+                        <p className="text-sm text-primary font-medium truncate">{content.suggestedHashtags}</p>
                       </div>
                     )}
 
@@ -1303,7 +1322,7 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
                         </div>
                       )}
                       {content._count.publications > 0 && (
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1 text-blue-600 font-medium">
                           <Share2 className="w-3 h-3" />
                           {content._count.publications} publication(s)
                         </div>
@@ -1311,7 +1330,7 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
                     </div>
 
                     {/* Actions */}
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-2 flex-wrap">
                       <div className="flex gap-2">
                         <Button
                           variant="outline"
@@ -1322,6 +1341,25 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
                           <Edit2 className="w-3.5 h-3.5 mr-1.5" />
                           {canEdit ? "Modifier" : "Voir"}
                         </Button>
+                        
+                        {/* Regenerate Button */}
+                        {canEdit && canUseAi && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleRegenerateWithAi(content.id)}
+                            disabled={isRegenerating || isDemo}
+                            className="h-8 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 transition-colors"
+                            title="Régénérer avec l'IA"
+                          >
+                            {isRegenerating ? (
+                              <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-600" />
+                            ) : (
+                              <RefreshCw className="w-3.5 h-3.5" />
+                            )}
+                          </Button>
+                        )}
+
                         <Button
                           variant="outline"
                           size="sm"
@@ -1346,7 +1384,7 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
                         <Button
                           size="sm"
                           onClick={() => setPlanningContent(content)}
-                          className="h-8"
+                          className="h-8 shadow-sm"
                         >
                           <Calendar className="w-3.5 h-3.5 mr-1.5" />
                           Planifier
@@ -1361,18 +1399,17 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
         </div>
       )}
 
-      {/* No channels warning */}
+      {/* No channels warning - moved to bottom if content exists */}
       {contents.length > 0 && channels.length === 0 && canEdit && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-start gap-3">
+          <Link2 className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
           <div>
-            <h4 className="font-medium text-amber-800">Aucun canal configuré</h4>
-            <p className="text-sm text-amber-700 mt-1">
-              Ajoutez des canaux dans la page{" "}
-              <a href="/dashboard/channels" className="underline hover:no-underline font-medium">
-                Canaux
-              </a>{" "}
-              pour planifier des publications.
+            <h4 className="font-medium text-blue-900">Aucun canal connecté</h4>
+            <p className="text-sm text-blue-700 mt-1">
+              Pour publier directement depuis l&apos;application,{" "}
+              <button onClick={() => setShowConnectModal(true)} className="underline hover:no-underline font-medium">
+                connectez vos comptes sociaux
+              </button>.
             </p>
           </div>
         </div>
