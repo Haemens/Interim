@@ -89,6 +89,8 @@ export function ApplicationForm({
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [activeTab, setActiveTab] = useState<"express" | "account">("express");
+
   // Load stored profile on mount
   useEffect(() => {
     const stored = loadStoredProfile();
@@ -217,17 +219,18 @@ export function ApplicationForm({
 
   if (formState === "success") {
     return (
-      <div className="text-center py-4">
-        <div className="text-4xl mb-4">🎉</div>
-        <h3 className="text-lg font-semibold text-slate-900 mb-2">
+      <div className="text-center py-8">
+        <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+          🎉
+        </div>
+        <h3 className="text-xl font-bold text-slate-900 mb-2">
           Candidature envoyée !
         </h3>
-        <p className="text-slate-600 text-sm">
-          Merci pour votre candidature au poste de <strong>{jobTitle}</strong> chez{" "}
-          <strong>{agencyName}</strong>.
+        <p className="text-slate-600 mb-6">
+          Merci pour votre candidature au poste de <strong>{jobTitle}</strong>.
         </p>
-        <p className="text-slate-500 text-sm mt-2">
-          Nous examinerons votre profil et reviendrons vers vous rapidement.
+        <p className="text-sm text-slate-500">
+          Un email de confirmation vous a été envoyé.
         </p>
       </div>
     );
@@ -235,20 +238,79 @@ export function ApplicationForm({
 
   return (
     <div>
-      {prefilled && (
-        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 text-blue-700 text-sm rounded-lg">
-          ✨ Vos informations ont été pré-remplies depuis une candidature précédente.
-        </div>
-      )}
+      {/* Tabs */}
+      <div className="flex p-1 bg-slate-100 rounded-lg mb-6">
+        <button
+          type="button"
+          onClick={() => setActiveTab("express")}
+          className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
+            activeTab === "express"
+              ? "bg-white text-slate-900 shadow-sm"
+              : "text-slate-500 hover:text-slate-700"
+          }`}
+        >
+          Candidature Express
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab("account")}
+          className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
+            activeTab === "account"
+              ? "bg-white text-slate-900 shadow-sm"
+              : "text-slate-500 hover:text-slate-700"
+          }`}
+        >
+          J&apos;ai un compte
+        </button>
+      </div>
 
-      {errorMessage && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">
-          {errorMessage}
+      {activeTab === "account" ? (
+        <div className="text-center py-8 px-4">
+          <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+            </svg>
+          </div>
+          <h4 className="font-semibold text-slate-900 mb-2">Connectez-vous pour postuler</h4>
+          <p className="text-sm text-slate-600 mb-6">
+            Retrouvez vos informations pré-remplies et suivez vos candidatures.
+          </p>
+          <a 
+            href="/login?role=candidate" 
+            className="block w-full py-2.5 px-4 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition-colors"
+          >
+            Se connecter
+          </a>
+          <button 
+            onClick={() => setActiveTab("express")}
+            className="mt-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+          >
+            Continuer sans compte &rarr;
+          </button>
         </div>
-      )}
+      ) : (
+        <>
+          {prefilled && (
+            <div className="mb-6 p-3 bg-indigo-50 border border-indigo-100 text-indigo-700 text-sm rounded-lg flex items-start gap-2">
+              <span className="text-lg">✨</span>
+              <div>
+                <p className="font-medium">Informations pré-remplies</p>
+                <p className="text-xs opacity-80 mt-0.5">Basé sur votre dernière visite.</p>
+              </div>
+            </div>
+          )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Full Name */}
+          {errorMessage && (
+            <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg flex items-center gap-2">
+              <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {errorMessage}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Full Name */}
         <div>
           <label
             htmlFor="fullName"
@@ -424,20 +486,35 @@ export function ApplicationForm({
         </div>
 
         {/* Submit */}
-        <button
-          type="submit"
-          disabled={formState === "submitting"}
-          className="w-full py-3 px-4 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          style={{ backgroundColor: primaryColor }}
-        >
-          {formState === "submitting" ? "Envoi en cours..." : "Envoyer ma candidature"}
-        </button>
-      </form>
+        <div className="pt-2">
+            <button
+              type="submit"
+              disabled={formState === "submitting"}
+              className="w-full py-3 px-4 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              style={{ backgroundColor: primaryColor }}
+            >
+              {formState === "submitting" ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Envoi en cours...
+                </span>
+              ) : (
+                "Envoyer ma candidature"
+              )}
+            </button>
+          </div>
+        </form>
+        </>
+      )}
 
-      <p className="text-xs text-slate-500 text-center mt-4">
-        Vos données sont traitées de manière sécurisée et utilisées uniquement 
-        à des fins de recrutement.
-      </p>
+      <div className="mt-6 pt-6 border-t border-slate-100">
+        <p className="text-xs text-slate-400 text-center leading-relaxed">
+          Vos données sont traitées de manière sécurisée et utilisées uniquement à des fins de recrutement.
+        </p>
+      </div>
     </div>
   );
 }
