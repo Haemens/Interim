@@ -64,8 +64,15 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
   const headersList = await headers();
   const host = headersList.get("host") || "";
   
-  // Get tenant from host, fallback to demo agency for Vercel deployments without subdomains
+  // Get tenant from host, or from query param (for global job board), fallback to demo agency
   let tenantSlug = getTenantFromHost(host);
+  
+  // Check for agency query param (from global job board)
+  const agencyParam = typeof resolvedSearchParams.agency === "string" ? resolvedSearchParams.agency : undefined;
+  if (!tenantSlug && agencyParam) {
+    tenantSlug = agencyParam;
+  }
+  
   if (!tenantSlug) {
     tenantSlug = DEMO_AGENCY_SLUG;
   }

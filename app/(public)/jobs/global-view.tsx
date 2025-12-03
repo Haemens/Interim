@@ -112,33 +112,28 @@ export async function GlobalView({ searchParams }: GlobalViewProps) {
         <JobSearchForm />
       </section>
 
-      {/* BANNER */}
-      <section className="py-12 px-4">
+      {/* BANNER - Compact */}
+      <section className="py-6 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-[#FFDE59] rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between relative overflow-hidden shadow-lg">
+          <div className="bg-[#FFDE59] rounded-2xl p-6 md:p-8 flex items-center justify-between relative overflow-hidden shadow-md">
             {/* Decorative circles */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-20 rounded-full -translate-y-1/2 translate-x-1/3"></div>
-            <div className="absolute bottom-0 left-0 w-40 h-40 bg-black opacity-5 rounded-full translate-y-1/3 -translate-x-1/3"></div>
+            <div className="absolute top-0 right-0 w-40 h-40 bg-white opacity-20 rounded-full -translate-y-1/2 translate-x-1/3"></div>
 
-            <div className="relative z-10 max-w-xl">
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+            <div className="relative z-10 flex-1">
+              <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-2">
                 Arrêtez de chercher.
               </h2>
-              <p className="text-lg font-medium text-slate-800 mb-8 text-balance">
-                Créez votre profil en 2 minutes et laissez les meilleures agences vous proposer des missions qui vous correspondent.
+              <p className="text-sm md:text-base font-medium text-slate-700">
+                Créez votre profil en 2 min et recevez des offres personnalisées.
               </p>
-              <Link href="/signup">
-                <Button size="lg" className="bg-slate-900 text-white hover:bg-slate-800 h-14 px-8 text-lg rounded-full shadow-xl">
-                  Créer mon profil candidat
-                </Button>
-              </Link>
             </div>
             
-            <div className="relative z-10 mt-8 md:mt-0 hidden md:block">
-               {/* Illustration placeholder */}
-               <div className="w-64 h-64 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center border-4 border-white/50 shadow-inner">
-                  <Briefcase className="w-24 h-24 text-slate-900 opacity-80" />
-               </div>
+            <div className="relative z-10 ml-4 flex-shrink-0">
+              <Link href="/signup">
+                <Button size="sm" className="bg-slate-900 text-white hover:bg-slate-800 rounded-full shadow-lg">
+                  Créer mon profil
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -193,10 +188,8 @@ export async function GlobalView({ searchParams }: GlobalViewProps) {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {jobs.map((job) => {
-                const jobUrl = getTenantUrl(
-                  job.agency.slug, 
-                  `/jobs/${job.id}?source=portal&sourceDetail=global_jobs_page`
-                );
+                // Use direct path for jobs - works on both main domain and subdomains
+                const jobUrl = `/jobs/${job.id}?source=portal&sourceDetail=global_jobs_page&agency=${job.agency.slug}`;
 
                 // Generate a deterministic gradient based on job ID
                 const gradients = [
