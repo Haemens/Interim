@@ -11,6 +11,8 @@ export type OnboardingStep =
   | "welcome"
   | "create-job"
   | "jobs"
+  | "jobs-list"
+  | "pipeline"
   | "candidates"
   | "analytics"
   | "billing"
@@ -39,28 +41,42 @@ export const ONBOARDING_STEPS: OnboardingStepInfo[] = [
   },
   {
     id: "jobs",
-    title: "2. Suivez vos offres",
+    title: "2. L'onglet Recrutements",
     description:
-      "Retrouvez ici la liste de vos recrutements en cours. Cliquez sur une offre pour accéder à son tableau de bord détaillé.",
+      "Cliquez sur cet onglet pour accéder à la liste de tous vos postes ouverts et suivre leur avancement.",
     target: '[data-tour="jobs"]',
   },
   {
-    id: "candidates",
-    title: "3. Gérez vos candidats",
+    id: "jobs-list",
+    title: "3. Liste des offres",
     description:
-      "Votre vivier de talents est accessible ici. Consultez les profils, filtrez par compétences et gérez le statut de chaque candidat.",
+      "Une fois dans l'onglet Recrutements, vous verrez vos offres. Cliquez sur une offre pour entrer dans son tableau de bord.",
+    target: '[data-tour="jobs-list"]',
+  },
+  {
+    id: "pipeline",
+    title: "4. Le Pipeline Kanban",
+    description:
+      "Au cœur de chaque offre, le Kanban vous permet de visualiser l'avancement des candidats. Glissez-déposez les cartes pour changer leur statut (ex: de 'Nouveau' à 'Entretien').",
+    target: '[data-tour="pipeline"]',
+  },
+  {
+    id: "candidates",
+    title: "5. Vivier de talents",
+    description:
+      "Cliquez ici pour accéder à votre base de données candidats globale, indépendamment des offres spécifiques.",
     target: '[data-tour="candidates"]',
   },
   {
     id: "analytics",
-    title: "4. Analysez vos performances",
+    title: "6. Analysez vos performances",
     description:
       "Suivez vos indicateurs clés : nombre de candidatures, temps de recrutement, et efficacité de vos canaux d'acquisition.",
     target: '[data-tour="analytics"]',
   },
   {
     id: "billing",
-    title: "5. Paramètres & Équipe",
+    title: "7. Paramètres & Équipe",
     description:
       "Configurez votre agence, invitez vos collaborateurs et gérez votre abonnement depuis cet espace.",
     target: '[data-tour="billing"]',

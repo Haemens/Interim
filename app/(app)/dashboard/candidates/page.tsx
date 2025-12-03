@@ -174,7 +174,13 @@ export default function CandidatesPage() {
         if (sectorFilter) params.set("sector", sectorFilter);
         if (skillFilter) params.set("tag", skillFilter);
 
-        const res = await fetch(`/api/candidates?${params.toString()}`);
+        const res = await fetch(`/api/candidates?${params.toString()}`, {
+          cache: "no-store",
+          headers: {
+            "Pragma": "no-cache",
+            "Cache-Control": "no-cache"
+          }
+        });
         if (!res.ok) {
           const data = await res.json();
           throw new Error(data.error || "Impossible de récupérer les candidats");

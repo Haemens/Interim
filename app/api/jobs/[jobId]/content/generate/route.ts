@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
 import { z } from "zod";
 import { db } from "@/lib/db";
-import { getTenantSlugFromRequest } from "@/lib/tenant";
+import { getTenantSlugFromRequest, getTenantSlugWithFallback } from "@/lib/tenant";
+import { authOptions } from "@/lib/auth";
 import {
   getCurrentMembershipOrThrow,
   assertMinimumRole,
@@ -78,7 +80,11 @@ export async function POST(
 ) {
   try {
     const { jobId } = await params;
-    const tenantSlug = getTenantSlugFromRequest(request);
+    
+    // Try to get tenant slug with fallback for dev/demo environments
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id || null;
+    const tenantSlug = await getTenantSlugWithFallback(request, userId);
 
     if (!tenantSlug) {
       return NextResponse.json(

@@ -14,13 +14,13 @@
   --secondary: #f4f4f5;
   --secondary-foreground: #18181b;
   --muted: #f4f4f5;
-  --muted-foreground: #71717a;
+  --muted-foreground: #52525b; /* Darker (Zinc 600) for better contrast */
   --accent: #f4f4f5;
   --accent-foreground: #18181b;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #e4e4e7;
-  --input: #e4e4e7;
+  --border: #d4d4d8; /* Darker (Zinc 300) */
+  --input: #d4d4d8; /* Darker (Zinc 300) */
   --ring: #4f46e5;
   --radius: 0.5rem;
   --chart-1: #4f46e5;

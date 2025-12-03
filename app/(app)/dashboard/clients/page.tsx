@@ -54,7 +54,7 @@ export default function ClientsPage() {
       const res = await fetch(`/api/clients?${params.toString()}`);
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || "Failed to fetch clients");
+        throw new Error(data.error || "Échec du chargement des clients");
       }
       const data = await res.json();
       setClients(data.clients);

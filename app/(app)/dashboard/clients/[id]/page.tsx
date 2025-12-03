@@ -122,21 +122,21 @@ export default function ClientDetailPage() {
         if (!res.ok) {
           if (res.status === 404) {
             toast({
-              title: "Not Found",
-              description: "Client not found",
+              title: "Introuvable",
+              description: "Client introuvable",
               variant: "error",
             });
             router.push("/dashboard/clients");
             return;
           }
-          throw new Error("Failed to fetch client");
+          throw new Error("Impossible de récupérer le client");
         }
         const data = await res.json();
         setClient(data.client);
       } catch (err) {
         toast({
-          title: "Error",
-          description: err instanceof Error ? err.message : "Failed to load client",
+          title: "Erreur",
+          description: err instanceof Error ? err.message : "Échec du chargement du client",
           variant: "error",
         });
       } finally {
