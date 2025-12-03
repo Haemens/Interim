@@ -11,22 +11,22 @@ export const JOB_STATUS_COLORS: Record<string, { label: string; labelFr: string;
   DRAFT: { 
     label: "Draft", 
     labelFr: "Brouillon",
-    color: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700" 
+    color: "bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 font-medium" 
   },
   ACTIVE: { 
     label: "Active", 
     labelFr: "Actif",
-    color: "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800" 
+    color: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300 font-medium" 
   },
   PAUSED: { 
     label: "Paused", 
     labelFr: "En pause",
-    color: "bg-amber-50 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800" 
+    color: "bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300 font-medium" 
   },
   ARCHIVED: { 
     label: "Archived", 
     labelFr: "Archivé",
-    color: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700" 
+    color: "bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-400 font-medium" 
   },
 };
 
@@ -38,27 +38,27 @@ export const APPLICATION_STATUS_COLORS: Record<string, { label: string; labelFr:
   NEW: { 
     label: "New", 
     labelFr: "Nouveau",
-    color: "bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 border border-blue-200 dark:border-blue-800" 
+    color: "bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 font-medium" 
   },
   CONTACTED: { 
     label: "Contacted", 
     labelFr: "Contacté",
-    color: "bg-amber-50 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800" 
+    color: "bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300 font-medium" 
   },
   QUALIFIED: { 
     label: "Qualified", 
     labelFr: "Qualifié",
-    color: "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800" 
+    color: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300 font-medium" 
   },
   PLACED: { 
     label: "Placed", 
     labelFr: "Recruté",
-    color: "bg-green-50 text-green-700 dark:bg-green-900/40 dark:text-green-300 border border-green-200 dark:border-green-800" 
+    color: "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300 font-medium" 
   },
   REJECTED: { 
     label: "Rejected", 
     labelFr: "Refusé",
-    color: "bg-red-50 text-red-700 dark:bg-red-900/40 dark:text-red-300 border border-red-200 dark:border-red-800" 
+    color: "bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300 font-medium" 
   },
 };
 
@@ -70,17 +70,17 @@ export const CANDIDATE_STATUS_COLORS: Record<string, { label: string; labelFr: s
   ACTIVE: { 
     label: "Active", 
     labelFr: "Actif",
-    color: "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800" 
+    color: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300 font-medium" 
   },
   DO_NOT_CONTACT: { 
     label: "Do Not Contact", 
     labelFr: "Ne pas contacter",
-    color: "bg-amber-50 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800" 
+    color: "bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300 font-medium" 
   },
   BLACKLISTED: { 
     label: "Blacklisted", 
     labelFr: "Liste noire",
-    color: "bg-red-50 text-red-700 dark:bg-red-900/40 dark:text-red-300 border border-red-200 dark:border-red-800" 
+    color: "bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300 font-medium" 
   },
 };
 
@@ -92,22 +92,22 @@ export const JOB_REQUEST_STATUS_COLORS: Record<string, { label: string; labelFr:
   NEW: { 
     label: "New", 
     labelFr: "Nouveau",
-    color: "bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 border border-blue-200 dark:border-blue-800" 
+    color: "bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 font-medium" 
   },
   IN_REVIEW: { 
     label: "In Review", 
     labelFr: "En cours",
-    color: "bg-amber-50 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800" 
+    color: "bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300 font-medium" 
   },
   CONVERTED_TO_JOB: { 
     label: "Converted", 
     labelFr: "Converti",
-    color: "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800" 
+    color: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300 font-medium" 
   },
   REJECTED: { 
     label: "Rejected", 
     labelFr: "Refusé",
-    color: "bg-red-50 text-red-700 dark:bg-red-900/40 dark:text-red-300 border border-red-200 dark:border-red-800" 
+    color: "bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300 font-medium" 
   },
 };
 
@@ -119,22 +119,22 @@ export const TIMESHEET_STATUS_COLORS: Record<string, { label: string; labelFr: s
   PENDING: { 
     label: "Pending", 
     labelFr: "En attente",
-    color: "bg-amber-50 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800" 
+    color: "bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300 font-medium" 
   },
   APPROVED: { 
     label: "Approved", 
     labelFr: "Approuvé",
-    color: "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800" 
+    color: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300 font-medium" 
   },
   REJECTED: { 
     label: "Rejected", 
     labelFr: "Refusé",
-    color: "bg-red-50 text-red-700 dark:bg-red-900/40 dark:text-red-300 border border-red-200 dark:border-red-800" 
+    color: "bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300 font-medium" 
   },
   PAID: { 
     label: "Paid", 
     labelFr: "Payé",
-    color: "bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 border border-blue-200 dark:border-blue-800" 
+    color: "bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 font-medium" 
   },
 };
 
@@ -145,7 +145,7 @@ export const TIMESHEET_STATUS_COLORS: Record<string, { label: string; labelFr: s
 export function getStatusColor(
   statusMap: Record<string, { color: string }>,
   status: string,
-  fallback = "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700"
+  fallback = "bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-400 font-medium"
 ): string {
   return statusMap[status]?.color || fallback;
 }

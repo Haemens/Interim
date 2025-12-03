@@ -218,16 +218,18 @@ export function OnboardingTour({ isDemo = false }: OnboardingTourProps) {
  */
 export function ReplayTourButton() {
   const router = useRouter();
-  const { hasSeenTour } = useOnboardingTour({ autoStart: false });
+  const { hasSeenTour, startTour } = useOnboardingTour({ autoStart: false });
 
   // If hasSeenTour is null (loading) or false, don't show replay
   if (hasSeenTour !== true) return null;
 
   const handleReplay = () => {
-    // Add tour=true to current URL
+    // Start tour directly and update URL
+    startTour();
+    // Also update URL so it persists on refresh
     const url = new URL(window.location.href);
     url.searchParams.set("tour", "true");
-    window.location.href = url.toString();
+    router.push(url.pathname + url.search);
   };
 
   return (

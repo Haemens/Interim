@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 // =============================================================================
 // TYPES
@@ -93,6 +94,8 @@ export function useOnboardingTour(
   options: UseOnboardingTourOptions = {}
 ): UseOnboardingTourReturn {
   const { autoStart = true } = options;
+  const searchParams = useSearchParams();
+  const forceTour = searchParams.get("tour") === "true";
 
   const [isLoading, setIsLoading] = useState(true);
   const [hasSeenTour, setHasSeenTour] = useState<boolean | null>(null);
@@ -107,11 +110,7 @@ export function useOnboardingTour(
           const data = await res.json();
           setHasSeenTour(data.hasSeenTour);
           
-          // Check for force tour param
-          const params = new URLSearchParams(window.location.search);
-          const forceTour = params.get("tour") === "true";
-          
-          // Auto-start tour for new users or if forced
+          // Auto-start tour for new users or if forced via URL param
           if (autoStart && (!data.hasSeenTour || forceTour)) {
             setCurrentStep("welcome");
           }
@@ -124,7 +123,7 @@ export function useOnboardingTour(
     }
 
     fetchState();
-  }, [autoStart]);
+  }, [autoStart, forceTour]);
 
   const currentStepIndex = currentStep
     ? ONBOARDING_STEPS.findIndex((s) => s.id === currentStep)

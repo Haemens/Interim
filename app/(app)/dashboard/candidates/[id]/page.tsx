@@ -42,13 +42,13 @@ interface CandidateProfile {
 function getStatusBadge(status: CandidateProfile["status"]) {
   switch (status) {
     case "ACTIVE":
-      return "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800";
+      return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300 font-medium";
     case "DO_NOT_CONTACT":
-      return "bg-amber-50 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800";
+      return "bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300 font-medium";
     case "BLACKLISTED":
-      return "bg-red-50 text-red-700 dark:bg-red-900/40 dark:text-red-300 border border-red-200 dark:border-red-800";
+      return "bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300 font-medium";
     default:
-      return "bg-secondary text-secondary-foreground border border-border";
+      return "bg-secondary text-secondary-foreground font-medium";
   }
 }
 
@@ -68,17 +68,17 @@ function translateStatus(status: CandidateProfile["status"]) {
 function getAppStatusBadge(status: string) {
   switch (status) {
     case "NEW":
-      return "bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 border border-blue-200 dark:border-blue-800";
+      return "bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 font-medium";
     case "CONTACTED":
-      return "bg-amber-50 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800";
+      return "bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300 font-medium";
     case "QUALIFIED":
-      return "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800";
+      return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300 font-medium";
     case "PLACED":
-      return "bg-green-50 text-green-700 dark:bg-green-900/40 dark:text-green-300 border border-green-200 dark:border-green-800";
+      return "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300 font-medium";
     case "REJECTED":
-      return "bg-red-50 text-red-700 dark:bg-red-900/40 dark:text-red-300 border border-red-200 dark:border-red-800";
+      return "bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300 font-medium";
     default:
-      return "bg-secondary text-secondary-foreground border border-border";
+      return "bg-secondary text-secondary-foreground font-medium";
   }
 }
 
