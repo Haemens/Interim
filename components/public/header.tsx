@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { Search } from "lucide-react";
 
 export function PublicHeader() {
   const pathname = usePathname();
@@ -27,6 +28,10 @@ export function PublicHeader() {
           </Link>
         </div>
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+          <Link href="/jobs" className="text-indigo-400 hover:text-indigo-300 transition-colors font-semibold flex items-center gap-2">
+            <Search className="w-4 h-4" />
+            Trouver un job
+          </Link>
           <Link href="/product" className="hover:text-white transition-colors">Produit</Link>
           <Link href="/pricing" className="hover:text-white transition-colors">Tarifs</Link>
           <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>

@@ -315,6 +315,24 @@ Each agency has public job pages accessible via their subdomain:
 4. Application is created with `source: "job_page"`
 5. Email notifications sent to agency and candidate
 
+### Public Job Portal
+
+QuestHire now features a public-facing job portal for candidates to find jobs across all agencies.
+
+- **Global Job Board**: `/jobs` - Aggregates all ACTIVE jobs from all agencies.
+  - Accessible from the main domain (e.g., `questhire.com/jobs`).
+  - Features search, filters (location, contract type, sector).
+  - Each job links to its respective agency's public job detail page.
+- **Agency Hub Pages**: `/agencies/[slug]` - Dedicated page for each agency on the main domain.
+  - Accessible via `questhire.com/agencies/[slug]`.
+  - Displays agency branding and a list of its ACTIVE jobs.
+  - Jobs link to the agency's public job detail page.
+
+**Source Tracking:**
+Applications originating from the Public Job Portal are tagged with:
+- `source=portal`
+- `sourceDetail=global_jobs_page` (for global board) or `sourceDetail=agency_hub_page` (for agency hub)
+
 ### Analytics
 
 Dashboard analytics available at `/dashboard/analytics`:

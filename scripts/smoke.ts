@@ -176,7 +176,7 @@ async function testPublicPages(prisma: PrismaClient) {
     select: { id: true },
   });
 
-  await runTest("Public jobs page loads", async () => {
+  await runTest("Public jobs page loads (Agency Context)", async () => {
     const res = await fetch(`${BASE_URL}/jobs`, {
       headers: { Host: `${ALPHA_TENANT}.localhost:3000` },
     });
@@ -184,8 +184,26 @@ async function testPublicPages(prisma: PrismaClient) {
     if (res.status === 500) throw new Error("Server error on jobs page");
   });
 
+  await runTest("Global job board loads (Main Domain)", async () => {
+    const res = await fetch(`${BASE_URL}/jobs`, {
+      headers: { Host: "localhost:3000" }, // Main domain
+    });
+    if (res.status !== 200) throw new Error(`Status ${res.status}`);
+    const text = await res.text();
+    if (!text.includes("Trouvez votre prochaine mission")) {
+      throw new Error("Did not find global board title");
+    }
+  });
+
+  await runTest("Agency Hub page loads", async () => {
+    const res = await fetch(`${BASE_URL}/agencies/${DEMO_TENANT}`, {
+      headers: { Host: "localhost:3000" },
+    });
+    if (res.status !== 200) throw new Error(`Status ${res.status}`);
+  });
+
   if (job) {
-    await runTest("Public job detail page loads", async () => {
+    await runTest("Public job detail page loads (Agency Context)", async () => {
       const res = await fetch(`${BASE_URL}/jobs/${job.id}`, {
         headers: { Host: `${ALPHA_TENANT}.localhost:3000` },
       });
