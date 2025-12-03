@@ -45,12 +45,12 @@ export default function MissionDetailPage() {
           const data = await res.json();
           setMission(data.mission);
         } else {
-          toast({ title: "Erreur", description: "Mission introuvable", variant: "destructive" });
+          toast({ title: "Erreur", description: "Mission introuvable", variant: "error" });
           router.push("/dashboard/missions");
         }
       } catch (e) {
         console.error(e);
-        toast({ title: "Erreur", description: "Erreur de chargement", variant: "destructive" });
+        toast({ title: "Erreur", description: "Erreur de chargement", variant: "error" });
       } finally {
         setIsLoading(false);
       }
@@ -73,17 +73,17 @@ export default function MissionDetailPage() {
         
         if (data.message) {
              // Demo mode
-             toast({ title: "Mode Démo", description: data.message, variant: "default" }); // 'success' variant might not exist in toast, default/destructive usually
+             toast({ title: "Mode Démo", description: data.message, variant: "success" }); // 'success' variant might not exist in toast, default/destructive usually
              setMission({ ...mission, status: newStatus });
         } else {
              setMission(data.mission);
-             toast({ title: "Succès", description: "Statut mis à jour", variant: "default" });
+             toast({ title: "Succès", description: "Statut mis à jour", variant: "success" });
         }
       } else {
         throw new Error("Failed to update");
       }
     } catch (e) {
-      toast({ title: "Erreur", description: "Impossible de mettre à jour le statut", variant: "destructive" });
+      toast({ title: "Erreur", description: "Impossible de mettre à jour le statut", variant: "error" });
     } finally {
       setIsUpdating(false);
     }
