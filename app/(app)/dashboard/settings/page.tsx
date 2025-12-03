@@ -230,6 +230,40 @@ export default function SettingsPage() {
           </div>
         )}
 
+        {activeTab === "import" && (
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-lg font-medium text-foreground mb-4">
+                Importer un vivier client
+              </h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Vous pouvez importer vos clients existants depuis un fichier CSV. 
+                Téléchargez le modèle pour voir le format attendu.
+              </p>
+              
+              <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:bg-muted/50 transition-colors cursor-pointer">
+                <div className="text-muted-foreground mb-2">
+                  <Upload className="w-10 h-10 mx-auto" />
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Glissez-déposez votre fichier CSV ici, ou <span className="text-primary font-medium">cliquez pour parcourir</span>
+                </p>
+                <input type="file" accept=".csv" className="hidden" />
+              </div>
+
+              <div className="mt-4 flex justify-between items-center">
+                <button className="text-sm text-primary hover:underline flex items-center gap-2">
+                  <Download className="w-4 h-4" />
+                  Télécharger le modèle CSV
+                </button>
+                <button className="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors">
+                  Lancer l&apos;import
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {activeTab === "notifications" && (
           <div className="space-y-6">
             <div>
