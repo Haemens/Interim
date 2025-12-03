@@ -138,7 +138,7 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
       </header>
 
       {/* Content */}
-      <main className="max-w-5xl mx-auto px-4 py-12 -mt-10 relative z-20 flex-grow w-full">
+      <main className="max-w-7xl mx-auto px-4 py-12 -mt-10 relative z-20 flex-grow w-full">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Job Details */}
           <div className="lg:col-span-2 space-y-8">

@@ -144,6 +144,10 @@ export default function SettingsPage() {
               <h3 className="text-lg font-medium text-foreground mb-4">
                 Couleurs de la marque
               </h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Ces couleurs seront utilisées sur votre page publique, vos offres d&apos;emploi et dans les emails envoyés aux candidats.
+                Choisissez une couleur principale qui correspond à votre identité visuelle.
+              </p>
               <div className="grid gap-4 max-w-lg">
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-1">

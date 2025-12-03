@@ -418,7 +418,7 @@ export default function CandidatesPage() {
                           <Badge
                             key={sector}
                             variant="outline"
-                            className="text-[10px] font-normal bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800"
+                            className="text-[10px] font-normal bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800"
                           >
                             {sector}
                           </Badge>

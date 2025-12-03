@@ -470,7 +470,7 @@ export default async function JobDetailPage({
                   </Link>
                 </Button>
                 <Button asChild variant="outline" className="w-full justify-start">
-                  <Link href={`/jobs/${jobId}`} target="_blank">
+                  <Link href={`/jobs/${jobId}`} target="_blank" data-tour="public-page">
                     <ExternalLink className="w-4 h-4 mr-2" />
                     Voir la page publique
                   </Link>

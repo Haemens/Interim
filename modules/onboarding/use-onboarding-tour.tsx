@@ -13,9 +13,12 @@ export type OnboardingStep =
   | "jobs"
   | "jobs-list"
   | "pipeline"
+  | "public-page"
   | "candidates"
   | "analytics"
+  | "team"
   | "billing"
+  | "settings"
   | "done";
 
 export interface OnboardingStepInfo {
@@ -61,25 +64,46 @@ export const ONBOARDING_STEPS: OnboardingStepInfo[] = [
     target: '[data-tour="pipeline"]',
   },
   {
-    id: "candidates",
-    title: "5. Vivier de talents",
+    id: "public-page",
+    title: "5. Page Publique",
     description:
-      "Cliquez ici pour accéder à votre base de données candidats globale, indépendamment des offres spécifiques.",
+      "Visualisez à quoi ressemble votre offre pour les candidats. Partagez ce lien sur vos réseaux pour attirer des talents.",
+    target: '[data-tour="public-page"]',
+  },
+  {
+    id: "candidates",
+    title: "6. Vivier de talents",
+    description:
+      "Accédez à votre base de données candidats globale. Vous pouvez rechercher, filtrer par compétences ou secteurs, et gérer vos talents indépendamment des offres spécifiques.",
     target: '[data-tour="candidates"]',
   },
   {
     id: "analytics",
-    title: "6. Analysez vos performances",
+    title: "7. Analysez vos performances",
     description:
       "Suivez vos indicateurs clés : nombre de candidatures, temps de recrutement, et efficacité de vos canaux d'acquisition.",
     target: '[data-tour="analytics"]',
   },
   {
-    id: "billing",
-    title: "7. Paramètres & Équipe",
+    id: "team",
+    title: "8. Équipe",
     description:
-      "Configurez votre agence, invitez vos collaborateurs et gérez votre abonnement depuis cet espace.",
+      "Invitez vos collaborateurs et gérez les accès de votre équipe.",
+    target: '[data-tour="team"]',
+  },
+  {
+    id: "billing",
+    title: "9. Abonnement",
+    description:
+      "Gérez votre abonnement et vos factures.",
     target: '[data-tour="billing"]',
+  },
+  {
+    id: "settings",
+    title: "10. Paramètres",
+    description:
+      "Configurez votre agence, votre marque (logo, couleurs) et vos préférences de notification.",
+    target: '[data-tour="settings"]',
   },
 ];
 

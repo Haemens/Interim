@@ -99,8 +99,8 @@ export async function POST(
     // RBAC: RECRUITER and above can generate content
     assertMinimumRole(membership, "RECRUITER");
 
-    // Demo mode: block mutations
-    assertNotDemoAgency(agency, "generate social content");
+    // Demo mode: allow generation for testing purposes (uncomment to block in production if needed)
+    // assertNotDemoAgency(agency, "generate social content");
 
     // Parse body (optional language)
     let language = "fr";

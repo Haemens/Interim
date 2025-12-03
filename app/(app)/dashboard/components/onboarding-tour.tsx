@@ -94,7 +94,7 @@ export function OnboardingTour({ isDemo = false }: OnboardingTourProps) {
             
             {/* Highlight border */}
             <div 
-              className="absolute border-2 border-indigo-500 shadow-[0_0_0_4px_rgba(99,102,241,0.2)] rounded-md transition-all duration-300 animate-pulse"
+              className="absolute border-2 border-indigo-500 shadow-[0_0_0_4px_rgba(99,102,241,0.2)] rounded-md transition-all duration-300 animate-pulse pointer-events-none"
               style={{
                 top: targetRect.top - 4,
                 left: targetRect.left - 4,
