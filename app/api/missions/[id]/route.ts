@@ -11,8 +11,9 @@ const updateSchema = z.object({
   status: z.enum(["PLANNED", "ACTIVE", "COMPLETED", "CANCELLED", "NO_SHOW", "SUSPENDED"]),
 });
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const user = await getCurrentUser();
     const tenantSlug = await getTenantSlugWithFallback(request, user?.id ?? null);
     
@@ -22,7 +23,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
     const { agency } = await getCurrentMembershipOrThrow(tenantSlug);
     
-    const mission = await getMissionDetail(agency.id, params.id);
+    const mission = await getMissionDetail(agency.id, id);
     if (!mission) {
       return NextResponse.json({ error: "Mission not found" }, { status: 404 });
     }
@@ -34,8 +35,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const user = await getCurrentUser();
     const tenantSlug = await getTenantSlugWithFallback(request, user?.id ?? null);
     
@@ -50,14 +52,14 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     if (isDemoAgency(agency)) {
       return NextResponse.json({ 
         message: "Simulation: Mission updated (Demo Mode)",
-        mission: { id: params.id, ...await request.json() } 
+        mission: { id, ...await request.json() } 
       });
     }
 
     const body = await request.json();
     const { status } = updateSchema.parse(body);
 
-    const updated = await updateMissionStatus(params.id, status as any, dbUser.id, agency.id);
+    const updated = await updateMissionStatus(id, status as any, dbUser.id, agency.id);
     return NextResponse.json({ mission: updated });
   } catch (error) {
     logError("Update Mission Error", { error: error instanceof Error ? error.message : "Unknown" });
