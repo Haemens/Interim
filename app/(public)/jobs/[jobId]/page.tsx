@@ -93,7 +93,7 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
   const channelId = typeof resolvedSearchParams.channelId === "string" ? resolvedSearchParams.channelId : undefined;
 
   // Build return URL - use /jobs for global job board
-  const returnUrl = `/jobs`;
+  const returnUrl = `/jobs?agency=${agency.slug}`;
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans flex flex-col">

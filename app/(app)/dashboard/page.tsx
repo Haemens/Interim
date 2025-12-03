@@ -188,16 +188,27 @@ export default async function DashboardPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {translatedStats.map((stat) => (
-          <div
-            key={stat.label}
-            className="bg-card p-6 rounded-xl border border-border"
-          >
-            <p className="text-sm text-muted-foreground">{stat.label}</p>
-            <p className="text-3xl font-bold text-foreground mt-1">{stat.value}</p>
-            <p className="text-xs text-muted-foreground mt-2">{stat.change}</p>
-          </div>
-        ))}
+        {translatedStats.map((stat, index) => {
+          // Assign specific colors based on index for better visual distinction
+          const colorSchemes = [
+            "bg-emerald-50 border-emerald-200 text-emerald-900 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-100",
+            "bg-blue-50 border-blue-200 text-blue-900 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-100",
+            "bg-amber-50 border-amber-200 text-amber-900 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-100",
+            "bg-purple-50 border-purple-200 text-purple-900 dark:bg-purple-900/20 dark:border-purple-800 dark:text-purple-100",
+          ];
+          const colorClass = colorSchemes[index % colorSchemes.length];
+          
+          return (
+            <div
+              key={stat.label}
+              className={`p-6 rounded-xl border ${colorClass}`}
+            >
+              <p className="text-sm font-medium opacity-80">{stat.label}</p>
+              <p className="text-3xl font-bold mt-1">{stat.value}</p>
+              <p className="text-xs opacity-70 mt-2 font-medium">{stat.change}</p>
+            </div>
+          );
+        })}
       </div>
 
       {/* Quick Actions */}

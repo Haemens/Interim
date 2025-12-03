@@ -58,6 +58,7 @@ interface GlobalViewProps {
     sector?: string;
     location?: string;
     page?: string;
+    agency?: string;
   };
 }
 
@@ -70,6 +71,7 @@ export async function GlobalView({ searchParams }: GlobalViewProps) {
     contractType: searchParams.type !== "ALL" ? searchParams.type : undefined,
     sector: searchParams.sector !== "ALL" ? searchParams.sector : undefined,
     location: searchParams.location,
+    agencySlug: searchParams.agency,
   }, {
     page,
     pageSize: 12
@@ -113,17 +115,17 @@ export async function GlobalView({ searchParams }: GlobalViewProps) {
       </section>
 
       {/* BANNER - Compact */}
-      <section className="py-6 px-4">
+      <section className="py-4 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-[#FFDE59] rounded-2xl p-6 md:p-8 flex items-center justify-between relative overflow-hidden shadow-md">
+          <div className="bg-[#FFDE59] rounded-2xl p-5 md:p-6 flex items-center justify-between relative overflow-hidden shadow-md">
             {/* Decorative circles */}
             <div className="absolute top-0 right-0 w-40 h-40 bg-white opacity-20 rounded-full -translate-y-1/2 translate-x-1/3"></div>
 
             <div className="relative z-10 flex-1">
-              <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-2">
+              <h2 className="text-lg md:text-xl font-bold text-slate-900 mb-1">
                 Arrêtez de chercher.
               </h2>
-              <p className="text-sm md:text-base font-medium text-slate-700">
+              <p className="text-sm font-medium text-slate-700">
                 Créez votre profil en 2 min et recevez des offres personnalisées.
               </p>
             </div>
