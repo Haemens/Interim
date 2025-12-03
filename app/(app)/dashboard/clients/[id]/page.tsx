@@ -88,17 +88,17 @@ interface ClientDetail {
 // =============================================================================
 
 const JOB_REQUEST_STATUS: Record<string, { label: string; color: string }> = {
-  NEW: { label: "New", color: "bg-blue-100 text-blue-700" },
-  IN_REVIEW: { label: "In Review", color: "bg-amber-100 text-amber-700" },
-  CONVERTED_TO_JOB: { label: "Converted", color: "bg-green-100 text-green-700" },
-  REJECTED: { label: "Rejected", color: "bg-red-100 text-red-700" },
+  NEW: { label: "Nouveau", color: "bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 border border-blue-200 dark:border-blue-800" },
+  IN_REVIEW: { label: "En cours", color: "bg-amber-50 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800" },
+  CONVERTED_TO_JOB: { label: "Converti", color: "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800" },
+  REJECTED: { label: "Refusé", color: "bg-red-50 text-red-700 dark:bg-red-900/40 dark:text-red-300 border border-red-200 dark:border-red-800" },
 };
 
 const JOB_STATUS: Record<string, { label: string; color: string }> = {
-  DRAFT: { label: "Draft", color: "bg-slate-100 text-slate-600" },
-  ACTIVE: { label: "Active", color: "bg-green-100 text-green-700" },
-  PAUSED: { label: "Paused", color: "bg-amber-100 text-amber-700" },
-  ARCHIVED: { label: "Archived", color: "bg-slate-100 text-slate-500" },
+  DRAFT: { label: "Brouillon", color: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700" },
+  ACTIVE: { label: "Actif", color: "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800" },
+  PAUSED: { label: "En pause", color: "bg-amber-50 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800" },
+  ARCHIVED: { label: "Archivé", color: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700" },
 };
 
 // =============================================================================
@@ -456,10 +456,10 @@ export default function ClientDetailPage() {
                       <td className="px-6 py-4 text-center font-medium">{ts.totalHours}h</td>
                       <td className="px-6 py-4 text-center">
                         <span className={`text-xs px-2 py-1 rounded-full ${
-                          ts.status === "APPROVED" ? "bg-green-100 text-green-700" :
-                          ts.status === "PAID" ? "bg-blue-100 text-blue-700" :
-                          ts.status === "REJECTED" ? "bg-red-100 text-red-700" :
-                          "bg-amber-100 text-amber-700"
+                          ts.status === "APPROVED" ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800" :
+                          ts.status === "PAID" ? "bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 border border-blue-200 dark:border-blue-800" :
+                          ts.status === "REJECTED" ? "bg-red-50 text-red-700 dark:bg-red-900/40 dark:text-red-300 border border-red-200 dark:border-red-800" :
+                          "bg-amber-50 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800"
                         }`}>
                           {ts.status}
                         </span>

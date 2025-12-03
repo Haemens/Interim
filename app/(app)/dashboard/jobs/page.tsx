@@ -42,15 +42,16 @@ export default function JobsPage() {
   function getStatusColor(status: string): string {
     switch (status) {
       case "ACTIVE":
-        return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400";
+        return "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800";
       case "DRAFT":
-        return "bg-secondary text-secondary-foreground";
+        return "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700";
       case "PAUSED":
-        return "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400";
+        return "bg-amber-50 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800";
       case "CLOSED":
-        return "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400";
+      case "ARCHIVED":
+        return "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700";
       default:
-        return "bg-secondary text-secondary-foreground";
+        return "bg-secondary text-secondary-foreground border border-border";
     }
   }
 

@@ -3,6 +3,7 @@
 import { useOnboardingTour } from "@/modules/onboarding/use-onboarding-tour";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { useRouter } from "next/navigation";
 
 interface OnboardingTourProps {
   isDemo?: boolean;
@@ -216,14 +217,22 @@ export function OnboardingTour({ isDemo = false }: OnboardingTourProps) {
  * Button to replay the onboarding tour
  */
 export function ReplayTourButton() {
-  const { startTour, hasSeenTour } = useOnboardingTour({ autoStart: false });
+  const router = useRouter();
+  const { hasSeenTour } = useOnboardingTour({ autoStart: false });
 
   // If hasSeenTour is null (loading) or false, don't show replay
   if (hasSeenTour !== true) return null;
 
+  const handleReplay = () => {
+    // Navigate to dashboard with tour param to trigger the tour
+    router.push("/dashboard?tour=true");
+    // Force page reload to reset tour state
+    window.location.href = "/dashboard?tour=true";
+  };
+
   return (
     <button
-      onClick={startTour}
+      onClick={handleReplay}
       className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-secondary/50"
     >
       <span>🎓</span>
