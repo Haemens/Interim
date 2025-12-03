@@ -189,23 +189,24 @@ export default async function DashboardPage() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {translatedStats.map((stat, index) => {
-          // Assign specific colors based on index for better visual distinction
-          const colorSchemes = [
-            "bg-emerald-50 border-emerald-200 text-emerald-900 dark:bg-gradient-to-br dark:from-emerald-950/40 dark:to-teal-950/40 dark:border-emerald-900 dark:text-emerald-100",
-            "bg-blue-50 border-blue-200 text-blue-900 dark:bg-gradient-to-br dark:from-blue-950/40 dark:to-indigo-950/40 dark:border-blue-900 dark:text-blue-100",
-            "bg-amber-50 border-amber-200 text-amber-900 dark:bg-gradient-to-br dark:from-amber-950/40 dark:to-orange-950/40 dark:border-amber-900 dark:text-amber-100",
-            "bg-purple-50 border-purple-200 text-purple-900 dark:bg-gradient-to-br dark:from-purple-950/40 dark:to-pink-950/40 dark:border-purple-900 dark:text-purple-100",
+          // Colors configuration
+          const colors = [
+            { border: "border-l-emerald-500", darkFrom: "dark:from-emerald-950/40", darkTo: "dark:to-teal-950/40", darkBorder: "dark:border-emerald-900", darkText: "dark:text-emerald-400", darkValue: "dark:text-emerald-100" },
+            { border: "border-l-blue-500", darkFrom: "dark:from-blue-950/40", darkTo: "dark:to-indigo-950/40", darkBorder: "dark:border-blue-900", darkText: "dark:text-blue-400", darkValue: "dark:text-blue-100" },
+            { border: "border-l-amber-500", darkFrom: "dark:from-amber-950/40", darkTo: "dark:to-orange-950/40", darkBorder: "dark:border-amber-900", darkText: "dark:text-amber-400", darkValue: "dark:text-amber-100" },
+            { border: "border-l-purple-500", darkFrom: "dark:from-purple-950/40", darkTo: "dark:to-pink-950/40", darkBorder: "dark:border-purple-900", darkText: "dark:text-purple-400", darkValue: "dark:text-purple-100" },
           ];
-          const colorClass = colorSchemes[index % colorSchemes.length];
+          
+          const c = colors[index % colors.length];
           
           return (
             <div
               key={stat.label}
-              className={`p-6 rounded-xl border ${colorClass}`}
+              className={`p-6 rounded-xl shadow-sm relative overflow-hidden bg-white border-l-4 ${c.border} dark:bg-gradient-to-br ${c.darkFrom} ${c.darkTo} dark:border-l-0 border dark:border ${c.darkBorder}`}
             >
-              <p className="text-sm font-medium opacity-80">{stat.label}</p>
-              <p className="text-3xl font-bold mt-1">{stat.value}</p>
-              <p className="text-xs opacity-70 mt-2 font-medium">{stat.change}</p>
+              <p className={`text-sm font-medium text-slate-600 ${c.darkText}`}>{stat.label}</p>
+              <p className={`text-3xl font-bold mt-1 text-slate-900 ${c.darkValue}`}>{stat.value}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">{stat.change}</p>
             </div>
           );
         })}
