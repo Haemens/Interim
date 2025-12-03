@@ -98,11 +98,11 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
 
         <div className="max-w-4xl mx-auto relative z-10">
           <Link
-            href="/jobs"
+            href="/"
             className="inline-flex items-center text-white/80 hover:text-white text-sm mb-8 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm transition-colors hover:bg-white/20"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour aux offres
+            Voir les autres offres
           </Link>
           
           <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-6 leading-tight tracking-tight">

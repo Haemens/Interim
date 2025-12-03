@@ -198,11 +198,24 @@ export async function GlobalView({ searchParams }: GlobalViewProps) {
                   `/jobs/${job.id}?source=portal&sourceDetail=global_jobs_page`
                 );
 
+                // Generate a deterministic gradient based on job ID
+                const gradients = [
+                  "from-blue-100 to-indigo-100",
+                  "from-emerald-100 to-teal-100",
+                  "from-amber-100 to-orange-100",
+                  "from-purple-100 to-pink-100",
+                  "from-cyan-100 to-blue-100",
+                  "from-rose-100 to-red-100",
+                  "from-lime-100 to-green-100",
+                  "from-fuchsia-100 to-rose-100"
+                ];
+                const gradient = gradients[job.id.charCodeAt(job.id.length - 1) % gradients.length];
+
                 return (
                   <Link key={job.id} href={jobUrl} className="group h-full block">
                     <Card className="h-full border-slate-200 shadow-sm hover:shadow-xl hover:border-indigo-200 hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col bg-white">
                       {/* Card Header with Image/Placeholder */}
-                      <div className="h-32 bg-gradient-to-r from-slate-100 to-slate-200 relative overflow-hidden group-hover:from-indigo-50 group-hover:to-indigo-100 transition-colors">
+                      <div className={`h-32 bg-gradient-to-r ${gradient} relative overflow-hidden group-hover:opacity-90 transition-opacity`}>
                         {job.agency.logoUrl ? (
                            <div className="absolute inset-0 flex items-center justify-center opacity-10 scale-150 blur-sm">
                               <img src={job.agency.logoUrl} alt="" className="w-full h-full object-cover" />
