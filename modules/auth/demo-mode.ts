@@ -12,7 +12,7 @@
  * - Error handlers should catch this and return a 403 with code "DEMO_READ_ONLY"
  */
 
-import type { Agency } from "@prisma/client";
+// Agency type from Prisma - using inline type to avoid import issues
 import { ApiError } from "@/lib/api-error";
 
 // =============================================================================
@@ -22,6 +22,12 @@ import { ApiError } from "@/lib/api-error";
 /** The slug used for the demo agency */
 export const DEMO_AGENCY_SLUG = "demo-agency";
 
+/** 
+ * Environment variable to disable demo mode restrictions for local development.
+ * Set DISABLE_DEMO_MODE=true in .env.local to allow mutations on demo-agency.
+ */
+const DEMO_MODE_DISABLED = process.env.DISABLE_DEMO_MODE === "true";
+
 /** The email used for the demo user */
 export const DEMO_USER_EMAIL = "demo@questhire.com";
 
@@ -30,7 +36,7 @@ export const DEMO_USER_EMAIL = "demo@questhire.com";
 // =============================================================================
 
 /** Minimal agency shape for demo checks */
-type AgencyLike = { slug: string } | Agency;
+type AgencyLike = { slug: string };
 
 /**
  * Check if an agency is the demo agency
@@ -38,6 +44,7 @@ type AgencyLike = { slug: string } | Agency;
  * @returns true if this is the demo agency
  */
 export function isDemoAgency(agency: AgencyLike | null | undefined): boolean {
+  if (DEMO_MODE_DISABLED) return false;
   return agency?.slug === DEMO_AGENCY_SLUG;
 }
 
@@ -47,6 +54,7 @@ export function isDemoAgency(agency: AgencyLike | null | undefined): boolean {
  * @returns true if this is the demo agency slug
  */
 export function isDemoAgencySlug(slug: string | null | undefined): boolean {
+  if (DEMO_MODE_DISABLED) return false;
   return slug === DEMO_AGENCY_SLUG;
 }
 

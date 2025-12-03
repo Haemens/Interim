@@ -4,7 +4,6 @@ import { db } from "@/lib/db";
 import { getEffectiveTenant } from "@/lib/get-effective-tenant";
 import { isDemoAgencySlug } from "@/modules/auth/demo-mode";
 import { PipelineBoard } from "./board";
-import { ActivityTimeline } from "./activity-timeline";
 
 // =============================================================================
 // DATA FETCHING
@@ -137,22 +136,12 @@ export default async function JobPipelinePage({
         </div>
       </div>
 
-      {/* Main content */}
-      <div className="flex gap-6">
-        {/* Kanban Board */}
-        <div className="flex-1 min-w-0">
-          <PipelineBoard
-            jobId={jobId}
-            canEdit={canEdit}
-            isDemo={isDemoAgencySlug(tenantSlug)}
-          />
-        </div>
-
-        {/* Activity Timeline */}
-        <div className="w-80 flex-shrink-0">
-          <ActivityTimeline jobId={jobId} />
-        </div>
-      </div>
+      {/* Main content - Full width Kanban Board */}
+      <PipelineBoard
+        jobId={jobId}
+        canEdit={canEdit}
+        isDemo={isDemoAgencySlug(tenantSlug)}
+      />
     </div>
   );
 }
