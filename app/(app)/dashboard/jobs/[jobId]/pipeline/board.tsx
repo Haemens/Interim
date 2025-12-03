@@ -335,40 +335,6 @@ export function PipelineBoard({ jobId, canEdit, canUseShortlists = true, isDemo 
 
       {/* Board */}
       <DndContext
-        sensors={sensors}
-        collisionDetection={closestCorners}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-      >
-        <div className="flex gap-6 overflow-x-auto pb-4 min-h-[calc(100vh-300px)]">
-          {columns.map((column) => (
-            <PipelineColumn
-              key={column.status}
-              >
-                Sélectionner pour shortlist
-              </Button>
-            ) : (
-              <Button asChild variant="secondary" size="sm">
-                <Link href="/dashboard/billing">
-                  Passer Pro pour les shortlists
-                </Link>
-              </Button>
-            )}
-          </div>
-        </div>
-      </Card>
-    )}
-
-    {/* Error toast */}
-    {error && (
-      <div className="fixed bottom-4 right-4 bg-destructive/10 border border-destructive/20 text-destructive px-4 py-2 rounded-lg shadow-lg z-50 flex items-center gap-2">
-        <AlertCircle className="w-4 h-4" />
-        {error}
-      </div>
-    )}
-
-    {/* Board */}
-    <DndContext
       sensors={sensors}
       collisionDetection={closestCorners}
       onDragStart={handleDragStart}
