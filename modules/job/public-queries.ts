@@ -25,6 +25,7 @@ export interface PublicJob {
   sector: string | null;
   description: string | null;
   publishedAt: Date | null;
+  createdAt: Date;
   agency: {
     name: string;
     slug: string;
