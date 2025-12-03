@@ -191,10 +191,10 @@ export default async function DashboardPage() {
         {translatedStats.map((stat, index) => {
           // Colors configuration
           const colors = [
-            { border: "border-l-emerald-500", darkFrom: "dark:from-emerald-950/40", darkTo: "dark:to-teal-950/40", darkBorder: "dark:border-emerald-900", darkText: "dark:text-emerald-400", darkValue: "dark:text-emerald-100" },
-            { border: "border-l-blue-500", darkFrom: "dark:from-blue-950/40", darkTo: "dark:to-indigo-950/40", darkBorder: "dark:border-blue-900", darkText: "dark:text-blue-400", darkValue: "dark:text-blue-100" },
-            { border: "border-l-amber-500", darkFrom: "dark:from-amber-950/40", darkTo: "dark:to-orange-950/40", darkBorder: "dark:border-amber-900", darkText: "dark:text-amber-400", darkValue: "dark:text-amber-100" },
-            { border: "border-l-purple-500", darkFrom: "dark:from-purple-950/40", darkTo: "dark:to-pink-950/40", darkBorder: "dark:border-purple-900", darkText: "dark:text-purple-400", darkValue: "dark:text-purple-100" },
+            { border: "border-l-emerald-500 border-y border-r border-slate-200", darkFrom: "dark:from-emerald-950/40", darkTo: "dark:to-teal-950/40", darkBorder: "dark:border-emerald-900", darkText: "dark:text-emerald-400", darkValue: "dark:text-emerald-100" },
+            { border: "border-l-blue-500 border-y border-r border-slate-200", darkFrom: "dark:from-blue-950/40", darkTo: "dark:to-indigo-950/40", darkBorder: "dark:border-blue-900", darkText: "dark:text-blue-400", darkValue: "dark:text-blue-100" },
+            { border: "border-l-amber-500 border-y border-r border-slate-200", darkFrom: "dark:from-amber-950/40", darkTo: "dark:to-orange-950/40", darkBorder: "dark:border-amber-900", darkText: "dark:text-amber-100", darkValue: "dark:text-amber-100" },
+            { border: "border-l-purple-500 border-y border-r border-slate-200", darkFrom: "dark:from-purple-950/40", darkTo: "dark:to-pink-950/40", darkBorder: "dark:border-purple-900", darkText: "dark:text-purple-400", darkValue: "dark:text-purple-100" },
           ];
           
           const c = colors[index % colors.length];
