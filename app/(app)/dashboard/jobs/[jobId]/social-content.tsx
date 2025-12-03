@@ -28,7 +28,7 @@ import {
 // TYPES
 // =============================================================================
 
-type ContentVariant = "TIKTOK_SCRIPT" | "INSTAGRAM_CAPTION" | "LINKEDIN_POST" | "WHATSAPP_MESSAGE" | "GENERIC_SNIPPET";
+type ContentVariant = "TIKTOK_SCRIPT" | "INSTAGRAM_CAPTION" | "LINKEDIN_POST" | "FACEBOOK_POST" | "WHATSAPP_MESSAGE" | "GENERIC_SNIPPET";
 type ContentStatus = "DRAFT" | "APPROVED" | "ARCHIVED";
 type PublicationStatus = "DRAFT" | "SCHEDULED" | "PUBLISHING" | "PUBLISHED" | "FAILED";
 type ChannelType = "TIKTOK" | "INSTAGRAM" | "LINKEDIN" | "FACEBOOK" | "OTHER";
@@ -100,6 +100,7 @@ const VARIANT_CONFIG: Record<ContentVariant, { label: string; icon: string; colo
   TIKTOK_SCRIPT: { label: "Script TikTok", icon: "🎵", color: "bg-black text-white" },
   INSTAGRAM_CAPTION: { label: "Légende Instagram", icon: "📸", color: "bg-gradient-to-r from-purple-500 to-pink-500 text-white" },
   LINKEDIN_POST: { label: "Post LinkedIn", icon: "💼", color: "bg-blue-700 text-white" },
+  FACEBOOK_POST: { label: "Post Facebook", icon: "👥", color: "bg-blue-600 text-white" },
   WHATSAPP_MESSAGE: { label: "Message WhatsApp", icon: "💬", color: "bg-green-500 text-white" },
   GENERIC_SNIPPET: { label: "Texte générique", icon: "📝", color: "bg-slate-500 text-white" },
 };

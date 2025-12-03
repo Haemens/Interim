@@ -24,6 +24,7 @@ export type ContentVariantType =
   | "TIKTOK_SCRIPT"
   | "INSTAGRAM_CAPTION"
   | "LINKEDIN_POST"
+  | "FACEBOOK_POST"
   | "WHATSAPP_MESSAGE"
   | "GENERIC_SNIPPET";
 
@@ -342,6 +343,61 @@ function generateLinkedInPost(job: JobInput, agency: AgencyInput, language: stri
   };
 }
 
+function generateFacebookPost(job: JobInput, agency: AgencyInput, language: string): GeneratedContentVariant {
+  const salary = formatSalary(job.salaryMin, job.salaryMax, job.currency);
+  const location = job.location || "France";
+  const benefits = extractKeyPoints(job.benefits, 2);
+
+  const lines: string[] = [];
+
+  if (language === "fr") {
+    lines.push(`🚨 OPPORTUNITÉ À SAISIR 🚨`);
+    lines.push("");
+    lines.push(`Nous recherchons un(e) **${job.title}** sur ${location} !`);
+    lines.push("");
+    if (salary) lines.push(`💰 Salaire : ${salary}`);
+    if (job.contractType) lines.push(`📝 Contrat : ${job.contractType}`);
+    lines.push("");
+    
+    if (benefits.length > 0) {
+      lines.push("✅ Avantages :");
+      benefits.forEach((b) => lines.push(`- ${b}`));
+      lines.push("");
+    }
+
+    lines.push(`👉 Pour postuler, cliquez ici : [Lien]`);
+    lines.push(`Ou envoyez-nous un message !`);
+    lines.push("");
+    lines.push("Taguez un ami qui pourrait être intéressé 👇");
+  } else {
+    lines.push(`🚨 JOB ALERT 🚨`);
+    lines.push("");
+    lines.push(`We are hiring a **${job.title}** in ${location}!`);
+    lines.push("");
+    if (salary) lines.push(`💰 Salary: ${salary}`);
+    if (job.contractType) lines.push(`📝 Contract: ${job.contractType}`);
+    lines.push("");
+    
+    if (benefits.length > 0) {
+      lines.push("✅ Benefits:");
+      benefits.forEach((b) => lines.push(`- ${b}`));
+      lines.push("");
+    }
+
+    lines.push(`👉 To apply, click here: [Link]`);
+    lines.push(`Or send us a message!`);
+    lines.push("");
+    lines.push("Tag a friend who might be interested 👇");
+  }
+
+  return {
+    variant: "FACEBOOK_POST",
+    title: language === "fr" ? `Post Facebook - ${job.title}` : `Facebook Post - ${job.title}`,
+    body: lines.join("\n"),
+    suggestedHashtags: generateHashtags(job, agency),
+  };
+}
+
 function generateWhatsAppMessage(job: JobInput, agency: AgencyInput, language: string): GeneratedContentVariant {
   const salary = formatSalary(job.salaryMin, job.salaryMax, job.currency);
   const location = job.location || "France";
@@ -387,10 +443,11 @@ function generateWhatsAppMessage(job: JobInput, agency: AgencyInput, language: s
 /**
  * Generate a social content pack for a job posting.
  *
- * Returns 4 content variants:
+ * Returns 5 content variants:
  * - TIKTOK_SCRIPT: Short, spoken style with hooks and CTA
  * - INSTAGRAM_CAPTION: Medium-length with bullet points and hashtags
  * - LINKEDIN_POST: Formal, structured professional post
+ * - FACEBOOK_POST: Community-focused post
  * - WHATSAPP_MESSAGE: Short, direct message for candidate outreach
  *
  * @param params - Job, agency, and optional language (default "fr")
@@ -415,6 +472,7 @@ export async function generateSocialPackForJob(
     generateTikTokScript(job, agency, language),
     generateInstagramCaption(job, agency, language),
     generateLinkedInPost(job, agency, language),
+    generateFacebookPost(job, agency, language),
     generateWhatsAppMessage(job, agency, language),
   ];
 
@@ -429,6 +487,7 @@ export function getVariantLabel(variant: ContentVariantType, language: string = 
     TIKTOK_SCRIPT: { fr: "Script TikTok", en: "TikTok Script" },
     INSTAGRAM_CAPTION: { fr: "Caption Instagram", en: "Instagram Caption" },
     LINKEDIN_POST: { fr: "Post LinkedIn", en: "LinkedIn Post" },
+    FACEBOOK_POST: { fr: "Post Facebook", en: "Facebook Post" },
     WHATSAPP_MESSAGE: { fr: "Message WhatsApp", en: "WhatsApp Message" },
     GENERIC_SNIPPET: { fr: "Extrait générique", en: "Generic Snippet" },
   };
@@ -444,6 +503,7 @@ export function getVariantIcon(variant: ContentVariantType): string {
     TIKTOK_SCRIPT: "🎵",
     INSTAGRAM_CAPTION: "📸",
     LINKEDIN_POST: "💼",
+    FACEBOOK_POST: "👥",
     WHATSAPP_MESSAGE: "💬",
     GENERIC_SNIPPET: "📝",
   };
@@ -460,6 +520,7 @@ const VARIANT_TO_CHANNEL: Record<MainContentVariant, AiChannel> = {
   TIKTOK_SCRIPT: "tiktok",
   INSTAGRAM_CAPTION: "instagram",
   LINKEDIN_POST: "linkedin",
+  FACEBOOK_POST: "facebook",
   WHATSAPP_MESSAGE: "whatsapp",
 };
 
@@ -467,6 +528,7 @@ const CHANNEL_TO_VARIANT: Record<AiChannel, ContentVariantType> = {
   tiktok: "TIKTOK_SCRIPT",
   instagram: "INSTAGRAM_CAPTION",
   linkedin: "LINKEDIN_POST",
+  facebook: "FACEBOOK_POST",
   whatsapp: "WHATSAPP_MESSAGE",
 };
 
@@ -494,7 +556,7 @@ export interface GeneratedPackResult {
 /**
  * Generate a full social content pack using AI.
  *
- * Generates content for all 4 channels (TikTok, Instagram, LinkedIn, WhatsApp)
+ * Generates content for all channels (TikTok, Instagram, LinkedIn, Facebook, WhatsApp)
  * using AI, then upserts JobPostContent records.
  *
  * @param params - Job ID, agency ID, optional tone and language
@@ -602,7 +664,7 @@ export async function generateJobContentPackWithAI(
     : undefined;
 
   // Generate content for each channel using AI
-  const channels: AiChannel[] = ["tiktok", "instagram", "linkedin", "whatsapp"];
+  const channels: AiChannel[] = ["tiktok", "instagram", "linkedin", "facebook", "whatsapp"];
   const generatedContents: GeneratedContentVariant[] = [];
 
   for (const channel of channels) {
@@ -875,6 +937,8 @@ async function generateSingleVariantTemplate(
       return generateInstagramCaption(jobInput, agencyInput, language);
     case "linkedin":
       return generateLinkedInPost(jobInput, agencyInput, language);
+    case "facebook":
+      return generateFacebookPost(jobInput, agencyInput, language);
     case "whatsapp":
       return generateWhatsAppMessage(jobInput, agencyInput, language);
     default:
