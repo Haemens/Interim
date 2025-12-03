@@ -5,8 +5,9 @@ import { getCurrentMembershipOrThrow, getCurrentUser, assertMinimumRole } from "
 import { assertNotDemoAgency } from "@/modules/auth/demo-mode";
 import { logError } from "@/lib/log";
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const user = await getCurrentUser();
     const tenantSlug = await getTenantSlugWithFallback(request, user?.id ?? null);
     if (!tenantSlug) return NextResponse.json({ error: "Tenant slug required" }, { status: 400 });
@@ -14,7 +15,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     const { agency } = await getCurrentMembershipOrThrow(tenantSlug);
     
     const campaign = await db.emailCampaign.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         segment: true,
         job: { select: { id: true, title: true } },
@@ -36,8 +37,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const user = await getCurrentUser();
     const tenantSlug = await getTenantSlugWithFallback(request, user?.id ?? null);
     if (!tenantSlug) return NextResponse.json({ error: "Tenant slug required" }, { status: 400 });
@@ -47,7 +49,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     assertNotDemoAgency(agency, "update email campaign");
 
     const body = await request.json();
-    const campaign = await db.emailCampaign.findUnique({ where: { id: params.id } });
+    const campaign = await db.emailCampaign.findUnique({ where: { id } });
     
     if (!campaign || campaign.agencyId !== agency.id) {
       return NextResponse.json({ error: "Campaign not found" }, { status: 404 });
@@ -62,7 +64,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     }
 
     const updated = await db.emailCampaign.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         name: body.name,
         subject: body.subject,
@@ -82,8 +84,9 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
+        const { id } = await params;
         const user = await getCurrentUser();
         const tenantSlug = await getTenantSlugWithFallback(request, user?.id ?? null);
         if (!tenantSlug) return NextResponse.json({ error: "Tenant slug required" }, { status: 400 });
@@ -92,14 +95,14 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
         assertMinimumRole(membership, "RECRUITER");
         assertNotDemoAgency(agency, "delete email campaign");
     
-        const campaign = await db.emailCampaign.findUnique({ where: { id: params.id } });
+        const campaign = await db.emailCampaign.findUnique({ where: { id } });
         if (!campaign || campaign.agencyId !== agency.id) return NextResponse.json({ error: "Campaign not found" }, { status: 404 });
 
         if (campaign.status === "SENDING" || campaign.status === "COMPLETED") {
              return NextResponse.json({ error: "Cannot delete active/completed campaign" }, { status: 400 });
         }
 
-        await db.emailCampaign.delete({ where: { id: params.id } });
+        await db.emailCampaign.delete({ where: { id } });
         return NextResponse.json({ success: true });
     } catch (error) {
         logError("Delete Campaign API Error", { error: error instanceof Error ? error.message : "Unknown" });

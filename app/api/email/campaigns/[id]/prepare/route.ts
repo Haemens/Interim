@@ -4,8 +4,9 @@ import { getCurrentMembershipOrThrow, getCurrentUser, assertMinimumRole } from "
 import { computeRecipientsForCampaign } from "@/modules/email-campaign/campaigns";
 import { logError } from "@/lib/log";
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const user = await getCurrentUser();
     const tenantSlug = await getTenantSlugWithFallback(request, user?.id ?? null);
     
@@ -18,7 +19,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
     const body = await request.json().catch(() => ({}));
     
-    const count = await computeRecipientsForCampaign(agency.id, params.id, body.segmentDefinition);
+    const count = await computeRecipientsForCampaign(agency.id, id, body.segmentDefinition);
     return NextResponse.json({ count });
   } catch (error) {
     logError("Prepare Campaign API Error", { error: error instanceof Error ? error.message : "Unknown" });

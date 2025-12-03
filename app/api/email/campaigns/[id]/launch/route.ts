@@ -6,8 +6,9 @@ import { assertNotDemoAgency } from "@/modules/auth/demo-mode";
 import { logError } from "@/lib/log";
 import { logActivityEvent } from "@/modules/activity";
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const user = await getCurrentUser();
     const tenantSlug = await getTenantSlugWithFallback(request, user?.id ?? null);
     
@@ -19,7 +20,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     assertMinimumRole(membership, "RECRUITER");
     assertNotDemoAgency(agency, "launch email campaign");
 
-    const updated = await launchCampaign(agency.id, params.id, dbUser.id);
+    const updated = await launchCampaign(agency.id, id, dbUser.id);
 
     await logActivityEvent({
       agencyId: agency.id,

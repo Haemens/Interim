@@ -5,8 +5,9 @@ import { getCurrentMembershipOrThrow, getCurrentUser, assertMinimumRole } from "
 import { logError } from "@/lib/log";
 import { assertNotDemoAgency } from "@/modules/auth/demo-mode";
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const user = await getCurrentUser();
     const tenantSlug = await getTenantSlugWithFallback(request, user?.id ?? null);
     
@@ -17,7 +18,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     const { agency } = await getCurrentMembershipOrThrow(tenantSlug);
     
     const segment = await db.emailSegment.findUnique({
-      where: { id: params.id }
+      where: { id }
     });
 
     if (!segment || segment.agencyId !== agency.id) {
@@ -30,8 +31,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const user = await getCurrentUser();
     const tenantSlug = await getTenantSlugWithFallback(request, user?.id ?? null);
     
@@ -44,14 +46,14 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     assertNotDemoAgency(agency, "update segment");
 
     const body = await request.json();
-    const segment = await db.emailSegment.findUnique({ where: { id: params.id } });
+    const segment = await db.emailSegment.findUnique({ where: { id } });
     
     if (!segment || segment.agencyId !== agency.id) {
       return NextResponse.json({ error: "Segment not found" }, { status: 404 });
     }
 
     const updated = await db.emailSegment.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         name: body.name,
         description: body.description,
@@ -66,8 +68,9 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
+        const { id } = await params;
         const user = await getCurrentUser();
         const tenantSlug = await getTenantSlugWithFallback(request, user?.id ?? null);
         
@@ -79,10 +82,10 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
         assertMinimumRole(membership, "RECRUITER");
         assertNotDemoAgency(agency, "delete segment");
     
-        const segment = await db.emailSegment.findUnique({ where: { id: params.id } });
+        const segment = await db.emailSegment.findUnique({ where: { id } });
         if (!segment || segment.agencyId !== agency.id) return NextResponse.json({ error: "Segment not found" }, { status: 404 });
 
-        await db.emailSegment.delete({ where: { id: params.id } });
+        await db.emailSegment.delete({ where: { id } });
         return NextResponse.json({ success: true });
     } catch (error) {
         logError("Delete Segment API Error", { error: error instanceof Error ? error.message : "Unknown" });
