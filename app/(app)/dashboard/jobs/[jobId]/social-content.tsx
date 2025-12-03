@@ -833,8 +833,8 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
     setIsLoading(true);
     try {
       const [contentsRes, pubsRes] = await Promise.all([
-        fetch(`/api/jobs/${jobId}/content`),
-        fetch(`/api/jobs/${jobId}/publications`),
+        fetch(`/api/jobs/${jobId}/content`, { cache: 'no-store' }),
+        fetch(`/api/jobs/${jobId}/publications`, { cache: 'no-store' }),
       ]);
 
       if (contentsRes.ok) {
@@ -1084,11 +1084,21 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-bold text-foreground">Social Content</h2>
-          <p className="text-sm text-muted-foreground">Generate, edit, and manage social media content for this job</p>
+          <p className="text-sm text-muted-foreground">Generate drafts and track publications manually.</p>
         </div>
-        {canEdit && (
-          <div className="flex items-center gap-3">
-            {/* Template Generation */}
+        <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            className="hidden md:flex"
+            onClick={() => toast({ title: "Coming Soon", description: "Direct social media integration is coming soon! For now, copy/paste content to your platforms.", variant: "info" })}
+          >
+            <Share2 className="w-4 h-4 mr-2" />
+            Connect Accounts
+          </Button>
+          
+          {canEdit && (
+            <div className="flex items-center gap-3">
+              {/* Template Generation */}
             <Button
               variant="outline"
               onClick={handleGenerate}
@@ -1128,6 +1138,7 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
             </Button>
           </div>
         )}
+      </div>
       </div>
 
       {/* AI Generation Modal */}
