@@ -117,12 +117,12 @@ export default function SignupPage() {
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h1 className="text-center text-3xl font-bold text-slate-900">
-          Create your agency
+          Créez votre agence
         </h1>
         <p className="mt-2 text-center text-sm text-slate-600">
-          Already have an account?{" "}
+          Déjà un compte ?{" "}
           <Link href="/login" className="text-indigo-600 hover:text-indigo-500 font-medium">
-            Sign in
+            Se connecter
           </Link>
         </p>
       </div>
@@ -131,7 +131,10 @@ export default function SignupPage() {
         <div className="bg-white py-8 px-4 shadow-sm rounded-xl sm:px-10 border border-slate-200">
           {error && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">
-              {error}
+              {error === "Passwords don't match" ? "Les mots de passe ne correspondent pas" :
+               error === "Password must be at least 8 characters" ? "Le mot de passe doit faire au moins 8 caractères" :
+               error === "Failed to create account" ? "Échec de la création du compte" :
+               "Une erreur est survenue"}
             </div>
           )}
 
@@ -139,10 +142,10 @@ export default function SignupPage() {
             <div className="text-center">
               <div className="text-4xl mb-4">🎉</div>
               <h2 className="text-xl font-semibold text-slate-900 mb-2">
-                Account Created!
+                Compte créé !
               </h2>
               <p className="text-slate-600">
-                Redirecting you to your dashboard...
+                Redirection vers votre tableau de bord...
               </p>
             </div>
           ) : (
@@ -150,13 +153,13 @@ export default function SignupPage() {
               {/* Agency Section */}
               <div className="border-b border-slate-200 pb-5">
                 <h3 className="text-sm font-medium text-slate-700 mb-4">
-                  Agency Details
+                  Détails de l'agence
                 </h3>
                 
                 <div className="space-y-4">
                   <div>
                     <label htmlFor="agencyName" className="block text-sm font-medium text-slate-700">
-                      Agency Name
+                      Nom de l'agence
                     </label>
                     <input
                       type="text"
@@ -165,14 +168,14 @@ export default function SignupPage() {
                       value={formData.agencyName}
                       onChange={handleChange}
                       required
-                      className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-slate-900 bg-white"
                       placeholder="Acme Staffing"
                     />
                   </div>
 
                   <div>
                     <label htmlFor="agencySlug" className="block text-sm font-medium text-slate-700">
-                      Agency URL
+                      URL de l'agence
                     </label>
                     <div className="mt-1 flex rounded-lg shadow-sm">
                       <input
@@ -181,7 +184,7 @@ export default function SignupPage() {
                         name="agencySlug"
                         value={formData.agencySlug}
                         onChange={handleChange}
-                        className="flex-1 block w-full px-3 py-2 border border-slate-300 rounded-l-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        className="flex-1 block w-full px-3 py-2 border border-slate-300 rounded-l-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-slate-900 bg-white"
                         placeholder="acme-staffing"
                       />
                       <span className="inline-flex items-center px-3 rounded-r-lg border border-l-0 border-slate-300 bg-slate-50 text-slate-500 text-sm">
@@ -189,13 +192,13 @@ export default function SignupPage() {
                       </span>
                     </div>
                     <p className="mt-1 text-xs text-slate-500">
-                      Lowercase letters, numbers, and hyphens only
+                      Lettres minuscules, chiffres et tirets uniquement
                     </p>
                   </div>
 
                   <div>
                     <label htmlFor="agencyEmail" className="block text-sm font-medium text-slate-700">
-                      Agency Contact Email
+                      Email de contact de l'agence
                     </label>
                     <input
                       type="email"
@@ -204,7 +207,7 @@ export default function SignupPage() {
                       value={formData.agencyEmail}
                       onChange={handleChange}
                       required
-                      className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-slate-900 bg-white"
                       placeholder="contact@acme-staffing.com"
                     />
                   </div>
@@ -214,12 +217,12 @@ export default function SignupPage() {
               {/* User Section */}
               <div className="space-y-4">
                 <h3 className="text-sm font-medium text-slate-700">
-                  Your Account
+                  Votre compte
                 </h3>
 
                 <div>
                   <label htmlFor="userName" className="block text-sm font-medium text-slate-700">
-                    Your Name
+                    Votre nom
                   </label>
                   <input
                     type="text"
@@ -228,14 +231,14 @@ export default function SignupPage() {
                     value={formData.userName}
                     onChange={handleChange}
                     required
-                    className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    placeholder="John Doe"
+                    className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-slate-900 bg-white"
+                    placeholder="Jean Dupont"
                   />
                 </div>
 
                 <div>
                   <label htmlFor="userEmail" className="block text-sm font-medium text-slate-700">
-                    Email Address
+                    Adresse email
                   </label>
                   <input
                     type="email"
@@ -244,14 +247,14 @@ export default function SignupPage() {
                     value={formData.userEmail}
                     onChange={handleChange}
                     required
-                    className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    placeholder="john@acme-staffing.com"
+                    className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-slate-900 bg-white"
+                    placeholder="jean@acme-staffing.com"
                   />
                 </div>
 
                 <div>
                   <label htmlFor="password" className="block text-sm font-medium text-slate-700">
-                    Password
+                    Mot de passe
                   </label>
                   <input
                     type="password"
@@ -261,17 +264,17 @@ export default function SignupPage() {
                     onChange={handleChange}
                     required
                     minLength={8}
-                    className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-slate-900 bg-white"
                     placeholder="••••••••"
                   />
                   <p className="mt-1 text-xs text-slate-500">
-                    At least 8 characters with uppercase, lowercase, and numbers
+                    Au moins 8 caractères avec majuscules, minuscules et chiffres
                   </p>
                 </div>
 
                 <div>
                   <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-700">
-                    Confirm Password
+                    Confirmer le mot de passe
                   </label>
                   <input
                     type="password"
@@ -280,7 +283,7 @@ export default function SignupPage() {
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     required
-                    className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-slate-900 bg-white"
                     placeholder="••••••••"
                   />
                 </div>
@@ -291,17 +294,17 @@ export default function SignupPage() {
                 disabled={formState === "submitting"}
                 className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {formState === "submitting" ? "Creating account..." : "Create Account"}
+                {formState === "submitting" ? "Création..." : "Créer le compte"}
               </button>
 
               <p className="text-xs text-center text-slate-500">
-                By creating an account, you agree to our{" "}
+                En créant un compte, vous acceptez nos{" "}
                 <a href="#" className="text-indigo-600 hover:text-indigo-500">
-                  Terms of Service
+                  Conditions d'utilisation
                 </a>{" "}
-                and{" "}
+                et notre{" "}
                 <a href="#" className="text-indigo-600 hover:text-indigo-500">
-                  Privacy Policy
+                  Politique de confidentialité
                 </a>
               </p>
             </form>

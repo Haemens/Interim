@@ -335,21 +335,21 @@ export function PipelineBoard({ jobId, canEdit, canUseShortlists = true, isDemo 
 
       {/* Board */}
       <DndContext
-      sensors={sensors}
-      collisionDetection={closestCorners}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-    >
-      <div className="flex gap-6 overflow-x-auto pb-4 min-h-[calc(100vh-300px)]">
-        {columns.map((column) => (
-          <PipelineColumn
-            key={column.status}
-            status={column.status}
-            label={translateColumnLabel(column.status, column.label)}
-            color={STATUS_COLORS[column.status]}
-            count={column.applications.length}
-            icon={STATUS_ICONS[column.status]}
-          >
+        sensors={sensors}
+        collisionDetection={closestCorners}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        <div className="flex gap-6 overflow-x-auto overflow-y-hidden h-[calc(100vh-250px)] pb-2 pr-2">
+          {columns.map((column) => (
+            <PipelineColumn
+              key={column.status}
+              status={column.status}
+              label={translateColumnLabel(column.status, column.label)}
+              color={STATUS_COLORS[column.status]}
+              count={column.applications.length}
+              icon={STATUS_ICONS[column.status]}
+            >
             <SortableContext
               items={column.applications.map((app) => app.id)}
               strategy={verticalListSortingStrategy}

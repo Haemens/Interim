@@ -224,10 +224,10 @@ export function ReplayTourButton() {
   if (hasSeenTour !== true) return null;
 
   const handleReplay = () => {
-    // Navigate to dashboard with tour param to trigger the tour
-    router.push("/dashboard?tour=true");
-    // Force page reload to reset tour state
-    window.location.href = "/dashboard?tour=true";
+    // Add tour=true to current URL
+    const url = new URL(window.location.href);
+    url.searchParams.set("tour", "true");
+    window.location.href = url.toString();
   };
 
   return (

@@ -126,10 +126,15 @@ export async function GET(
     const events = await db.eventLog.findMany({
       where: {
         agencyId,
-        payload: {
-          path: ["jobId"],
-          equals: jobId,
-        },
+        OR: [
+          { jobId: jobId },
+          {
+            payload: {
+              path: ["jobId"],
+              equals: jobId,
+            },
+          },
+        ],
       },
       include: {
         user: {
