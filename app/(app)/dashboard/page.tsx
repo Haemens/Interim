@@ -188,28 +188,16 @@ export default async function DashboardPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {translatedStats.map((stat, index) => {
-          // Colors configuration
-          const colors = [
-            { border: "border-l-emerald-500 border-y border-r border-slate-200", darkFrom: "dark:from-emerald-950/40", darkTo: "dark:to-teal-950/40", darkBorder: "dark:border-emerald-900", darkText: "dark:text-emerald-400", darkValue: "dark:text-emerald-100" },
-            { border: "border-l-blue-500 border-y border-r border-slate-200", darkFrom: "dark:from-blue-950/40", darkTo: "dark:to-indigo-950/40", darkBorder: "dark:border-blue-900", darkText: "dark:text-blue-400", darkValue: "dark:text-blue-100" },
-            { border: "border-l-amber-500 border-y border-r border-slate-200", darkFrom: "dark:from-amber-950/40", darkTo: "dark:to-orange-950/40", darkBorder: "dark:border-amber-900", darkText: "dark:text-amber-100", darkValue: "dark:text-amber-100" },
-            { border: "border-l-purple-500 border-y border-r border-slate-200", darkFrom: "dark:from-purple-950/40", darkTo: "dark:to-pink-950/40", darkBorder: "dark:border-purple-900", darkText: "dark:text-purple-400", darkValue: "dark:text-purple-100" },
-          ];
-          
-          const c = colors[index % colors.length];
-          
-          return (
-            <div
-              key={stat.label}
-              className={`p-6 rounded-xl shadow-sm relative overflow-hidden bg-white border-l-4 ${c.border} dark:bg-gradient-to-br ${c.darkFrom} ${c.darkTo} dark:border-l-0 border dark:border ${c.darkBorder}`}
-            >
-              <p className={`text-sm font-medium text-slate-600 ${c.darkText}`}>{stat.label}</p>
-              <p className={`text-3xl font-bold mt-1 text-slate-900 ${c.darkValue}`}>{stat.value}</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">{stat.change}</p>
-            </div>
-          );
-        })}
+        {translatedStats.map((stat) => (
+          <div
+            key={stat.label}
+            className="p-6 rounded-xl shadow-sm bg-card border border-border"
+          >
+            <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
+            <p className="text-3xl font-bold mt-1 text-foreground">{stat.value}</p>
+            <p className="text-xs text-muted-foreground mt-2">{stat.change}</p>
+          </div>
+        ))}
       </div>
 
       {/* Quick Actions */}

@@ -193,33 +193,33 @@ export default function JobsPage() {
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="relative overflow-hidden bg-white border-l-4 border-l-blue-500 border-y border-r border-slate-200 dark:bg-gradient-to-br dark:from-blue-950/40 dark:to-indigo-950/40 dark:border-l-0 dark:border-blue-900 shadow-sm">
+        <Card className="bg-card border border-border shadow-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600 dark:text-blue-400 uppercase tracking-wider">Total Offres</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Total Offres</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-slate-900 dark:text-blue-100">{stats.total}</div>
-            <p className="text-xs text-slate-500 dark:text-blue-400 mt-1">Toutes les offres créées</p>
+            <div className="text-3xl font-bold text-foreground">{stats.total}</div>
+            <p className="text-xs text-muted-foreground mt-1">Toutes les offres créées</p>
           </CardContent>
         </Card>
         
-        <Card className="relative overflow-hidden bg-white border-l-4 border-l-emerald-500 border-y border-r border-slate-200 dark:bg-gradient-to-br dark:from-emerald-950/40 dark:to-teal-950/40 dark:border-l-0 dark:border-emerald-900 shadow-sm">
+        <Card className="bg-card border border-border shadow-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600 dark:text-emerald-400 uppercase tracking-wider">Offres Actives</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Offres Actives</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-slate-900 dark:text-emerald-100">{stats.active}</div>
-            <p className="text-xs text-slate-500 dark:text-emerald-400 mt-1">Publiées</p>
+            <div className="text-3xl font-bold text-foreground">{stats.active}</div>
+            <p className="text-xs text-muted-foreground mt-1">Publiées</p>
           </CardContent>
         </Card>
 
-        <Card className="relative overflow-hidden bg-white border-l-4 border-l-purple-500 border-y border-r border-slate-200 dark:bg-gradient-to-br dark:from-purple-950/40 dark:to-pink-950/40 dark:border-l-0 dark:border-purple-900 shadow-sm">
+        <Card className="bg-card border border-border shadow-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600 dark:text-purple-400 uppercase tracking-wider">Candidatures</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Candidatures</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-slate-900 dark:text-purple-100">{stats.applications}</div>
-            <p className="text-xs text-slate-500 dark:text-purple-400 mt-1">Reçues au total</p>
+            <div className="text-3xl font-bold text-foreground">{stats.applications}</div>
+            <p className="text-xs text-muted-foreground mt-1">Reçues au total</p>
           </CardContent>
         </Card>
       </div>
