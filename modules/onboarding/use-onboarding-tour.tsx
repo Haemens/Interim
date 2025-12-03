@@ -28,41 +28,41 @@ export const ONBOARDING_STEPS: OnboardingStepInfo[] = [
     id: "welcome",
     title: "Bienvenue sur Interim ! 👋",
     description:
-      "Faisons un tour rapide pour vous aider à démarrer. Vous apprendrez à créer des offres, gérer vos candidats et suivre vos recrutements.",
+      "Découvrez comment gérer vos recrutements simplement. Suivez le guide pour prendre en main votre espace.",
   },
   {
     id: "create-job",
-    title: "Créez votre première offre",
+    title: "1. Publiez une offre",
     description:
-      "Commencez par publier une offre d'emploi via ce bouton. C'est le point de départ pour recevoir des candidatures.",
+      "Tout commence ici. Créez une offre d'emploi attrayante pour attirer les meilleurs talents. Cliquez sur ce bouton pour démarrer.",
     target: '[data-tour="create-job"]',
   },
   {
     id: "jobs",
-    title: "Gérez vos recrutements",
+    title: "2. Suivez vos offres",
     description:
-      "Retrouvez toutes vos offres ici. Cliquez sur une offre pour accéder à son tableau de suivi (pipeline Kanban) et gérer les étapes de recrutement.",
+      "Retrouvez ici la liste de vos recrutements en cours. Cliquez sur une offre pour accéder à son tableau de bord détaillé.",
     target: '[data-tour="jobs"]',
   },
   {
     id: "candidates",
-    title: "Votre vivier de talents",
+    title: "3. Gérez vos candidats",
     description:
-      "Tous les candidats sont automatiquement ajoutés à votre vivier. Retrouvez-les facilement ici pour vos futurs besoins.",
+      "Votre vivier de talents est accessible ici. Consultez les profils, filtrez par compétences et gérez le statut de chaque candidat.",
     target: '[data-tour="candidates"]',
   },
   {
     id: "analytics",
-    title: "Suivez vos performances",
+    title: "4. Analysez vos performances",
     description:
-      "Visualisez en temps réel vos statistiques de recrutement, l'efficacité de vos sources et l'activité de votre équipe.",
+      "Suivez vos indicateurs clés : nombre de candidatures, temps de recrutement, et efficacité de vos canaux d'acquisition.",
     target: '[data-tour="analytics"]',
   },
   {
     id: "billing",
-    title: "Abonnement & Équipe",
+    title: "5. Paramètres & Équipe",
     description:
-      "Gérez votre abonnement, changez de forfait ou invitez vos collaborateurs depuis cet onglet.",
+      "Configurez votre agence, invitez vos collaborateurs et gérez votre abonnement depuis cet espace.",
     target: '[data-tour="billing"]',
   },
 ];

@@ -15,12 +15,12 @@ export function DemoBanner({ isDemo }: DemoBannerProps) {
   return (
     <div className="bg-amber-500 text-amber-950 px-4 py-2 text-center text-sm font-medium">
       <span className="mr-2">🎭</span>
-      You are exploring the QuestHire demo. Changes are not persisted.
+      Vous explorez la version démo de QuestHire. Les changements ne sont pas enregistrés.
       <Link
         href="/signup"
         className="ml-3 underline hover:no-underline font-semibold"
       >
-        Start your free trial →
+        Commencer l&apos;essai gratuit →
       </Link>
     </div>
   );

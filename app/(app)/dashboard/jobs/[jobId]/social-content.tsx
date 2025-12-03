@@ -98,7 +98,7 @@ type AiTone = "default" | "friendly" | "formal" | "punchy";
 
 const VARIANT_CONFIG: Record<ContentVariant, { label: string; icon: string; color: string }> = {
   TIKTOK_SCRIPT: { label: "Script TikTok", icon: "🎵", color: "bg-black text-white" },
-  INSTAGRAM_CAPTION: { label: "Caption Instagram", icon: "📸", color: "bg-gradient-to-r from-purple-500 to-pink-500 text-white" },
+  INSTAGRAM_CAPTION: { label: "Légende Instagram", icon: "📸", color: "bg-gradient-to-r from-purple-500 to-pink-500 text-white" },
   LINKEDIN_POST: { label: "Post LinkedIn", icon: "💼", color: "bg-blue-700 text-white" },
   WHATSAPP_MESSAGE: { label: "Message WhatsApp", icon: "💬", color: "bg-green-500 text-white" },
   GENERIC_SNIPPET: { label: "Texte générique", icon: "📝", color: "bg-slate-500 text-white" },
@@ -150,17 +150,8 @@ function ContentEditModal({ content, jobId, onClose, onSave, isDemo, canEdit }: 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (isDemo) {
-      toast({
-        title: "Demo Mode",
-        description: "This is the live demo. Create your own agency to try this.",
-        variant: "warning",
-      });
-      return;
-    }
-
     if (!body.trim()) {
-      toast({ title: "Error", description: "Content body is required", variant: "error" });
+      toast({ title: "Erreur", description: "Le contenu est requis", variant: "error" });
       return;
     }
 
@@ -183,21 +174,21 @@ function ContentEditModal({ content, jobId, onClose, onSave, isDemo, canEdit }: 
 
       if (!response.ok) {
         if (data.code === "DEMO_READ_ONLY") {
-          toast({ title: "Demo Mode", description: data.error, variant: "warning" });
+          toast({ title: "Mode Démo", description: "Vous êtes en mode démo. Créez votre agence pour modifier le contenu.", variant: "warning" });
           return;
         }
         if (data.code === "INVALID_STATUS_TRANSITION") {
-          toast({ title: "Invalid Transition", description: data.error, variant: "error" });
+          toast({ title: "Transition invalide", description: data.error, variant: "error" });
           return;
         }
-        throw new Error(data.error || "Failed to update content");
+        throw new Error(data.error || "Échec de la mise à jour");
       }
 
       toast({
-        title: "Content Updated",
+        title: "Contenu mis à jour",
         description: status !== content.status 
-          ? `Status changed to ${STATUS_CONFIG[status].label}`
-          : "Your changes have been saved.",
+          ? `Statut changé en ${STATUS_CONFIG[status].label}`
+          : "Vos modifications ont été enregistrées.",
         variant: "success",
       });
 
@@ -205,8 +196,8 @@ function ContentEditModal({ content, jobId, onClose, onSave, isDemo, canEdit }: 
       onClose();
     } catch (error) {
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to update content",
+        title: "Erreur",
+        description: error instanceof Error ? error.message : "Échec de la mise à jour",
         variant: "error",
       });
     } finally {
@@ -398,16 +389,7 @@ function PlanPublicationModal({ content, contentId, channelId, jobId, channels, 
 
     const finalContentId = content?.id || contentId;
     if (!finalContentId || !selectedChannelId) {
-      toast({ title: "Error", description: "Please select a channel", variant: "error" });
-      return;
-    }
-
-    if (isDemo) {
-      toast({
-        title: "Demo Mode",
-        description: "This is the live demo. Create your own agency to try this.",
-        variant: "warning",
-      });
+      toast({ title: "Erreur", description: "Veuillez sélectionner un canal", variant: "error" });
       return;
     }
 
@@ -428,15 +410,15 @@ function PlanPublicationModal({ content, contentId, channelId, jobId, channels, 
 
       if (!response.ok) {
         if (data.code === "DEMO_READ_ONLY") {
-          toast({ title: "Demo Mode", description: data.error, variant: "warning" });
+          toast({ title: "Mode Démo", description: "Vous êtes en mode démo. Créez votre agence pour planifier des publications.", variant: "warning" });
           return;
         }
-        throw new Error(data.error || "Failed to plan publication");
+        throw new Error(data.error || "Échec de la planification");
       }
 
       toast({
-        title: "Publication Planned",
-        description: "Content has been scheduled for publication.",
+        title: "Publication planifiée",
+        description: "Le contenu a été planifié pour publication.",
         variant: "success",
       });
 
@@ -444,8 +426,8 @@ function PlanPublicationModal({ content, contentId, channelId, jobId, channels, 
       onClose();
     } catch (error) {
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to plan publication",
+        title: "Erreur",
+        description: error instanceof Error ? error.message : "Échec de la planification",
         variant: "error",
       });
     } finally {
@@ -546,15 +528,6 @@ function PublicationEditModal({ publication, jobId, onClose, onSave, isDemo, can
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (isDemo) {
-      toast({
-        title: "Demo Mode",
-        description: "This is the live demo. Create your own agency to try this.",
-        variant: "warning",
-      });
-      return;
-    }
-
     setIsSubmitting(true);
 
     try {
@@ -573,15 +546,15 @@ function PublicationEditModal({ publication, jobId, onClose, onSave, isDemo, can
 
       if (!response.ok) {
         if (data.code === "DEMO_READ_ONLY") {
-          toast({ title: "Demo Mode", description: data.error, variant: "warning" });
+          toast({ title: "Mode Démo", description: "Vous êtes en mode démo. Créez votre agence pour modifier la publication.", variant: "warning" });
           return;
         }
-        throw new Error(data.error || "Failed to update publication");
+        throw new Error(data.error || "Échec de la mise à jour");
       }
 
       toast({
-        title: "Publication Updated",
-        description: `Status changed to ${PUB_STATUS_CONFIG[status].label}`,
+        title: "Publication mise à jour",
+        description: `Statut changé en ${PUB_STATUS_CONFIG[status].label}`,
         variant: "success",
       });
 
@@ -589,8 +562,8 @@ function PublicationEditModal({ publication, jobId, onClose, onSave, isDemo, can
       onClose();
     } catch (error) {
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to update publication",
+        title: "Erreur",
+        description: error instanceof Error ? error.message : "Échec de la mise à jour",
         variant: "error",
       });
     } finally {
@@ -885,15 +858,6 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
   }, [jobId]);
 
   const handleGenerate = async () => {
-    if (isDemo) {
-      toast({
-        title: "Demo Mode",
-        description: "This is the live demo. Create your own agency to generate content.",
-        variant: "warning",
-      });
-      return;
-    }
-
     setIsGenerating(true);
 
     try {
@@ -907,23 +871,23 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
 
       if (!response.ok) {
         if (data.code === "DEMO_READ_ONLY") {
-          toast({ title: "Demo Mode", description: data.error, variant: "warning" });
+          toast({ title: "Mode Démo", description: "Vous êtes en mode démo. Créez votre agence pour générer du contenu.", variant: "warning" });
           return;
         }
-        throw new Error(data.error || "Failed to generate content");
+        throw new Error(data.error || "Échec de la génération");
       }
 
       toast({
-        title: "Content Generated",
-        description: `Generated ${data.contents.length} content variants.`,
+        title: "Contenu généré",
+        description: `${data.contents.length} variantes de contenu générées.`,
         variant: "success",
       });
 
       await fetchData();
     } catch (error) {
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to generate content",
+        title: "Erreur",
+        description: error instanceof Error ? error.message : "Échec de la génération",
         variant: "error",
       });
     } finally {
@@ -1263,21 +1227,21 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
               <Copy className="w-8 h-8 text-muted-foreground" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold mb-1">No content yet</h3>
+              <h3 className="text-lg font-semibold mb-1">Pas encore de contenu</h3>
               <p className="text-muted-foreground">
-                Generate a social content pack to create ready-to-post content for TikTok, Instagram, LinkedIn, and WhatsApp.
+                Générez un pack de contenu social pour créer des posts prêts à l&apos;emploi pour TikTok, Instagram, LinkedIn et WhatsApp.
               </p>
             </div>
             {canEdit && (
               <Button onClick={handleGenerate} disabled={isGenerating}>
-                Generate Social Pack
+                Générer un pack social
               </Button>
             )}
           </CardContent>
         </Card>
       ) : (
         <div className="space-y-4">
-          <h3 className="font-semibold text-lg text-foreground">Content Variants</h3>
+          <h3 className="font-semibold text-lg text-foreground">Variantes de contenu</h3>
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
             {contents.map((content) => {
               const config = VARIANT_CONFIG[content.variant];
@@ -1310,7 +1274,7 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
                     {/* Hashtags */}
                     {content.suggestedHashtags && (
                       <div className="mb-4">
-                        <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider font-medium">Suggested hashtags</p>
+                        <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider font-medium">Hashtags suggérés</p>
                         <p className="text-sm text-primary truncate font-medium">{content.suggestedHashtags}</p>
                       </div>
                     )}
@@ -1341,7 +1305,7 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
                           className="h-8"
                         >
                           <Edit2 className="w-3.5 h-3.5 mr-1.5" />
-                          {canEdit ? "Edit" : "View"}
+                          {canEdit ? "Modifier" : "Voir"}
                         </Button>
                         <Button
                           variant="outline"
@@ -1352,12 +1316,12 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
                           {copiedId === content.id ? (
                             <>
                               <Check className="w-3.5 h-3.5 mr-1.5 text-green-600" />
-                              Copied
+                              Copié
                             </>
                           ) : (
                             <>
                               <Copy className="w-3.5 h-3.5 mr-1.5" />
-                              Copy
+                              Copier
                             </>
                           )}
                         </Button>
@@ -1370,7 +1334,7 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
                           className="h-8"
                         >
                           <Calendar className="w-3.5 h-3.5 mr-1.5" />
-                          Plan
+                          Planifier
                         </Button>
                       )}
                     </div>
@@ -1387,13 +1351,13 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
           <div>
-            <h4 className="font-medium text-amber-800">No channels configured</h4>
+            <h4 className="font-medium text-amber-800">Aucun canal configuré</h4>
             <p className="text-sm text-amber-700 mt-1">
-              Add channels in the{" "}
+              Ajoutez des canaux dans la page{" "}
               <a href="/dashboard/channels" className="underline hover:no-underline font-medium">
-                Channels page
+                Canaux
               </a>{" "}
-              to plan publications.
+              pour planifier des publications.
             </p>
           </div>
         </div>

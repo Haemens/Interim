@@ -5,7 +5,8 @@ import { db } from "@/lib/db";
 import { getTenantFromHost } from "@/lib/tenant";
 import { DEMO_AGENCY_SLUG } from "@/modules/auth/demo-mode";
 import { ApplicationForm } from "./application-form";
-import { MapPin, FileText, Building, Euro, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { MapPin, FileText, Building, Euro, ArrowLeft, CheckCircle2, Calendar, Clock } from "lucide-react";
+import { PublicFooter } from "../../components/public-footer";
 
 interface JobDetailPageProps {
   params: Promise<{ jobId: string }>;
@@ -45,6 +46,19 @@ function formatSalary(min: number | null, max: number | null, currency: string |
   return null;
 }
 
+function formatContractType(type: string | null): string {
+  if (!type) return "";
+  const types: Record<string, string> = {
+    FULL_TIME: "CDI",
+    PART_TIME: "Temps partiel",
+    CONTRACT: "CDD",
+    FREELANCE: "Freelance",
+    INTERNSHIP: "Stage",
+    INTERIM: "Intérim",
+  };
+  return types[type] || type;
+}
+
 export default async function JobDetailPage({ params, searchParams }: JobDetailPageProps) {
   const { jobId } = await params;
   const resolvedSearchParams = await searchParams;
@@ -73,10 +87,10 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
   const channelId = typeof resolvedSearchParams.channelId === "string" ? resolvedSearchParams.channelId : undefined;
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans">
+    <div className="min-h-screen bg-slate-50 font-sans flex flex-col">
       {/* Header */}
       <header
-        className="py-12 px-4 relative overflow-hidden"
+        className="py-16 px-4 relative overflow-hidden"
         style={{ backgroundColor: primaryColor }}
       >
         {/* Pattern overlay */}
@@ -85,52 +99,56 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
         <div className="max-w-4xl mx-auto relative z-10">
           <Link
             href="/jobs"
-            className="inline-flex items-center text-white/80 hover:text-white text-sm mb-6 bg-white/10 px-3 py-1.5 rounded-full backdrop-blur-sm transition-colors"
+            className="inline-flex items-center text-white/80 hover:text-white text-sm mb-8 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm transition-colors hover:bg-white/20"
           >
-            <ArrowLeft className="w-4 h-4 mr-1" />
+            <ArrowLeft className="w-4 h-4 mr-2" />
             Retour aux offres
           </Link>
           
-          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-4 leading-tight">
+          <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-6 leading-tight tracking-tight">
             {job.title}
           </h1>
           
           <div className="flex flex-wrap gap-3 text-white/90 text-sm font-medium">
             {job.location && (
-              <span className="flex items-center gap-1.5 bg-black/10 px-3 py-1 rounded-lg backdrop-blur-sm">
+              <span className="flex items-center gap-2 bg-black/20 px-3 py-1.5 rounded-lg backdrop-blur-sm">
                 <MapPin className="w-4 h-4" /> {job.location}
               </span>
             )}
             {job.contractType && (
-              <span className="flex items-center gap-1.5 bg-black/10 px-3 py-1 rounded-lg backdrop-blur-sm">
-                <FileText className="w-4 h-4" /> {job.contractType === "FULL_TIME" ? "CDI" : job.contractType}
+              <span className="flex items-center gap-2 bg-black/20 px-3 py-1.5 rounded-lg backdrop-blur-sm">
+                <FileText className="w-4 h-4" /> {formatContractType(job.contractType)}
               </span>
             )}
             {job.sector && (
-              <span className="flex items-center gap-1.5 bg-black/10 px-3 py-1 rounded-lg backdrop-blur-sm">
+              <span className="flex items-center gap-2 bg-black/20 px-3 py-1.5 rounded-lg backdrop-blur-sm">
                 <Building className="w-4 h-4" /> {job.sector}
               </span>
             )}
             {salary && (
-              <span className="flex items-center gap-1.5 bg-white/20 px-3 py-1 rounded-lg backdrop-blur-sm text-white">
+              <span className="flex items-center gap-2 bg-white/20 px-3 py-1.5 rounded-lg backdrop-blur-sm text-white font-bold border border-white/20">
                 <Euro className="w-4 h-4" /> {salary}
               </span>
             )}
+             <span className="flex items-center gap-2 bg-black/20 px-3 py-1.5 rounded-lg backdrop-blur-sm">
+                <Clock className="w-4 h-4" /> Publié le {job.publishedAt ? new Date(job.publishedAt).toLocaleDateString("fr-FR") : "Récemment"}
+              </span>
           </div>
         </div>
       </header>
 
       {/* Content */}
-      <main className="max-w-4xl mx-auto px-4 py-8 -mt-8 relative z-20">
+      <main className="max-w-5xl mx-auto px-4 py-12 -mt-10 relative z-20 flex-grow w-full">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Job Details */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-8">
             {/* Description */}
-            <section className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8">
-              <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+            <section className="bg-white rounded-2xl shadow-lg border border-slate-100 p-8">
+              <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3 border-b border-slate-100 pb-4">
+                <FileText className="w-6 h-6 text-indigo-600" />
                 Description du poste
               </h2>
-              <div className="prose prose-slate max-w-none text-slate-600 leading-relaxed">
+              <div className="prose prose-slate max-w-none text-slate-600 leading-relaxed text-base">
                 <p className="whitespace-pre-wrap">
                   {job.description}
                 </p>
@@ -139,11 +157,11 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
 
             {/* Profile */}
             {job.profile && (
-              <section className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8">
-                <h2 className="text-xl font-bold text-slate-900 mb-4">
+              <section className="bg-white rounded-2xl shadow-lg border border-slate-100 p-8">
+                <h2 className="text-2xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">
                   Profil recherché
                 </h2>
-                <div className="prose prose-slate max-w-none text-slate-600 leading-relaxed">
+                <div className="prose prose-slate max-w-none text-slate-600 leading-relaxed text-base">
                   <p className="whitespace-pre-wrap">
                     {job.profile}
                   </p>
@@ -153,11 +171,11 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
 
             {/* Benefits */}
             {job.benefits && (
-              <section className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8">
-                <h2 className="text-xl font-bold text-slate-900 mb-4">
+              <section className="bg-white rounded-2xl shadow-lg border border-slate-100 p-8">
+                <h2 className="text-2xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">
                   Avantages
                 </h2>
-                <div className="prose prose-slate max-w-none text-slate-600 leading-relaxed">
+                <div className="prose prose-slate max-w-none text-slate-600 leading-relaxed text-base">
                   <p className="whitespace-pre-wrap">
                     {job.benefits}
                   </p>
@@ -167,17 +185,17 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
 
             {/* Tags */}
             {job.tags.length > 0 && (
-              <section className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8">
-                <h2 className="text-lg font-bold text-slate-900 mb-4">
-                  Compétences
+              <section className="bg-white rounded-2xl shadow-lg border border-slate-100 p-8">
+                <h2 className="text-xl font-bold text-slate-900 mb-6">
+                  Compétences clés
                 </h2>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-3">
                   {job.tags.map((tag: string) => (
                     <span
                       key={tag}
-                      className="text-sm bg-slate-50 text-slate-700 px-3 py-1.5 rounded-full border border-slate-200 flex items-center gap-1.5"
+                      className="text-sm bg-indigo-50 text-indigo-700 px-4 py-2 rounded-full border border-indigo-100 flex items-center gap-2 font-medium"
                     >
-                      <CheckCircle2 className="w-3 h-3 text-slate-400" />
+                      <CheckCircle2 className="w-4 h-4 text-indigo-500" />
                       {tag}
                     </span>
                   ))}
@@ -188,11 +206,11 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
 
           {/* Application Form */}
           <div className="lg:col-span-1">
-            <div className="sticky top-8">
-              <div className="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden">
-                <div className="p-4 bg-slate-50 border-b border-slate-100">
-                  <h3 className="font-bold text-slate-900 text-center">Postuler à cette offre</h3>
-                  <p className="text-xs text-center text-slate-500 mt-1">Simple, rapide, sans compte</p>
+            <div className="sticky top-8 space-y-6">
+              <div className="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden transform transition-all hover:shadow-2xl">
+                <div className="p-5 bg-gradient-to-r from-slate-50 to-white border-b border-slate-100">
+                  <h3 className="font-bold text-slate-900 text-center text-lg">Postuler maintenant</h3>
+                  <p className="text-xs text-center text-slate-500 mt-1 font-medium uppercase tracking-wide">Candidature simplifiée</p>
                 </div>
                 <div className="p-6">
                   <ApplicationForm
@@ -207,28 +225,20 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
                 </div>
               </div>
               
-              <div className="mt-6 text-center">
-                <p className="text-xs text-slate-400">
-                  En postulant, vous acceptez notre politique de confidentialité.
-                </p>
+              <div className="bg-slate-50 rounded-xl p-6 border border-slate-100 text-center">
+                <h4 className="font-semibold text-slate-900 mb-2">Pourquoi postuler ?</h4>
+                <ul className="text-sm text-slate-600 space-y-2 text-left inline-block mx-auto">
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-500" /> Réponse rapide garantie</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-500" /> Accompagnement personnalisé</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-500" /> Entreprises vérifiées</li>
+                </ul>
               </div>
             </div>
           </div>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="py-12 text-center text-sm text-slate-500 border-t border-slate-200 bg-white mt-12">
-        <p>
-          Propulsé par{" "}
-          <a
-            href="https://questhire.com"
-            className="text-indigo-600 hover:text-indigo-700 font-bold"
-          >
-            QuestHire
-          </a>
-        </p>
-      </footer>
+      <PublicFooter agencyName={agency.name} />
     </div>
   );
 }
