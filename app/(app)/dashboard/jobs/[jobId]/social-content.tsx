@@ -98,6 +98,93 @@ interface SocialContentProps {
 type AiTone = "default" | "friendly" | "formal" | "punchy";
 
 // =============================================================================
+// MOCK DATA FOR DEMO MODE
+// =============================================================================
+
+const getMockContents = (jobId: string): Content[] => [
+  {
+    id: `mock-tiktok-${jobId}`,
+    variant: "TIKTOK_SCRIPT",
+    title: "Une journée type",
+    body: "[SCÈNE 1]\nL'écran affiche \"Tu cherches un job ?\" avec une musique dynamique.\n\n[SCÈNE 2]\nOn voit un bureau moderne. Texte : \"Rejoins notre équipe comme Chef de Projet !\"\n\n[SCÈNE 3]\nListe à puces apparaît :\n✅ Gestion d'équipe\n✅ Projets innovants\n✅ Ambiance top\n\n[CALL TO ACTION]\nLien en bio pour postuler ! 🔥 #Job #Recrutement",
+    suggestedHashtags: "#Recrutement #JobAlert #Carrière",
+    status: "DRAFT",
+    language: "fr",
+    generatedAt: new Date().toISOString(),
+    approvedAt: null,
+    lastEditedAt: null,
+    createdAt: new Date().toISOString(),
+    createdBy: null,
+    lastEditedBy: null,
+    _count: { publications: 0 }
+  },
+  {
+    id: `mock-linkedin-${jobId}`,
+    variant: "LINKEDIN_POST",
+    title: "Annonce Professionnelle",
+    body: "🚀 Nous recrutons !\n\nVous êtes passionné par la gestion de projet et vous cherchez un nouveau défi ?\n\nNous recherchons un Chef de Projet talentueux pour rejoindre notre équipe dynamique.\n\nVos missions :\n🔹 Piloter des projets stratégiques\n🔹 Coordonner les équipes\n🔹 Assurer la satisfaction client\n\nPourquoi nous rejoindre ?\n✨ Une culture d'entreprise forte\n✨ Des opportunités d'évolution\n✨ Un package attractif\n\nIntéressé(e) ? Postulez dès maintenant via le lien en commentaire ! 👇\n\n#Emploi #Recrutement #ChefDeProjet #Opportunité",
+    suggestedHashtags: "#Emploi #Recrutement #ChefDeProjet #Carrière",
+    status: "DRAFT",
+    language: "fr",
+    generatedAt: new Date().toISOString(),
+    approvedAt: null,
+    lastEditedAt: null,
+    createdAt: new Date().toISOString(),
+    createdBy: null,
+    lastEditedBy: null,
+    _count: { publications: 0 }
+  },
+  {
+    id: `mock-instagram-${jobId}`,
+    variant: "INSTAGRAM_CAPTION",
+    title: "Post Lifestyle",
+    body: "Nouveau challenge en vue ! 👀\n\nTu as l'âme d'un leader et tu aimes quand ça bouge ? On a le job qu'il te faut !\n\nOn cherche notre futur(e) Chef de Projet. 🎯\n\nSi tu te reconnais :\n⚡ Organisé(e)\n⚡ Créatif(ve)\n⚡ Esprit d'équipe\n\nAlors glisse dans nos DMs ou clique sur le lien en bio pour postuler ! 📲\n\n#JobSearch #Hiring #LifeAtWork #NewJob",
+    suggestedHashtags: "#JobSearch #Hiring #LifeAtWork #NewJob",
+    status: "DRAFT",
+    language: "fr",
+    generatedAt: new Date().toISOString(),
+    approvedAt: null,
+    lastEditedAt: null,
+    createdAt: new Date().toISOString(),
+    createdBy: null,
+    lastEditedBy: null,
+    _count: { publications: 0 }
+  },
+   {
+    id: `mock-facebook-${jobId}`,
+    variant: "FACEBOOK_POST",
+    title: "Annonce Communautaire",
+    body: "👋 Bonjour à tous !\n\nNous agrandissons l'équipe et nous sommes à la recherche d'un Chef de Projet motivé(e) pour nous accompagner dans notre croissance.\n\n📍 Poste basé à Paris (ou Télétravail possible)\n💼 CDI - Temps plein\n\nVous connaissez quelqu'un qui correspondrait au profil ? Taguez-le en commentaire ! 👥\n\nPour postuler, c'est par ici 👉 [Lien]\n\nMerci pour vos partages ! 🙏",
+    suggestedHashtags: "#Recrutement #Emploi #Paris #Job",
+    status: "DRAFT",
+    language: "fr",
+    generatedAt: new Date().toISOString(),
+    approvedAt: null,
+    lastEditedAt: null,
+    createdAt: new Date().toISOString(),
+    createdBy: null,
+    lastEditedBy: null,
+    _count: { publications: 0 }
+  },
+  {
+    id: `mock-whatsapp-${jobId}`,
+    variant: "WHATSAPP_MESSAGE",
+    title: "Message Direct",
+    body: "Salut ! 👋\n\nJe voulais te partager une super opportunité de job chez nous. On cherche un Chef de Projet et j'ai pensé à toi (ou à quelqu'un de ton réseau) !\n\nC'est un poste clé avec pas mal de responsabilités et une super ambiance. 🚀\n\nTu peux regarder les détails ici : [Lien]\n\nN'hésite pas à faire tourner ! Merci ! 😉",
+    suggestedHashtags: null,
+    status: "DRAFT",
+    language: "fr",
+    generatedAt: new Date().toISOString(),
+    approvedAt: null,
+    lastEditedAt: null,
+    createdAt: new Date().toISOString(),
+    createdBy: null,
+    lastEditedBy: null,
+    _count: { publications: 0 }
+  }
+];
+
+// =============================================================================
 // HELPERS
 // =============================================================================
 
@@ -163,6 +250,31 @@ function ContentEditModal({ content, jobId, onClose, onSave, isDemo, canEdit }: 
 
     setIsSubmitting(true);
 
+    if (isDemo) {
+      // Simulate API call delay
+      setTimeout(() => {
+        const updatedContent: Content = {
+          ...content,
+          title: title.trim() || null,
+          body: body.trim(),
+          suggestedHashtags: hashtags.trim() || null,
+          status,
+          lastEditedAt: new Date().toISOString(),
+        };
+        
+        toast({
+          title: "Contenu mis à jour (Démo)",
+          description: "Vos modifications ont été enregistrées localement.",
+          variant: "success",
+        });
+        
+        onSave(updatedContent);
+        onClose();
+        setIsSubmitting(false);
+      }, 800);
+      return;
+    }
+
     try {
       const response = await fetch(`/api/jobs/${jobId}/content`, {
         method: "PATCH",
@@ -180,6 +292,7 @@ function ContentEditModal({ content, jobId, onClose, onSave, isDemo, canEdit }: 
 
       if (!response.ok) {
         if (data.code === "DEMO_READ_ONLY") {
+          // Fallback if logic slips through, but isDemo check above handles it
           toast({ title: "Mode Démo", description: "Créez votre agence pour modifier le contenu.", variant: "warning" });
           return;
         }
@@ -234,10 +347,11 @@ function ContentEditModal({ content, jobId, onClose, onSave, isDemo, canEdit }: 
           </Button>
         </div>
 
-        {/* Demo warning */}
+        {/* Demo Info */}
         {isDemo && (
-          <div className="mx-6 mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-sm flex-shrink-0">
-            <strong>Mode Démo:</strong> Les changements ne seront pas sauvegardés.
+          <div className="mx-6 mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-blue-800 text-sm flex-shrink-0 flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-blue-600" />
+            <span><strong>Mode Démo:</strong> Vous pouvez modifier librement ce contenu pour tester l'interface.</span>
           </div>
         )}
 
@@ -327,7 +441,7 @@ function ContentEditModal({ content, jobId, onClose, onSave, isDemo, canEdit }: 
             {canEdit && (
               <Button
                 type="submit"
-                disabled={isSubmitting || isDemo}
+                disabled={isSubmitting}
               >
                 {isSubmitting ? (
                   <>
@@ -377,6 +491,20 @@ function PlanPublicationModal({ content, contentId, channelId, jobId, channels, 
     }
 
     setIsSubmitting(true);
+
+    if (isDemo) {
+       setTimeout(() => {
+        toast({
+          title: "Planification simulée (Mode Démo)",
+          description: "Cette fonctionnalité est simulée en mode démo.",
+          variant: "success",
+        });
+        onSave();
+        onClose();
+        setIsSubmitting(false);
+      }, 1000);
+      return;
+    }
 
     try {
       const response = await fetch(`/api/jobs/${jobId}/publications`, {
@@ -472,7 +600,7 @@ function PlanPublicationModal({ content, contentId, channelId, jobId, channels, 
             <Button type="button" variant="outline" onClick={onClose}>
               Annuler
             </Button>
-            <Button type="submit" disabled={isSubmitting || isDemo}>
+            <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -513,6 +641,20 @@ function PublicationEditModal({ publication, jobId, onClose, onSave, isDemo, can
     e.preventDefault();
 
     setIsSubmitting(true);
+
+    if (isDemo) {
+      setTimeout(() => {
+        toast({
+          title: "Modification simulée (Mode Démo)",
+          description: "Les modifications de publication ne sont pas persistées en démo.",
+          variant: "success",
+        });
+        onSave();
+        onClose();
+        setIsSubmitting(false);
+      }, 800);
+      return;
+    }
 
     try {
       const response = await fetch(`/api/jobs/${jobId}/publications`, {
@@ -641,7 +783,7 @@ function PublicationEditModal({ publication, jobId, onClose, onSave, isDemo, can
               Annuler
             </Button>
             {canEdit && (
-              <Button type="submit" disabled={isSubmitting || isDemo}>
+              <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -842,6 +984,19 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
   const handleGenerate = async () => {
     setIsGenerating(true);
 
+    if (isDemo) {
+      setTimeout(() => {
+        setContents(getMockContents(jobId));
+        toast({
+          title: "Génération simulée (Mode Démo)",
+          description: "5 variantes de contenu ont été générées pour vous tester l'interface.",
+          variant: "success",
+        });
+        setIsGenerating(false);
+      }, 1500);
+      return;
+    }
+
     try {
       const response = await fetch(`/api/jobs/${jobId}/content/generate`, {
         method: "POST",
@@ -909,7 +1064,7 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
   };
 
   const handleGenerateWithAi = async () => {
-    if (!canUseAi) {
+    if (!canUseAi && !isDemo) {
       toast({
         title: "Mise à niveau requise",
         description: "La génération IA nécessite un plan Pro ou Agency Plus.",
@@ -920,6 +1075,19 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
 
     setIsGeneratingAi(true);
     setShowAiModal(false);
+
+    if (isDemo) {
+      setTimeout(() => {
+        setContents(getMockContents(jobId));
+        toast({
+          title: "Contenu IA généré (Démo)",
+          description: "Contenu généré avec l'IA (simulé).",
+          variant: "success",
+        });
+        setIsGeneratingAi(false);
+      }, 2000);
+      return;
+    }
 
     try {
       const response = await fetch(`/api/jobs/${jobId}/content/generate/ai`, {
@@ -961,7 +1129,7 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
   };
 
   const handleRegenerateWithAi = async (contentId: string) => {
-    if (!canUseAi) {
+    if (!canUseAi && !isDemo) {
       toast({
         title: "Mise à niveau requise",
         description: "La régénération IA nécessite un plan Pro.",
@@ -971,6 +1139,30 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
     }
 
     setRegeneratingId(contentId);
+
+    if (isDemo) {
+      setTimeout(() => {
+        setContents(prev => prev.map(c => {
+          if (c.id === contentId) {
+            return {
+              ...c,
+              body: c.body + "\n\n(Version régénérée par l'IA 🔄)",
+              lastEditedAt: new Date().toISOString()
+            };
+          }
+          return c;
+        }));
+        
+        toast({
+          title: "Contenu régénéré (Démo)",
+          description: "Le contenu a été régénéré avec succès.",
+          variant: "success",
+        });
+        
+        setRegeneratingId(null);
+      }, 1500);
+      return;
+    }
 
     try {
       const response = await fetch(`/api/jobs/${jobId}/content/${contentId}/regenerate/ai`, {
@@ -1343,12 +1535,12 @@ export function SocialContentSection({ jobId, isDemo, canEdit, canUseAi = false,
                         </Button>
                         
                         {/* Regenerate Button */}
-                        {canEdit && canUseAi && (
+                        {canEdit && (canUseAi || isDemo) && (
                           <Button
                             variant="outline"
                             size="sm"
                             onClick={() => handleRegenerateWithAi(content.id)}
-                            disabled={isRegenerating || isDemo}
+                            disabled={isRegenerating}
                             className="h-8 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 transition-colors"
                             title="Régénérer avec l'IA"
                           >
